@@ -29,7 +29,7 @@ tech industires working in both big companies and small startups</p>
 <h2>Projects</h2>
 
 <ul>
-	<li><a href="https://github.com/">Lorem Lorem</a></li>
-	<li><a href="https://github.com/">Ipsum Dolor</a></li>
-	<li><a href="https://github.com/">Dolor Lorem</a></li>
+	<li><a href="https://github.com/sammyrulez/zeppelin-spark-docker">zeppelin-spark-docker</a> A docker compose to bootstrap all the stack </li>
+	<li><a href="https://github.com/sammyrulez/service-meddler">NodeJs Service monitor</a></li>
+
 </ul>
