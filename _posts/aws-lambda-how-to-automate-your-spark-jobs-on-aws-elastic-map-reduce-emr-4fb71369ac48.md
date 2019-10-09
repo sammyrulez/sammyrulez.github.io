@@ -3,7 +3,7 @@ title: ''
 description: >-
   It is no surprise that big data architectures are leveraging AWS lambda more
   and more each day. A serverless service, AWS Lambda increases operational
-  efficacy while decreasing complexity within…
+  efficacy while decreasing complexity within your…
 date: '2019-03-16T17:27:05.243Z'
 categories: []
 keywords: []
