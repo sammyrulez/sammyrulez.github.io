@@ -1,5 +1,5 @@
 ---
-title: Overview of Big Data and Hadoop"
+title: Overview of Big Data and Hadoop
 layout: post
 date: 2020-11-19 22:48
 tag:
