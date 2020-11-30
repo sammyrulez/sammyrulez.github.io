@@ -16,4 +16,6 @@ jobs:
         with:
           fetch-depth: 1
       - name: 🧪 Build and deploy
+        env:
+          MEDIUM_USER_ID: ${MEDIUM_USER_ID}
         uses: victoriadrake/jekyll-cd@master
