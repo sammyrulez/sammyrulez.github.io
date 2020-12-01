@@ -17,6 +17,6 @@ jobs:
           fetch-depth: 1
       - name: 🧪 Build and deploy
         env:
-          MEDIUM_USER_ID: ${MEDIUM_USER_ID}
-          MEDIUM_INTEGRATION_TOKEN: ${MEDIUM_INTEGRATION_TOKEN}
+          MEDIUM_USER_ID: ${{MEDIUM_USER_ID}}
+          MEDIUM_INTEGRATION_TOKEN: ${{MEDIUM_INTEGRATION_TOKEN}}
         uses: victoriadrake/jekyll-cd@master
