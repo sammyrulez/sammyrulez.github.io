@@ -7,3 +7,4 @@ output/feeds/*.xml
 *.pyc
 output/author/sam-reghenzi.html
 output/category/*.html
+temp
