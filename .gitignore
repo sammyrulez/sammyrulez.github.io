@@ -1,2 +1,9 @@
 venv
 __py_cache__
+output/*.html
+output/theme/css/*.css
+output/theme/css/*.css.map
+output/feeds/*.xml
+*.pyc
+output/author/sam-reghenzi.html
+output/category/*.html
