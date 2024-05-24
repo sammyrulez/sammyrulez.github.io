@@ -8,3 +8,4 @@ output/feeds/*.xml
 output/author/sam-reghenzi.html
 output/category/*.html
 temp
+.DS_Store
