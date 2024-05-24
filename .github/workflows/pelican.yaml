@@ -19,12 +19,12 @@ jobs:
             python-version: '3.12'
     - run: |
         mkdir temp
-        mkdir -p ./themes/medius
+       
         wget -P temp https://github.com/onur/medius/archive/refs/heads/master.zip
         unzip temp/master.zip -d temp
-        mv temp/medius-master themes/medius
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pelican-themes -i temp/medius-master
         pelican content -o output -s publishconf.py
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v4
