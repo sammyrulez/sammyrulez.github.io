@@ -19,6 +19,7 @@ jobs:
             python-version: '3.12'
     - run: |
         mkdir temp
+        mkdir -p ./themes/medius
         wget -P temp https://github.com/onur/medius/archive/refs/heads/master.zip
         unzip temp/master.zip -d temp
         mv temp/medius-master themes/medius
