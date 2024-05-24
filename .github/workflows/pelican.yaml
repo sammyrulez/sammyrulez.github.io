@@ -21,7 +21,7 @@ jobs:
         mkdir temp
         wget -P temp https://github.com/onur/medius/archive/refs/heads/master.zip
         unzip temp/master.zip -d temp
-        mv temp/medius-master/medius themes/medius
+        mv temp/medius-master themes/medius
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pelican content -o output -s publishconf.py
