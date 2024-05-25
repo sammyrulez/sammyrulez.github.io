@@ -49,7 +49,7 @@ Then I run 50 days forecast on this data.
 
 That is suspicious: we had more cases than in China. I have more confidence with the Italian data, but since the curve is monotonously increasing the prediction will just follow. In the hope to make some sense in this forecast, I added a regressor that made some sense: the number of days since the lockdown in Italy. Sadly is the same day that the data started to be recorded so it does not add much information. So I added two seasonalities to model the expected peak after 25 days after the first case and another after 14 days when new infections are less than the healed ones.
     
-    ```python
+```python
         m = Prophet()
         m.add_regressor('peak_reg')
         m.add_seasonality('peak_period_start',period=22,fourier_order=1)
@@ -61,7 +61,7 @@ That is suspicious: we had more cases than in China. I have more confidence with
         future['since_no_school'] = future['ds_ts'].sub(future['no_school'], axis=0).dt.days
         future['peak_reg'] =  future['since_no_school'].apply(peak_days )
         forecast = m.predict(future)
-    ```
+```
 
     [image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*uGUU8V4cwMeSz2IFWlr4yA.png)
 
