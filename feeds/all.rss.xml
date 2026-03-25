@@ -1,32 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sam Reghenzi Homepage</title><link>/</link><description/><atom:link href="/feeds/all.rss.xml" rel="self"/><lastBuildDate>Fri, 27 Mar 2026 22:48:00 +0100</lastBuildDate><item><title>"Stop Putting Secrets in Your Repo. Seriously."</title><link>/stop-putting-secrets-in-your-repo-seriously.html</link><description>&lt;ul&gt;
-&lt;li&gt;devops&lt;/li&gt;
-&lt;li&gt;terraform&lt;/li&gt;
-&lt;li&gt;secops&lt;/li&gt;
-&lt;li&gt;dataengineering
-category: blog
-author: samreghenzi
-description:  "How we integrated OCI Vault with Terraform to manage secrets properly — and why the side effects are even better than the main benefit."&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;p&gt;OK. We've all been there. You're setting up a new microservice, you need a database connection string, a …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sam Reghenzi</dc:creator><pubDate>Fri, 27 Mar 2026 22:48:00 +0100</pubDate><guid>tag:None,2026-03-27:/stop-putting-secrets-in-your-repo-seriously.html</guid><category>misc</category></item><item><title>"Forecasting Time Series from a COVID-19 Red Zone"</title><link>/forecasting-time-series-from-a-covid-19-red-zone.html</link><description>&lt;ul&gt;
-&lt;li&gt;ML
-category: blog
-author: samreghenzi&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;p&gt;Hello, dear citizen of the free world. I’m writing while I’m in a restricted lifestyle. On Monday night Italy’s prime minister decided that the entire country would be covered by restrictions that can be summarised as follows:&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sam Reghenzi Homepage</title><link>/</link><description/><atom:link href="/feeds/all.rss.xml" rel="self"/><lastBuildDate>Fri, 27 Mar 2026 22:48:00 +0100</lastBuildDate><item><title>Stop Putting Secrets in Your Repo. Seriously.</title><link>/stop-putting-secrets-in-your-repo-seriously.html</link><description>&lt;p&gt;OK. We've all been there. You're setting up a new microservice, you need a database connection string, a Keycloak client secret, an OCIR auth token — and before you know it, you're copy-pasting credentials into a &lt;code&gt;.tfvars&lt;/code&gt; file and telling yourself &lt;em&gt;"I'll fix this later"&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Later never comes. Until it does …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">samreghenzi</dc:creator><pubDate>Fri, 27 Mar 2026 22:48:00 +0100</pubDate><guid>tag:None,2026-03-27:/stop-putting-secrets-in-your-repo-seriously.html</guid><category>blog</category><category>devops</category><category>terraform</category><category>secops</category><category>dataengineering</category></item><item><title>Forecasting Time Series from a COVID-19 Red Zone</title><link>/forecasting-time-series-from-a-covid-19-red-zone.html</link><description>&lt;p&gt;Hello, dear citizen of the free world. I’m writing while I’m in a restricted lifestyle. On Monday night Italy’s prime minister decided that the entire country would be covered by restrictions that can be summarised as follows:&lt;/p&gt;
 &lt;p&gt;“I stay at home”&lt;/p&gt;
-&lt;p&gt;All …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sam Reghenzi</dc:creator><pubDate>Fri, 17 Apr 2020 22:48:00 +0200</pubDate><guid>tag:None,2020-04-17:/forecasting-time-series-from-a-covid-19-red-zone.html</guid><category>misc</category></item><item><title>"I will ride like a gentlemen"</title><link>/i-will-ride-like-a-gentlemen.html</link><description>&lt;ul&gt;
-&lt;li&gt;motorcycle&lt;/li&gt;
-&lt;li&gt;lifestyle&lt;/li&gt;
-&lt;li&gt;personal
-category: blog
-author: samreghenzi
-description:  On September 24th I will ride in the Distinguished Gentlemen Ride&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;h1&gt;I will ride like a gentlemen&lt;/h1&gt;
+&lt;p&gt;All travel was banned unless justified …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">samreghenzi</dc:creator><pubDate>Fri, 17 Apr 2020 22:48:00 +0200</pubDate><guid>tag:None,2020-04-17:/forecasting-time-series-from-a-covid-19-red-zone.html</guid><category>blog</category><category>ML</category></item><item><title>I will ride like a gentlemen</title><link>/i-will-ride-like-a-gentlemen.html</link><description>&lt;h1&gt;I will ride like a gentlemen&lt;/h1&gt;
 &lt;p&gt;On September 24th I will ride in the Distinguished Gentlemen Ride&lt;/p&gt;
 &lt;p&gt;&lt;img alt="This is me an my bike at a recent Ducati Scrambler event" src="https://cdn-images-1.medium.com/max/2000/1*_2xCEsRJxtbLU8uSnI9n0w.jpeg"&gt;&lt;em&gt;This is me an my bike at a recent Ducati Scrambler event&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;As a …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sam Reghenzi</dc:creator><pubDate>Mon, 17 Apr 2017 22:48:00 +0200</pubDate><guid>tag:None,2017-04-17:/i-will-ride-like-a-gentlemen.html</guid><category>misc</category></item></channel></rss>
+&lt;p&gt;As a rider of a stylish Ducati Scrambler, I will join my local chapter of the DGR. It is a retro-themed …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">samreghenzi</dc:creator><pubDate>Mon, 17 Apr 2017 22:48:00 +0200</pubDate><guid>tag:None,2017-04-17:/i-will-ride-like-a-gentlemen.html</guid><category>blog</category><category>motorcycle</category><category>lifestyle</category><category>personal</category></item></channel></rss>
