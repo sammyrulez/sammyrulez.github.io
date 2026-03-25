@@ -1,7 +1,7 @@
 ---
 title: "I will ride like a gentlemen"
 date: 2017-04-17 22:48
-tag:
+tags:
 - motorcycle
 - lifestyle
 - personal

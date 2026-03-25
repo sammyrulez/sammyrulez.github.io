@@ -8,10 +8,10 @@ sys.path.append(os.curdir)
 from pelicanconf import *
 
 # If your site is available via HTTPS, make sure SITEURL begins with https://
-SITEURL = "https://sammyrulez.github.io/"
+
 RELATIVE_URLS = False
 
-THEME = "medius-master"
+
 FEED_ALL_ATOM = "feeds/all.atom.xml"
 
 DELETE_OUTPUT_DIRECTORY = True

@@ -1,7 +1,7 @@
 ---
-title: "top Putting Secrets in Your Repo. Seriously."
+title: "Stop Putting Secrets in Your Repo. Seriously."
 date: 2026-03-27 22:48
-tag:
+tags:
 - devops
 - terraform
 - secops
@@ -11,9 +11,8 @@ author: samreghenzi
 description:  "How we integrated OCI Vault with Terraform to manage secrets properly — and why the side effects are even better than the main benefit."
 ---
 
-# Stop Putting Secrets in Your Repo. Seriously.
 
-We've all been there. You're setting up a new microservice, you need a database connection string, a Keycloak client secret, an OCIR auth token — and before you know it, you're copy-pasting credentials into a `.tfvars` file and telling yourself *"I'll fix this later"*.
+OK. We've all been there. You're setting up a new microservice, you need a database connection string, a Keycloak client secret, an OCIR auth token — and before you know it, you're copy-pasting credentials into a `.tfvars` file and telling yourself *"I'll fix this later"*.
 
 Later never comes. Until it does, and it's painful.
 

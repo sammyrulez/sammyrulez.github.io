@@ -1,7 +1,7 @@
 ---
 title: "Forecasting Time Series from a COVID-19 Red Zone"
 date: 2020-04-17 22:48
-tag:
+tags:
 - ML
 category: blog
 author: samreghenzi
