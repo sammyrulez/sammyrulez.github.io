@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ SITEURL }}/static/css/style.css">
+    <link rel="stylesheet" href="{{ SITEURL }}/static/css/syntax.css">
+    <link rel="stylesheet" href="{{ SITEURL }}/static/css/katex.min.css">
+    <link rel="icon" href="{{ SITEURL }}/static/images/favicon.ico">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-avatar hide-if-mobile">
+            <a href="{{ SITEURL }}">
+                <img class="sidebar-avatar" src="{{ SITEURL }}/static/images/avatar.png" alt="Avatar">
+            </a>
+        </div>
+        <div class="container sidebar-sticky">
+            <div class="sidebar-about">
+                <h1><a href="{{ SITEURL }}">{{ SITENAME }}</a></h1>
+                <div class="lead hide-if-mobile">{{ DESCRIPTION }}</div>
+            </div>
+            <hr class="hide-if-mobile">
+            <nav class="sidebar-nav">
+                <a class="sidebar-nav-item active" href="{{ SITEURL }}">Home</a> •
+                <a class="sidebar-nav-item" href="{{ SITEURL }}/about">About</a> •
+                <a class="sidebar-nav-item" href="{{ SITEURL }}/posts">Posts</a> •
+                <a class="sidebar-nav-item" href="{{ SITEURL }}/tags">Tags</a>
+            </nav>
+            <nav class="sidebar-nav">
+                <a class="sidebar-nav-item" href="https://art.mcyoung.xyz/">Art</a> •
+                <a class="sidebar-nav-item" href="https://github.com/mcy">GitHub</a> •
+                <a class="sidebar-nav-item" href="{{ SITEURL }}/resume">Resumé</a> •
+                <a class="sidebar-nav-item" href="{{ SITEURL }}/syllabus">Syllabus</a>
+            </nav>
+            <span class="hide-if-mobile">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode">CC BY-SA</a> •
+                <a href="https://varz.mcyoung.xyz/">Site Analytics</a><br>
+                © {{ now().year }} {{ AUTHOR }}
+            </span>
+        </div>
+    </div>
+    <div class="content container">
+        {% block content %}{% endblock %}
+    </div>
+    <footer>
+        <p>Powered by <a href="https://getpelican.com">Pelican</a> and themed after <a href="https://mcyoung.xyz/">mcyoung</a>.</p>
+    </footer>
+</body>
+</html>
