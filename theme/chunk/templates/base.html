@@ -10,13 +10,15 @@
 		<style type="text/css">
 			body.custom-background { background-color: #f5f5f5; }
 		</style>
+		{% if FEED_ALL_ATOM %}
 		<link rel="alternate" type="application/atom+xml"
-			title="{{ SITENAME }} — Flux Atom"
-			href="{{ SITEURL }}/{{ FEED }}" /> 
-		{% if FEED_RSS %}
-		<link rel ="alternate" type="application/rss+xml"
-			title="{{ SITENAME }} — Flux RSS"
-			href="{{ SITEURL }}/{{ FEED_RSS }}" /> 
+			title="{{ SITENAME }} — Atom Feed"
+			href="{{ SITEURL }}/{{ FEED_ALL_ATOM }}" />
+		{% endif %}
+		{% if FEED_ALL_RSS %}
+		<link rel="alternate" type="application/rss+xml"
+			title="{{ SITENAME }} — RSS Feed"
+			href="{{ SITEURL }}/{{ FEED_ALL_RSS }}" />
 		{% endif %}
 		<!--[if lte IE 8]><script src="{{ SITEURL }}/theme/js/html5shiv.js"></script><![endif]-->
 		{% if MINT %}
