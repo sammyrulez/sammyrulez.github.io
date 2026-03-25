@@ -1,5 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Sam Reghenzi Homepage</title><link href="https://sammyrulez.github.io/" rel="alternate"></link><link href="https://sammyrulez.github.io/feeds/all.atom.xml" rel="self"></link><id>https://sammyrulez.github.io/</id><updated>2020-04-17T22:48:00+02:00</updated><entry><title>"Forecasting Time Series from a COVID-19 Red Zone"</title><link href="https://sammyrulez.github.io/forecasting-time-series-from-a-covid-19-red-zone.html" rel="alternate"></link><published>2020-04-17T22:48:00+02:00</published><updated>2020-04-17T22:48:00+02:00</updated><author><name>Sam Reghenzi</name></author><id>tag:sammyrulez.github.io,2020-04-17:/forecasting-time-series-from-a-covid-19-red-zone.html</id><summary type="html">&lt;ul&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Sam Reghenzi Homepage</title><link href="https://sammyrulez.github.io/" rel="alternate"></link><link href="https://sammyrulez.github.io/feeds/all.atom.xml" rel="self"></link><id>https://sammyrulez.github.io/</id><updated>2026-03-27T22:48:00+01:00</updated><entry><title>"top Putting Secrets in Your Repo. Seriously."</title><link href="https://sammyrulez.github.io/top-putting-secrets-in-your-repo-seriously.html" rel="alternate"></link><published>2026-03-27T22:48:00+01:00</published><updated>2026-03-27T22:48:00+01:00</updated><author><name>Sam Reghenzi</name></author><id>tag:sammyrulez.github.io,2026-03-27:/top-putting-secrets-in-your-repo-seriously.html</id><summary type="html">&lt;ul&gt;
+&lt;li&gt;devops&lt;/li&gt;
+&lt;li&gt;terraform&lt;/li&gt;
+&lt;li&gt;secops&lt;/li&gt;
+&lt;li&gt;dataengineering
+category: blog
+author: samreghenzi
+description:  "How we integrated OCI Vault with Terraform to manage secrets properly — and why the side effects are even better than the main benefit."&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1&gt;Stop Putting Secrets in Your Repo. Seriously.&lt;/h1&gt;
+&lt;p&gt;We've all been there. You're setting up a new microservice, you …&lt;/p&gt;</summary><content type="html">&lt;ul&gt;
+&lt;li&gt;devops&lt;/li&gt;
+&lt;li&gt;terraform&lt;/li&gt;
+&lt;li&gt;secops&lt;/li&gt;
+&lt;li&gt;dataengineering
+category: blog
+author: samreghenzi
+description:  "How we integrated OCI Vault with Terraform to manage secrets properly — and why the side effects are even better than the main benefit."&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1&gt;Stop Putting Secrets in Your Repo. Seriously.&lt;/h1&gt;
+&lt;p&gt;We've all been there. You're setting up a new microservice, you need a database connection string, a Keycloak client secret, an OCIR auth token — and before you know it, you're copy-pasting credentials into a &lt;code&gt;.tfvars&lt;/code&gt; file and telling yourself &lt;em&gt;"I'll fix this later"&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Later never comes. Until it does, and it's painful.&lt;/p&gt;
+&lt;p&gt;This post walks through how we wired up &lt;strong&gt;OCI Vault&lt;/strong&gt; with &lt;strong&gt;Terraform&lt;/strong&gt; to manage secrets properly — and why the side effects are even better than the main benefit.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;The Problem with &lt;code&gt;TF_VAR_&lt;/code&gt; and Plain tfvars&lt;/h2&gt;
+&lt;p&gt;The classic approach for passing secrets to Terraform is either:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;export TF_VAR_my_secret="..."&lt;/code&gt; before every apply&lt;/li&gt;
+&lt;li&gt;A &lt;code&gt;secrets.tfvars&lt;/code&gt; file conveniently added to &lt;code&gt;.gitignore&lt;/code&gt; (and inevitably forgotten on a new machine)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Both approaches work until they don't:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A new team member clones the repo and has no idea what secrets to set&lt;/li&gt;
+&lt;li&gt;CI/CD needs the secret injected as a pipeline variable — now you're duplicating it&lt;/li&gt;
+&lt;li&gt;Someone accidentally commits the file. It happens.&lt;/li&gt;
+&lt;li&gt;You rotate a credential and have to remember every place it's used&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The real issue is that secrets live &lt;strong&gt;outside your infrastructure definition&lt;/strong&gt;. They're implicit, undocumented, and fragile.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Enter OCI Vault&lt;/h2&gt;
+&lt;p&gt;OCI Vault is Oracle Cloud's managed secret store. Think of it as a safe deposit box that Terraform can open at plan/apply time. You store the secret once, reference it by OCID, and Terraform fetches the value directly — no environment variables, no hidden files.&lt;/p&gt;
+&lt;h3&gt;Creating a secret&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;oci&lt;span class="w"&gt; &lt;/span&gt;vault&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;create-base64&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;--compartment-id&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$COMPARTMENT_ID&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;--vault-id&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$VAULT_OCID&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;--key-id&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$KEY_OCID&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;--secret-name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;my-service-db-password&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;--secret-content-content&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-n&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;supersecret&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;base64&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That's it. The secret now has an OCID you can reference anywhere.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Wiring It Into Terraform&lt;/h2&gt;
+&lt;p&gt;The integration is clean. Declare a &lt;code&gt;data&lt;/code&gt; source, decode the content, use it where you need it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kr"&gt;data&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;&amp;quot;oci_secrets_secretbundle&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;&amp;quot;db_password&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="na"&gt;secret_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;var.db_password_secret_ocid&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kr"&gt;module&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;&amp;quot;microservice&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;app_secrets&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="na"&gt;Oracle__ConnectionString&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;base64decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nv"&gt;data.oci_secrets_secretbundle.db_password.secret_bundle_content[0].content&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Your &lt;code&gt;common.tfvars&lt;/code&gt; now contains only an OCID — a pointer, not a value:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="na"&gt;db_password_secret_ocid&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ocid1.vaultsecret.oc1.eu-miami-1.amaaaaaaxxx&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;An OCID is not a secret. You can commit it. You can share it. You can put it in a ticket. The actual value stays in the Vault, protected by IAM policies and audit logs.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;The Real Win: A Repo You Can Actually Share&lt;/h2&gt;
+&lt;p&gt;Here's the part that doesn't get enough attention.&lt;/p&gt;
+&lt;p&gt;When your secrets live in a Vault and your repo contains only OCIDs and config, your entire infrastructure definition becomes &lt;strong&gt;fully committable&lt;/strong&gt;. No &lt;code&gt;.gitignore&lt;/code&gt; exceptions. No "ask a colleague for the secrets file". No onboarding friction.&lt;/p&gt;
+&lt;p&gt;A developer cloning the repo for the first time gets everything they need to understand the infrastructure — and with the right IAM permissions, they can run &lt;code&gt;terraform plan&lt;/code&gt; immediately.&lt;/p&gt;
+&lt;p&gt;This changes the dynamic of your infrastructure code from &lt;em&gt;"mostly version controlled"&lt;/em&gt; to &lt;em&gt;"fully version controlled"&lt;/em&gt;. And that matters more than it sounds:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pull requests for infrastructure changes are complete&lt;/strong&gt; — reviewers see the full picture, not just the non-sensitive half&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Git history is trustworthy&lt;/strong&gt; — a &lt;code&gt;git log&lt;/code&gt; on &lt;code&gt;main.tf&lt;/code&gt; tells the real story of what changed and when&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Rollbacks are safe&lt;/strong&gt; — checking out a previous commit gives you a working state, not a broken one missing secret references&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;Portability Across Environments and Teams&lt;/h2&gt;
+&lt;p&gt;With this setup, spinning up a new environment is a two-step operation:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create the secrets in the Vault for the new environment&lt;/li&gt;
+&lt;li&gt;Add the OCIDs to the new &lt;code&gt;envs/staging.tfvars&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;No secret synchronization. No "which version of the connection string does staging use?". The Vault is the source of truth, and Terraform reads from it at apply time.&lt;/p&gt;
+&lt;p&gt;The same applies when onboarding a new microservice. Copy the &lt;code&gt;infra_template/&lt;/code&gt; directory, fill in the placeholders, point to the right Vault OCIDs — done. The template is self-documenting because there's nothing hidden.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Secret Rotation Without Drama&lt;/h2&gt;
+&lt;p&gt;Rotating a secret used to mean: update the value in five places, hope you didn't miss one, redeploy everything, debug the one service that broke because you forgot to update its CI variable.&lt;/p&gt;
+&lt;p&gt;With Vault:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;oci&lt;span class="w"&gt; &lt;/span&gt;vault&lt;span class="w"&gt; &lt;/span&gt;secret&lt;span class="w"&gt; &lt;/span&gt;update-base64&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;--secret-id&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$SECRET_OCID&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;--secret-content-content&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-n&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;new-value&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;base64&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Then &lt;code&gt;terraform apply&lt;/code&gt;. Terraform fetches the new value, updates the Kubernetes secret, and the pod picks it up. One place, one command, full audit trail.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;A Note on the Audit Trail&lt;/h2&gt;
+&lt;p&gt;Every access to a Vault secret is logged in OCI Audit. You know who read what and when. This is not just a compliance checkbox — it's genuinely useful when you're debugging a production incident and need to know whether a secret was accessed or rotated in the last 24 hours.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Summary&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Before&lt;/th&gt;
+&lt;th&gt;After&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Secrets in &lt;code&gt;.tfvars&lt;/code&gt;, gitignored&lt;/td&gt;
+&lt;td&gt;Only OCIDs in tfvars, fully committed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;export TF_VAR_secret=...&lt;/code&gt; before every apply&lt;/td&gt;
+&lt;td&gt;No environment variables needed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Manual secret rotation in multiple places&lt;/td&gt;
+&lt;td&gt;One update in Vault, one &lt;code&gt;terraform apply&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Onboarding requires sharing secret files&lt;/td&gt;
+&lt;td&gt;Clone repo, get IAM access, run plan&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Partial git history&lt;/td&gt;
+&lt;td&gt;Complete, trustworthy git history&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The Vault setup takes an afternoon. The benefits compound forever. It's one of those infrastructure investments that quietly pays off every single day — even when nothing goes wrong.&lt;/p&gt;
+&lt;p&gt;Especially when nothing goes wrong.&lt;/p&gt;</content><category term="misc"></category></entry><entry><title>"Forecasting Time Series from a COVID-19 Red Zone"</title><link href="https://sammyrulez.github.io/forecasting-time-series-from-a-covid-19-red-zone.html" rel="alternate"></link><published>2020-04-17T22:48:00+02:00</published><updated>2020-04-17T22:48:00+02:00</updated><author><name>Sam Reghenzi</name></author><id>tag:sammyrulez.github.io,2020-04-17:/forecasting-time-series-from-a-covid-19-red-zone.html</id><summary type="html">&lt;ul&gt;
 &lt;li&gt;ML
 category: blog
 author: samreghenzi&lt;/li&gt;
