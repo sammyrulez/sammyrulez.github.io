@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>Sam Reghenzi Homepage &mdash; Giving voice to Italian energy markets with artificial intelligence</title>
+		<meta charset="utf-8" />
+		<link rel="profile" href="http://gmpg.org/xfn/11" />
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+		<link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=3.3.2' type='text/css' media='all' />
+		<style type="text/css">
+			body.custom-background { background-color: #f5f5f5; }
+		</style>
+		<link rel="alternate" type="application/atom+xml"
+			title="Sam Reghenzi Homepage — Atom Feed"
+			href="/feeds/all.atom.xml" />
+		<link rel="alternate" type="application/rss+xml"
+			title="Sam Reghenzi Homepage — RSS Feed"
+			href="/feeds/all.rss.xml" />
+		<!--[if lte IE 8]><script src="/theme/js/html5shiv.js"></script><![endif]-->
+</head>
+
+<body class="home blog custom-background " >
+	<div id="container">
+		<div id="header">
+				<h1 id="site-title"><a href="">Sam Reghenzi Homepage</a></h1>
+		</div><!-- /#banner -->
+		
+		<div id="menu">
+			<div class="menu-navigation-container">
+				<ul id="menu-navigation" class="menu">
+						<li class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/blog.html">blog</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://github.com/sammyrulez">Github</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.linkedin.com/in/sammyrulez/">LinkedIn</a></li>
+
+				</ul>
+			</div> <!--/#menu-navigation-container-->
+		</div><!-- /#menu -->
+		
+		<div class="page-title">
+		</div>
+	
+		<div id="contents">
+
+<div class="post type-post status-publish format-standard hentry category-general" id="post">
+	<div class="entry-meta">
+		<div class="date"><a href="/giving-voice-to-italian-energy-markets-with-artificial-intelligence.html">Sun 12 April 2026</a></div>
+		<span class="byline">By <a href="/author/samreghenzi.html">samreghenzi</a></span>
+			<span class="cat-links"><a href="/category/blog.html" title="View all posts in blog" rel="category tag">blog</a></span>
+	</div> <!-- /#entry-meta -->
+	<div class="main">
+		<h2 class="entry-title">
+			<a href="/giving-voice-to-italian-energy-markets-with-artificial-intelligence.html" title="Permalink to Giving voice to Italian energy markets with artificial intelligence" rel="bookmark">Giving voice to Italian energy markets with artificial intelligence</a>
+		</h2>
+		<div class="entry-content">
+			<h2>How an MCP server turns electricity exchange data into natural conversations</h2>
+<p>The Italian electricity market produces an enormous amount of data every day: hourly prices by zone, traded volumes, liquidity, the PUN (Prezzo Unico Nazionale — the national single price). Essential data for traders, energy analysts, industry journalists, and companies operating in the energy sector. Yet accessing this data still means navigating web portals, downloading CSVs, and writing ad-hoc scripts. A fragmented and slow workflow.</p>
+<p>With <strong>mercati-energetici-mcp</strong> I set out to change the approach: making GME (Gestore dei Mercati Energetici — the Italian Energy Markets Operator) data directly accessible from within the AI assistants we already use every day — Claude, Copilot, and any other tool compatible with the MCP protocol.</p>
+<h2>What is MCP and why it changes the game</h2>
+<p>The <strong>Model Context Protocol</strong> is an open standard that allows language models to interact with external services in a structured way. Think of it as a bridge: on one side there's the AI that knows how to reason, on the other there's real-world data. MCP connects them.</p>
+<p>Before MCP, getting an LLM to access market data required building custom integrations, prompt engineering pipelines, or manually copying and pasting data into the conversation context. With MCP, you simply declare <strong>tools</strong> — functions the AI can invoke autonomously whenever it needs them.</p>
+<p>The difference is substantial: you no longer have to retrieve the data yourself and then ask the AI to analyze it. The AI itself, during the conversation, decides when and which data it needs and retrieves it on its own.</p>
+<h2>The implementation: Python, FastMCP, and simplicity</h2>
+<p>The project is intentionally minimal. A single Python file, about 150 lines of code, exposing 5 tools:</p>
+<ul>
+<li><strong>get_prices</strong> — hourly energy prices by zone and day</li>
+<li><strong>get_volumes</strong> — bought and sold volumes on the market</li>
+<li><strong>get_liquidity</strong> — hourly market liquidity percentage</li>
+<li><strong>daily_pun</strong> — daily national average price</li>
+<li><strong>get_zones</strong> — list of available market zones</li>
+</ul>
+<p>The <a href="https://github.com/sammyrulez/mercati-energetici">mercati-energetici</a> library handles the interaction with the official GME APIs. <a href="https://github.com/jlowin/fastmcp">FastMCP</a> manages the entire MCP protocol, turning simple Python functions decorated with <code>@server.tool()</code> into endpoints that any MCP client can discover and invoke.</p>
+<p>The code for a tool is disarmingly simple:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@server</span><span class="o">.</span><span class="n">tool</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_prices</span><span class="p">(</span><span class="n">day</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PUN&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get electricity prices in €/MWh for a specific day and zone.&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">init_MGP</span><span class="p">()</span> <span class="k">as</span> <span class="n">mgp</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mgp</span><span class="o">.</span><span class="n">get_prices</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="n">day</span><span class="p">,</span> <span class="n">zone</span><span class="o">=</span><span class="n">zone</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;prices&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;€/MWh&quot;</span><span class="p">,</span> <span class="s2">&quot;zone&quot;</span><span class="p">:</span> <span class="n">zone</span><span class="p">})</span>
+</code></pre></div>
+
+<p>No boilerplate, no complex configuration. The docstring automatically becomes the description the AI reads to understand when and how to use the tool. The type hints on parameters become the JSON schema that the protocol uses for validation.</p>
+<h2>Integration with Claude and Copilot</h2>
+<h3>Claude Desktop and Claude Code</h3>
+<p>Once the server is configured in Claude's config, electricity market data becomes a natural part of the conversation. You can ask:</p>
+<blockquote>
+<p>"What was the price of energy in Sicily yesterday?"</p>
+</blockquote>
+<p>Claude doesn't search the internet, doesn't hallucinate a number: it invokes <code>get_prices</code> with the correct parameters and returns the actual data from GME. You can go further:</p>
+<blockquote>
+<p>"Compare today's prices between Northern and Southern Italy and tell me if there's a significant gradient"</p>
+</blockquote>
+<p>The AI calls the tool twice, once per zone, and then reasons on the real data to produce an analysis.</p>
+<blockquote>
+<p>"Show me the PUN trend over the last week and identify any anomalies"</p>
+</blockquote>
+<p>Here Claude chains multiple calls to <code>daily_pun</code> for different days, builds a time series, and applies its analytical reasoning on concrete data.</p>
+<h3>GitHub Copilot</h3>
+<p>With MCP support expanding across the Copilot ecosystem as well, the same server can power energy analyses directly within the IDE. A data analyst writing Python code for a report can have market data at prompt's reach, without leaving VS Code.</p>
+<h3>Any MCP client</h3>
+<p>The beauty of an open standard is that you're not locked into a vendor. Any tool that speaks MCP — present or future — can connect to this server and access Italian electricity market data.</p>
+<h2>Concrete use cases</h2>
+<p><strong>For the energy trader</strong>: quick analysis of zonal prices, cross-zone comparison, pattern identification in traded volumes. All in natural language, without having to open spreadsheets.</p>
+<p><strong>For the industry analyst</strong>: automatic generation of daily or weekly reports on the electricity market, with AI-produced commentary and interpretations based on real data.</p>
+<p><strong>For the journalist</strong>: immediate access to market data for articles and in-depth pieces, with the ability to ask the AI for explanations and context.</p>
+<p><strong>For the developer</strong>: a concrete example of how to build an MCP server for a vertical domain, reusable as a template for other markets or data sources.</p>
+<p><strong>For the energy company</strong>: integration of exchange data into internal workflows, from customer service answering pricing questions to the procurement office monitoring the market.</p>
+<h2>The value of the MCP approach</h2>
+<p>The real innovation isn't in the code — it's in the paradigm. We're moving from a model where the user is the intermediary between data and AI, to one where the AI accesses data directly and uses it within the conversation context.</p>
+<p>This means:</p>
+<ul>
+<li><strong>No more copy-paste</strong>: data flows directly into the AI's reasoning</li>
+<li><strong>Always up-to-date data</strong>: every request queries the GME APIs in real time</li>
+<li><strong>Contextual analysis</strong>: the AI can combine data from multiple calls to produce insights that would otherwise require manual work</li>
+<li><strong>Accessibility</strong>: anyone can query the electricity market in natural language, without specific technical skills</li>
+</ul>
+<h2>Getting started</h2>
+<p>The project is open source under the MIT license. To try it you need:</p>
+<ol>
+<li>Python 3.12+ and <a href="https://github.com/astral-sh/uv">uv</a> as a package manager</li>
+<li>A GME account with API access (request it at <a href="https://www.mercatoelettrico.org/">mercatoelettrico.org</a>)</li>
+<li>An MCP client — Claude Desktop, Claude Code, or any other compatible one</li>
+</ol>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sammyrulez/mercati-energetici-mcp
+<span class="nb">cd</span><span class="w"> </span>mercati-energetici-mcp
+uv<span class="w"> </span>sync
+</code></pre></div>
+
+<p>Configure your credentials and you're up and running. Less than 5 minutes from installation to your first natural language query about energy prices.</p>
+<h2>Conclusion</h2>
+<p>The Italian electricity market is a data-rich domain but historically not very accessible. With an MCP server of just a few lines of code, this data becomes an integral part of AI conversations — transforming a fragmented workflow into a fluid and natural dialogue.</p>
+<p>It's a small project, but it represents a powerful pattern: any structured data source can become an MCP tool, and therefore become accessible through natural language. Energy markets are just the beginning.</p>
+		</div> <!--/#entry-content-->
+    		<span class="tag-links"><strong>Tagged</strong>
+ <a href="/tag/ai.html" rel="tag">AI</a>,  <a href="/tag/llm.html" rel="tag">LLM</a>,  <a href="/tag/mcp.html" rel="tag">MCP</a>,  <a href="/tag/python.html" rel="tag">Python</a>    		</span>
+	</div> <!--/#main-->
+</div>  <!--/#post-->
+
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
+		</div><!-- /#footer -->
+	</div><!-- /#container -->
+	<div style="display:none"></div>
+</body>
+</html>
