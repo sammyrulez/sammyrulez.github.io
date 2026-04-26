@@ -12,8 +12,6 @@ description:  "Look ma no tokens"
 ---
 
 
-# Running Gemma 4 31B on an Apple Silicon Mac with Ollama
-
 ## A practical configuration for a 32 GB M5 Mac that still needs to remain usable
 
 Running large language models locally has become surprisingly practical on Apple Silicon. With a modern Mac, Ollama, and a carefully quantized GGUF model, it is possible to run models that only a short time ago would have felt out of reach for a personal machine.
