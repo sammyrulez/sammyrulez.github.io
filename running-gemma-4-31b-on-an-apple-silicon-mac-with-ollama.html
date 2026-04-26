@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>Sam Reghenzi Homepage &mdash; Running Gemma 4 31B on an Apple Silicon Mac with Ollama</title>
+		<meta charset="utf-8" />
+		<link rel="profile" href="http://gmpg.org/xfn/11" />
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+		<link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=3.3.2' type='text/css' media='all' />
+		<style type="text/css">
+			body.custom-background { background-color: #f5f5f5; }
+		</style>
+		<link rel="alternate" type="application/atom+xml"
+			title="Sam Reghenzi Homepage — Atom Feed"
+			href="/feeds/all.atom.xml" />
+		<link rel="alternate" type="application/rss+xml"
+			title="Sam Reghenzi Homepage — RSS Feed"
+			href="/feeds/all.rss.xml" />
+		<!--[if lte IE 8]><script src="/theme/js/html5shiv.js"></script><![endif]-->
+</head>
+
+<body class="home blog custom-background " >
+	<div id="container">
+		<div id="header">
+				<h1 id="site-title"><a href="">Sam Reghenzi Homepage</a></h1>
+		</div><!-- /#banner -->
+		
+		<div id="menu">
+			<div class="menu-navigation-container">
+				<ul id="menu-navigation" class="menu">
+						<li class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/blog.html">blog</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://github.com/sammyrulez">Github</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.linkedin.com/in/sammyrulez/">LinkedIn</a></li>
+
+				</ul>
+			</div> <!--/#menu-navigation-container-->
+		</div><!-- /#menu -->
+		
+		<div class="page-title">
+		</div>
+	
+		<div id="contents">
+
+<div class="post type-post status-publish format-standard hentry category-general" id="post">
+	<div class="entry-meta">
+		<div class="date"><a href="/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.html">Sun 26 April 2026</a></div>
+		<span class="byline">By <a href="/author/samreghenzi.html">samreghenzi</a></span>
+			<span class="cat-links"><a href="/category/blog.html" title="View all posts in blog" rel="category tag">blog</a></span>
+	</div> <!-- /#entry-meta -->
+	<div class="main">
+		<h2 class="entry-title">
+			<a href="/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.html" title="Permalink to Running Gemma 4 31B on an Apple Silicon Mac with Ollama" rel="bookmark">Running Gemma 4 31B on an Apple Silicon Mac with Ollama</a>
+		</h2>
+		<div class="entry-content">
+			<h1>Running Gemma 4 31B on an Apple Silicon Mac with Ollama</h1>
+<h2>A practical configuration for a 32 GB M5 Mac that still needs to remain usable</h2>
+<p>Running large language models locally has become surprisingly practical on Apple Silicon. With a modern Mac, Ollama, and a carefully quantized GGUF model, it is possible to run models that only a short time ago would have felt out of reach for a personal machine.</p>
+<p>This post collects the practical findings from configuring <strong>Gemma 4 31B</strong> on a <strong>32 GB Apple Silicon Mac with an M5 processor</strong>, using Ollama and a highly compressed GGUF quantization.</p>
+<p>The goal is not to squeeze every last token per second out of the machine. The goal is more realistic:</p>
+<blockquote>
+<p>Run a capable 31B local model while keeping the Mac usable for normal work: browser, IDE, terminal, notes, chat apps, and light development tools.</p>
+</blockquote>
+<p>That distinction matters. A configuration that works for a benchmark is not necessarily a configuration you want to live with all day.</p>
+<hr>
+<h2>The model</h2>
+<p>The model used in this setup is:</p>
+<div class="highlight"><pre><span></span><code>gemma-4-31B-it-UD-IQ3_XXS.gguf
+</code></pre></div>
+
+<p>This is an aggressively quantized GGUF build of Gemma 4 31B. The <code>IQ3_XXS</code> quantization makes the model small enough to fit into machines that would otherwise be unable to run a 31B model at all.</p>
+<p>The trade-off is obvious: this is not the highest quality quantization, but it gives access to a much larger model class on consumer hardware.</p>
+<p>The Ollama <code>Modelfile</code> starts from the local GGUF file:</p>
+<div class="highlight"><pre><span></span><code>FROM ./gemma-4-31B-it-UD-IQ3_XXS.gguf
+</code></pre></div>
+
+<hr>
+<h2>Understanding the main Ollama parameters</h2>
+<p>Before tuning the configuration, it helps to understand what the key parameters actually control.</p>
+<h3><code>num_ctx</code></h3>
+<p><code>num_ctx</code> controls the maximum context window used by the model.</p>
+<p>A larger context means the model can keep more conversation, documents, code, or instructions in memory. But it also increases memory usage, especially through the KV cache.</p>
+<p>For this model, useful values are:</p>
+<div class="highlight"><pre><span></span><code>6144   conservative
+8192   balanced
+12288  aggressive
+</code></pre></div>
+
+<p>For daily use on a 32 GB Mac, <code>8192</code> is a good target.</p>
+<hr>
+<h3><code>num_batch</code></h3>
+<p><code>num_batch</code> affects how many tokens are processed together during prompt ingestion.</p>
+<p>It mostly impacts the speed at which the model reads the input prompt, not necessarily the speed at which it generates the answer token by token.</p>
+<p>Higher values can improve responsiveness with longer prompts, but they also increase temporary memory pressure.</p>
+<p>Good values for this setup are:</p>
+<div class="highlight"><pre><span></span><code>32   conservative
+64   balanced
+96   aggressive
+</code></pre></div>
+
+<p>For a daily driver configuration, <code>64</code> is a reasonable compromise. If the Mac becomes sluggish or the runner crashes, this is one of the first values to reduce.</p>
+<hr>
+<h3><code>num_gpu</code></h3>
+<p>In Ollama, <code>num_gpu</code> does not mean “number of GPUs”. It means how many model layers are offloaded to the GPU.</p>
+<p>For Gemma 4 31B, the theoretical maximum is:</p>
+<div class="highlight"><pre><span></span><code>num_gpu 60
+</code></pre></div>
+
+<p>because the model has 60 layers.</p>
+<p>However, full offload is not always the best practical choice. On a machine that must remain usable for other work, leaving some margin is often better than maximizing GPU offload.</p>
+<p>For a 32 GB M5 Mac, a good range is:</p>
+<div class="highlight"><pre><span></span><code>50   conservative
+55   balanced
+60   aggressive / full offload
+</code></pre></div>
+
+<p>The recommended daily value is <code>55</code>.</p>
+<hr>
+<h2>The recommended daily configuration</h2>
+<p>This is the configuration I would use as a balanced daily driver.</p>
+<p>It gives a useful context window, keeps prompt processing reasonably fast, and avoids pushing the system too close to the edge.</p>
+<div class="highlight"><pre><span></span><code>FROM ./gemma-4-31B-it-UD-IQ3_XXS.gguf
+
+PARAMETER num_ctx 8192
+PARAMETER num_batch 64
+PARAMETER num_gpu 55
+
+PARAMETER temperature 1.0
+PARAMETER top_p 0.95
+PARAMETER top_k 64
+</code></pre></div>
+
+<p>Create or replace the model with:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/ollama-models/gemma4-31b-iq3
+
+cat<span class="w"> </span>&gt;<span class="w"> </span>Modelfile<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
+<span class="s">FROM ./gemma-4-31B-it-UD-IQ3_XXS.gguf</span>
+
+<span class="s">PARAMETER num_ctx 8192</span>
+<span class="s">PARAMETER num_batch 64</span>
+<span class="s">PARAMETER num_gpu 55</span>
+
+<span class="s">PARAMETER temperature 1.0</span>
+<span class="s">PARAMETER top_p 0.95</span>
+<span class="s">PARAMETER top_k 64</span>
+<span class="s">EOF</span>
+
+ollama<span class="w"> </span>stop<span class="w"> </span>gemma4-31b-iq3xxs-32gb
+ollama<span class="w"> </span>rm<span class="w"> </span>gemma4-31b-iq3xxs-32gb
+ollama<span class="w"> </span>create<span class="w"> </span>gemma4-31b-iq3xxs-32gb<span class="w"> </span>-f<span class="w"> </span>./Modelfile
+</code></pre></div>
+
+<p>Then test it:</p>
+<div class="highlight"><pre><span></span><code>ollama<span class="w"> </span>run<span class="w"> </span>gemma4-31b-iq3xxs-32gb<span class="w"> </span><span class="s2">&quot;Write a Python hello world.&quot;</span>
+</code></pre></div>
+
+<hr>
+<h2>Environment variables</h2>
+<p>For this setup, Flash Attention and quantized KV cache are useful.</p>
+<p>If using the Ollama macOS app, set the variables with <code>launchctl</code>:</p>
+<div class="highlight"><pre><span></span><code>launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_FLASH_ATTENTION<span class="w"> </span><span class="s2">&quot;1&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KV_CACHE_TYPE<span class="w"> </span><span class="s2">&quot;q8_0&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_CONTEXT_LENGTH<span class="w"> </span><span class="s2">&quot;8192&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KEEP_ALIVE<span class="w"> </span><span class="s2">&quot;5m&quot;</span>
+</code></pre></div>
+
+<p>Then quit and reopen Ollama from the menu bar.</p>
+<p>If running Ollama manually from the terminal:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">OLLAMA_FLASH_ATTENTION</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="nv">OLLAMA_KV_CACHE_TYPE</span><span class="o">=</span>q8_0<span class="w"> </span><span class="se">\</span>
+<span class="nv">OLLAMA_CONTEXT_LENGTH</span><span class="o">=</span><span class="m">8192</span><span class="w"> </span><span class="se">\</span>
+<span class="nv">OLLAMA_KEEP_ALIVE</span><span class="o">=</span>5m<span class="w"> </span><span class="se">\</span>
+ollama<span class="w"> </span>serve
+</code></pre></div>
+
+<hr>
+<h2>What <code>OLLAMA_KV_CACHE_TYPE=q8_0</code> does</h2>
+<p>The KV cache stores the internal attention state for tokens that have already been processed. It grows with the active context length.</p>
+<p>Using:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">OLLAMA_KV_CACHE_TYPE</span><span class="o">=</span>q8_0
+</code></pre></div>
+
+<p>asks Ollama to store the KV cache in an 8-bit quantized format.</p>
+<p>The practical effect is:</p>
+<div class="highlight"><pre><span></span><code>lower memory usage
+better support for longer context windows
+usually minimal quality loss compared to f16 KV cache
+</code></pre></div>
+
+<p>It is especially useful when running large models with larger context windows.</p>
+<p>However, it does not significantly reduce the memory used by the model weights themselves. It mainly helps with memory used by context.</p>
+<p>For this reason, <code>q8_0</code> is useful, but it is not a magic fix for every memory issue.</p>
+<hr>
+<h2>Flash Attention</h2>
+<p>Flash Attention should be enabled when using quantized KV cache:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">OLLAMA_FLASH_ATTENTION</span><span class="o">=</span><span class="m">1</span>
+</code></pre></div>
+
+<p>It helps reduce memory usage and can improve efficiency with larger contexts.</p>
+<p>For this model, I would keep it enabled.</p>
+<hr>
+<h2>Keeping the Mac usable</h2>
+<p>Apple Silicon uses unified memory. The CPU and GPU share the same memory pool.</p>
+<p>That means a local LLM can directly compete with everything else on the Mac:</p>
+<div class="highlight"><pre><span></span><code>browser tabs
+IDE
+Docker
+database containers
+video calls
+Slack or Teams
+file indexing
+other development tools
+</code></pre></div>
+
+<p>This is why the best configuration is not necessarily the most aggressive one.</p>
+<p>The aim is to leave enough headroom that the system does not constantly swap or become unresponsive.</p>
+<hr>
+<h2>Wired memory limit</h2>
+<p>Some users increase the Metal wired memory limit with:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>sysctl<span class="w"> </span>iogpu.wired_limit_mb<span class="o">=</span><span class="m">22000</span>
+</code></pre></div>
+
+<p>On a 32 GB Mac, I would use one of these values:</p>
+<div class="highlight"><pre><span></span><code>20000  conservative workstation mode
+22000  balanced daily mode
+24000  LLM-priority mode
+</code></pre></div>
+
+<p>For daily work, I would start with:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>sysctl<span class="w"> </span>iogpu.wired_limit_mb<span class="o">=</span><span class="m">22000</span>
+</code></pre></div>
+
+<p>I would avoid pushing this too close to total system memory. Values like 28000 or 30000 may help a benchmark but can make the machine unpleasant to use for normal work.</p>
+<hr>
+<h2>Three practical profiles</h2>
+<h3>1. Workstation profile</h3>
+<p>Use this when you also need Docker, an IDE, many browser tabs, or other heavy tools.</p>
+<div class="highlight"><pre><span></span><code>FROM ./gemma-4-31B-it-UD-IQ3_XXS.gguf
+
+PARAMETER num_ctx 6144
+PARAMETER num_batch 32
+PARAMETER num_gpu 50
+
+PARAMETER temperature 1.0
+PARAMETER top_p 0.95
+PARAMETER top_k 64
+</code></pre></div>
+
+<p>Recommended environment:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>sysctl<span class="w"> </span>iogpu.wired_limit_mb<span class="o">=</span><span class="m">20000</span>
+
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_FLASH_ATTENTION<span class="w"> </span><span class="s2">&quot;1&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KV_CACHE_TYPE<span class="w"> </span><span class="s2">&quot;q8_0&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_CONTEXT_LENGTH<span class="w"> </span><span class="s2">&quot;6144&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KEEP_ALIVE<span class="w"> </span><span class="s2">&quot;2m&quot;</span>
+</code></pre></div>
+
+<p>This is the safest profile for a Mac that must remain responsive.</p>
+<hr>
+<h3>2. Balanced daily profile</h3>
+<p>This is the recommended default.</p>
+<div class="highlight"><pre><span></span><code>FROM ./gemma-4-31B-it-UD-IQ3_XXS.gguf
+
+PARAMETER num_ctx 8192
+PARAMETER num_batch 64
+PARAMETER num_gpu 55
+
+PARAMETER temperature 1.0
+PARAMETER top_p 0.95
+PARAMETER top_k 64
+</code></pre></div>
+
+<p>Recommended environment:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>sysctl<span class="w"> </span>iogpu.wired_limit_mb<span class="o">=</span><span class="m">22000</span>
+
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_FLASH_ATTENTION<span class="w"> </span><span class="s2">&quot;1&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KV_CACHE_TYPE<span class="w"> </span><span class="s2">&quot;q8_0&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_CONTEXT_LENGTH<span class="w"> </span><span class="s2">&quot;8192&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KEEP_ALIVE<span class="w"> </span><span class="s2">&quot;5m&quot;</span>
+</code></pre></div>
+
+<p>This is the profile I would use most of the time.</p>
+<hr>
+<h3>3. LLM-priority profile</h3>
+<p>Use this when the Mac is mostly dedicated to local inference.</p>
+<div class="highlight"><pre><span></span><code>FROM ./gemma-4-31B-it-UD-IQ3_XXS.gguf
+
+PARAMETER num_ctx 12288
+PARAMETER num_batch 96
+PARAMETER num_gpu 60
+
+PARAMETER temperature 1.0
+PARAMETER top_p 0.95
+PARAMETER top_k 64
+</code></pre></div>
+
+<p>Recommended environment:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>sysctl<span class="w"> </span>iogpu.wired_limit_mb<span class="o">=</span><span class="m">24000</span>
+
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_FLASH_ATTENTION<span class="w"> </span><span class="s2">&quot;1&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KV_CACHE_TYPE<span class="w"> </span><span class="s2">&quot;q8_0&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_CONTEXT_LENGTH<span class="w"> </span><span class="s2">&quot;12288&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KEEP_ALIVE<span class="w"> </span><span class="s2">&quot;10m&quot;</span>
+</code></pre></div>
+
+<p>This is more aggressive. It may be useful for focused LLM sessions, but I would not use it while doing normal development work.</p>
+<hr>
+<h2>How to verify what is happening</h2>
+<p>After running the model, check:</p>
+<div class="highlight"><pre><span></span><code>ollama<span class="w"> </span>ps
+</code></pre></div>
+
+<p>This shows whether the model is loaded and how it is using the available processors.</p>
+<p>To inspect logs:</p>
+<div class="highlight"><pre><span></span><code>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s2">&quot;offload|layers|gpu|metal|memory&quot;</span><span class="w"> </span>~/.ollama/logs/server.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">80</span>
+</code></pre></div>
+
+<p>Look for messages indicating how many layers were offloaded to the GPU.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code>offloaded 55/60 layers to GPU
+</code></pre></div>
+
+<p>That confirms that <code>num_gpu 55</code> is actually being applied.</p>
+<hr>
+<h2>Troubleshooting instability</h2>
+<p>If Ollama crashes or the Mac becomes sluggish, reduce parameters in this order.</p>
+<p>First reduce <code>num_batch</code>:</p>
+<div class="highlight"><pre><span></span><code>64 -&gt; 32
+</code></pre></div>
+
+<p>Then reduce <code>num_ctx</code>:</p>
+<div class="highlight"><pre><span></span><code>8192 -&gt; 6144
+</code></pre></div>
+
+<p>Then reduce <code>num_gpu</code>:</p>
+<div class="highlight"><pre><span></span><code>55 -&gt; 50
+</code></pre></div>
+
+<p>Finally reduce the wired memory limit:</p>
+<div class="highlight"><pre><span></span><code>22000 -&gt; 20000
+</code></pre></div>
+
+<p>A stable machine is more useful than a theoretical maximum configuration that crashes during real work.</p>
+<hr>
+<h2>About Metal crashes</h2>
+<p>During experimentation, one possible failure mode is a Metal backend crash, with logs similar to:</p>
+<div class="highlight"><pre><span></span><code>ggml-metal-device.m:608: GGML_ASSERT([rsets-&gt;data count] == 0) failed
+panic during panic
+</code></pre></div>
+
+<p>When this happens, it is often better to reset the setup rather than keep pushing the same configuration.</p>
+<p>A practical recovery sequence is:</p>
+<div class="highlight"><pre><span></span><code>killall<span class="w"> </span>Ollama
+killall<span class="w"> </span>ollama
+
+launchctl<span class="w"> </span>unsetenv<span class="w"> </span>OLLAMA_FLASH_ATTENTION
+launchctl<span class="w"> </span>unsetenv<span class="w"> </span>OLLAMA_KV_CACHE_TYPE
+launchctl<span class="w"> </span>unsetenv<span class="w"> </span>OLLAMA_CONTEXT_LENGTH
+
+sudo<span class="w"> </span>sysctl<span class="w"> </span>iogpu.wired_limit_mb<span class="o">=</span><span class="m">20000</span>
+</code></pre></div>
+
+<p>Then reboot the Mac and restart from a conservative profile.</p>
+<hr>
+<h2>Final recommendation</h2>
+<p>For a 32 GB M5 Mac that should remain useful as a normal workstation, I would use this:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>sysctl<span class="w"> </span>iogpu.wired_limit_mb<span class="o">=</span><span class="m">22000</span>
+
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_FLASH_ATTENTION<span class="w"> </span><span class="s2">&quot;1&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KV_CACHE_TYPE<span class="w"> </span><span class="s2">&quot;q8_0&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_CONTEXT_LENGTH<span class="w"> </span><span class="s2">&quot;8192&quot;</span>
+launchctl<span class="w"> </span>setenv<span class="w"> </span>OLLAMA_KEEP_ALIVE<span class="w"> </span><span class="s2">&quot;5m&quot;</span>
+</code></pre></div>
+
+<p>And this <code>Modelfile</code>:</p>
+<div class="highlight"><pre><span></span><code>FROM ./gemma-4-31B-it-UD-IQ3_XXS.gguf
+
+PARAMETER num_ctx 8192
+PARAMETER num_batch 64
+PARAMETER num_gpu 55
+
+PARAMETER temperature 1.0
+PARAMETER top_p 0.95
+PARAMETER top_k 64
+</code></pre></div>
+
+<p>This is not the most extreme configuration. It is the one I would actually want to use.</p>
+<p>It gives enough context for serious work, enough GPU offload for acceptable performance, and enough memory headroom to keep the Mac usable while doing other things.</p>
+<p>That is usually the sweet spot for local LLMs: not maximum throughput, but sustainable performance.</p>
+		</div> <!--/#entry-content-->
+    		<span class="tag-links"><strong>Tagged</strong>
+ <a href="/tag/ai.html" rel="tag">AI</a>,  <a href="/tag/llm.html" rel="tag">LLM</a>,  <a href="/tag/mcp.html" rel="tag">MCP</a>,  <a href="/tag/python.html" rel="tag">Python</a>    		</span>
+	</div> <!--/#main-->
+</div>  <!--/#post-->
+
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
+		</div><!-- /#footer -->
+	</div><!-- /#container -->
+	<div style="display:none"></div>
+</body>
+</html>
