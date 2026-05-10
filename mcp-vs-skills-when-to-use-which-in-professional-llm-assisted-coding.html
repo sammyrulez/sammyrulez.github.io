@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>Sam Reghenzi Homepage &mdash; MCP vs Skills: when to use which in professional LLM-assisted coding</title>
+		<meta charset="utf-8" />
+		<link rel="profile" href="http://gmpg.org/xfn/11" />
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+		<link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=3.3.2' type='text/css' media='all' />
+		<style type="text/css">
+			body.custom-background { background-color: #f5f5f5; }
+		</style>
+		<link rel="alternate" type="application/atom+xml"
+			title="Sam Reghenzi Homepage — Atom Feed"
+			href="/feeds/all.atom.xml" />
+		<link rel="alternate" type="application/rss+xml"
+			title="Sam Reghenzi Homepage — RSS Feed"
+			href="/feeds/all.rss.xml" />
+		<!--[if lte IE 8]><script src="/theme/js/html5shiv.js"></script><![endif]-->
+</head>
+
+<body class="home blog custom-background " >
+	<div id="container">
+		<div id="header">
+				<h1 id="site-title"><a href="">Sam Reghenzi Homepage</a></h1>
+		</div><!-- /#banner -->
+		
+		<div id="menu">
+			<div class="menu-navigation-container">
+				<ul id="menu-navigation" class="menu">
+						<li class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/blog.html">blog</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://github.com/sammyrulez">Github</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.linkedin.com/in/sammyrulez/">LinkedIn</a></li>
+
+				</ul>
+			</div> <!--/#menu-navigation-container-->
+		</div><!-- /#menu -->
+		
+		<div class="page-title">
+		</div>
+	
+		<div id="contents">
+
+<div class="post type-post status-publish format-standard hentry category-general" id="post">
+	<div class="entry-meta">
+		<div class="date"><a href="/mcp-vs-skills-when-to-use-which-in-professional-llm-assisted-coding.html">Sun 10 May 2026</a></div>
+		<span class="byline">By <a href="/author/samreghenzi.html">samreghenzi</a></span>
+			<span class="cat-links"><a href="/category/blog.html" title="View all posts in blog" rel="category tag">blog</a></span>
+	</div> <!-- /#entry-meta -->
+	<div class="main">
+		<h2 class="entry-title">
+			<a href="/mcp-vs-skills-when-to-use-which-in-professional-llm-assisted-coding.html" title="Permalink to MCP vs Skills: when to use which in professional LLM-assisted coding" rel="bookmark">MCP vs Skills: when to use which in professional LLM-assisted coding</a>
+		</h2>
+		<div class="entry-content">
+			<p>Anyone who has spent years doing systems integration immediately understands the appeal of MCP. The dream in this field has always been the same: a clean contract between systems, where every method is described, every parameter is typed, every response is predictable. No more 80-page PDFs read half-heartedly, no more reverse engineering undocumented APIs, no more "ask Dave, he knows how it works." Just a schema, and everything else follows.</p>
+<p>MCP delivers exactly that dream — but for language models. An MCP server exposes its tools with human-readable descriptions, structured parameters, defined types. The model reads the schema and <em>already knows what it can do and how to do it</em>. For anyone coming from systems integration, it's almost moving: it feels like someone finally applied the principles of good API design to the problem of making LLMs collaborate with the outside world.</p>
+<p>The appeal is undeniable. And justified — MCP is genuinely a good idea, well executed.</p>
+<p>But it's not a silver bullet. Like almost every elegant solution in software architecture, it comes with trade-offs that only become visible when you start using it in production, on real problems, with real constraints of cost and latency.</p>
+<hr>
+<h2>The problem nobody tells you about</h2>
+<p>When a team starts using LLMs seriously for coding, they inevitably reach a fork in the road: how do you make the model interact with the outside world? How do you give it access to the right tools without turning every request into an exercise in token waste?</p>
+<p>Two dominant approaches exist: <strong>MCP servers</strong> (Model Context Protocol) and <strong>CLI-based skills</strong>. They are not equivalent. Choosing the wrong one has a real cost — in latency, inference costs, and maintenance complexity.</p>
+<hr>
+<h2>What they are, briefly</h2>
+<p><strong>MCP</strong> is a standardized protocol that allows the model to interact with external services through a structured interface. The MCP server exposes tools, resources, and prompts that the model can invoke natively, with authentication and state managed server-side.</p>
+<p><strong>CLI-based skills</strong> are a more hands-on approach: you teach the model to use command-line tools by documenting how to invoke them, which flags they accept, what they return. The model learns to progressively "discover" the tool's capabilities, much like a developer consulting a man page for the first time.</p>
+<hr>
+<h2>When MCP is the right choice</h2>
+<p>MCP shines in one specific case: when you need to integrate <strong>complex external systems that don't naturally speak the language of text</strong>.</p>
+<p>Think Canva. Or Figma. Or a BI system that generates interactive charts, a DAW for audio production, a 3D rendering platform. These systems have rich APIs, complex state management, OAuth authentication, webhooks, binary assets. They are not designed to be consumed or produced as text — they are designed to be <em>used</em>, with clicks, drags, graphical parameters, visual previews.</p>
+<p>In these cases, an MCP server does excellent work:</p>
+<ul>
+<li><strong>Abstracts complexity</strong>: the model doesn't need to know how Canva's API works internally. It only knows that a <code>create_presentation</code> tool exists with certain parameters.</li>
+<li><strong>Manages state</strong>: authentication, session tokens, user context — everything lives in the MCP server, not in the prompt.</li>
+<li><strong>Is type-safe</strong>: MCP tools have defined schemas. The model receives structured feedback, not raw text to parse.</li>
+<li><strong>Is auditable</strong>: every tool call is loggable, traceable, revocable.</li>
+</ul>
+<p>A concrete example: you want the model to automatically generate documentation slides from your code. With MCP you can integrate Canva or Google Slides directly, with access to company templates, brand fonts, layout systems — things that via CLI would be impossible or would require a massive wrapper.</p>
+<hr>
+<h2>When CLI Skills are superior</h2>
+<p>For <strong>everyday professional coding</strong>, CLI-based skills beat MCP on one fundamental point: <strong>token usage</strong>.</p>
+<p>Consider what happens when you use an MCP server: at context initialization, the model must receive the full list of available tools, with their schemas, descriptions, and parameters. If the server exposes 40 tools (perfectly normal for an enterprise integration), you're burning hundreds or thousands of tokens <em>before making a single useful request</em>.</p>
+<p>CLI skills work differently. They work the way an experienced developer works: in a <strong>progressive and contextual</strong> manner.</p>
+<p>The model learns that a tool exists (say <code>gh</code> for GitHub CLI, or <code>kubectl</code>, or <code>terraform</code>). When it needs to do something, it can invoke <code>gh --help</code> or <code>gh issue --help</code> to discover exactly the flags it needs, <em>at the moment it needs them</em>. It doesn't hold everything in its head from the start — it discovers progressively.</p>
+<p>This leads to concrete advantages:</p>
+<p><strong>Token efficiency</strong>: context grows only where needed. If the task is "create a PR with this diff", the model uses 3-4 commands. It doesn't load documentation for all 200 <code>gh</code> commands.</p>
+<p><strong>Unix composability</strong>: CLIs compose. <code>git log --oneline | grep "fix" | head -20</code> is a powerful operation combining three tools. With MCP, the same result would require separate calls or a dedicated tool.</p>
+<p><strong>Natural debugging</strong>: when a command fails, the error output is text. The model reads it, understands, corrects. With MCP, errors pass through an extra layer of abstraction.</p>
+<p><strong>Zero infrastructure setup</strong>: a CLI skill is a text file documenting how to use an already-existing tool. An MCP server is a service to deploy, maintain, and monitor.</p>
+<hr>
+<h2>The progressive discovery pattern</h2>
+<p>This is the most underrated aspect of CLI skills, and it's worth dwelling on.</p>
+<p>A developer who doesn't know a tool doesn't read the 300-page manual before starting. They type the command, read the help, try, fail, try again. The feedback loop is fast and contextual.</p>
+<p>LLMs can do the same thing — and they should.</p>
+<p>A well-written skill is not an encyclopedic dump of documentation. It's a starting point:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># terraform skill</span>
+<span class="k">Use</span><span class="w"> </span><span class="n n-Quoted">`terraform`</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">manage</span><span class="w"> </span><span class="n">infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">code</span><span class="p">.</span>
+<span class="n">Entry</span><span class="w"> </span><span class="kt">point</span><span class="o">:</span><span class="w"> </span><span class="n n-Quoted">`terraform --help`</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">discover</span><span class="w"> </span><span class="n">subcommands</span><span class="p">.</span>
+<span class="n">Common</span><span class="w"> </span><span class="n">pattern</span><span class="o">:</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="n">→</span><span class="w"> </span><span class="n">plan</span><span class="w"> </span><span class="n">→</span><span class="w"> </span><span class="n">apply</span><span class="p">.</span>
+<span class="k">For</span><span class="w"> </span><span class="n">details</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">subcommand</span><span class="o">:</span><span class="w"> </span><span class="n n-Quoted">`terraform &lt;subcommand&gt; --help`</span><span class="p">.</span>
+</code></pre></div>
+
+<p>The model will start from this base and <em>build</em> understanding of the tool during execution, exactly like a junior developer in their first sprint with a new technology.</p>
+<p>This directly contrasts with the MCP approach, where all tools must be declared upfront in the server schema — the model knows everything from the start, but pays for that "everything" in tokens on every call.</p>
+<hr>
+<h2>A practical decision matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>MCP</th>
+<th>CLI Skill</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Non-textual external system (graphics, audio, BI)</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>OAuth authentication / complex sessions</td>
+<td>✓</td>
+<td>Depends</td>
+</tr>
+<tr>
+<td>Tools already available as CLI</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Limited token budget</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Small team, zero infrastructure to manage</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Structured audit trail required</td>
+<td>✓</td>
+<td>Partial</td>
+</tr>
+<tr>
+<td>Unix pipe composability</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Enterprise SaaS system integration</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>The hybrid case: you don't have to choose</h2>
+<p>In a mature professional coding workflow, the right answer is often hybrid:</p>
+<ul>
+<li><strong>MCP</strong> for integrations with external systems that genuinely require it (the design system in Figma, notifications in Slack, deploys on platforms with complex APIs)</li>
+<li><strong>CLI skills</strong> for the entire development toolchain: git, Docker, kubectl, terraform, test runners, linters, package managers</li>
+</ul>
+<p>The key point is not to use MCP out of laziness (because "it's more modern") or CLI skills out of frugality (because "it's simpler") — but to choose based on the nature of the system being integrated and the real token cost of each interaction.</p>
+<hr>
+<p>MCP and CLI skills are not in competition — they solve different problems.</p>
+<p>MCP is powerful when you need to bring the model into the territory of systems that don't speak text: graphical systems, creative platforms, SaaS services with complex state. It's the only sensible way to do things like "generate a Canva presentation from my README."</p>
+<p>CLI skills are gold in everyday professional coding, where tools are already excellent, already composable, already battle-tested by decades of Unix philosophy — and where every unused token is money saved and latency reduced.</p>
+<p>Progressive CLI discovery, moreover, is not a limitation: it's a feature. It teaches the model to reason like a good developer — starting from the bare minimum and building understanding only where needed.</p>
+		</div> <!--/#entry-content-->
+    		<span class="tag-links"><strong>Tagged</strong>
+ <a href="/tag/ai.html" rel="tag">AI</a>,  <a href="/tag/llm.html" rel="tag">LLM</a>,  <a href="/tag/mcp.html" rel="tag">MCP</a>,  <a href="/tag/python.html" rel="tag">Python</a>    		</span>
+	</div> <!--/#main-->
+</div>  <!--/#post-->
+
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
+		</div><!-- /#footer -->
+	</div><!-- /#container -->
+	<div style="display:none"></div>
+</body>
+</html>
