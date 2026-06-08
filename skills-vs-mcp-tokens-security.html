@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>Sam Reghenzi Homepage &mdash; Skills vs MCP Servers: The Hidden Cost of Tools in LLM Workflows</title>
+		<meta charset="utf-8" />
+		<link rel="profile" href="http://gmpg.org/xfn/11" />
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+		<link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=3.3.2' type='text/css' media='all' />
+		<style type="text/css">
+			body.custom-background { background-color: #f5f5f5; }
+		</style>
+		<link rel="alternate" type="application/atom+xml"
+			title="Sam Reghenzi Homepage — Atom Feed"
+			href="/feeds/all.atom.xml" />
+		<link rel="alternate" type="application/rss+xml"
+			title="Sam Reghenzi Homepage — RSS Feed"
+			href="/feeds/all.rss.xml" />
+		<!--[if lte IE 8]><script src="/theme/js/html5shiv.js"></script><![endif]-->
+</head>
+
+<body class="home blog custom-background " >
+	<div id="container">
+		<div id="header">
+				<h1 id="site-title"><a href="">Sam Reghenzi Homepage</a></h1>
+		</div><!-- /#banner -->
+		
+		<div id="menu">
+			<div class="menu-navigation-container">
+				<ul id="menu-navigation" class="menu">
+						<li class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/ai.html">AI</a></li>
+						<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/blog.html">blog</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://github.com/sammyrulez">Github</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.linkedin.com/in/sammyrulez/">LinkedIn</a></li>
+
+				</ul>
+			</div> <!--/#menu-navigation-container-->
+		</div><!-- /#menu -->
+		
+		<div class="page-title">
+		</div>
+	
+		<div id="contents">
+
+<div class="post type-post status-publish format-standard hentry category-general" id="post">
+	<div class="entry-meta">
+		<div class="date"><a href="/skills-vs-mcp-tokens-security.html">Sun 07 June 2026</a></div>
+		<span class="byline">By <a href="/author/sam-reghenzi.html">Sam Reghenzi</a></span>
+			<span class="cat-links"><a href="/category/ai.html" title="View all posts in AI" rel="category tag">AI</a></span>
+	</div> <!-- /#entry-meta -->
+	<div class="main">
+		<h2 class="entry-title">
+			<a href="/skills-vs-mcp-tokens-security.html" title="Permalink to Skills vs MCP Servers: The Hidden Cost of Tools in LLM Workflows" rel="bookmark">Skills vs MCP Servers: The Hidden Cost of Tools in LLM Workflows</a>
+		</h2>
+		<div class="entry-content">
+			<p>When you start wiring a language model into real work, you quickly discover that the choice of <em>how</em> it reaches the outside world is not a detail. It is the single decision that drives token bills, latency, security posture, and — perhaps most underrated — how much configuration pain your team is signing up for.</p>
+<p>Two approaches dominate today: <strong>MCP servers</strong> and <strong>skills</strong>. They look similar on the surface (both give the model "tools"), but they sit on opposite ends of almost every meaningful axis. Understanding where each one shines is the difference between an assistant that feels like a colleague and one that feels like a very expensive intern who keeps forgetting where the kitchen is.</p>
+<h2>The token tax of MCP</h2>
+<p>An MCP server is, at its core, a contract. It exposes a list of tools, and for each tool it must declare — <em>upfront, at the start of every interaction</em> — a precise description of what the tool does, the shape of its parameters, and the structure of the data it returns. This is what makes MCP feel so clean from a software-engineering perspective: it is strongly typed, self-documenting, schema-first.</p>
+<p>But that beauty has a price, and the price is paid in tokens.</p>
+<p>Every tool description, every parameter docstring, every return-type schema gets loaded into the context window the moment the conversation begins. The model has to "see" the whole catalogue before it can decide what to do — even if, in the end, it only uses one tool out of forty. And it pays that cost again on every turn, because the tool definitions live in the context.</p>
+<p>Connect three or four MCP servers — say a Jira server,  Slack , Github !!! — and you can easily burn ten or twenty thousand tokens <em>before the user has even typed a question</em>. That is not an exaggeration: it is the normal operating condition of a richly integrated MCP setup. And the configuration side is rarely ergonomic either: each server wants its own JSON block, its own credentials, its own lifecycle, its own quirks about transport and authentication.</p>
+<h2>Skills work the way developers actually work</h2>
+<p>A skill, by contrast, is closer to how a human engineer approaches an unfamiliar tool. You don't read the entire <code>git</code> manual before your first commit. You type <code>git --help</code>, then <code>git commit --help</code> when you need it, and you progressively build a working mental model of just the parts that matter for the job in front of you.</p>
+<p>A well-designed skill encodes exactly that posture. It tells the model: <em>here is a CLI, here is the entry point, here is the philosophy — explore it when you need it.</em> The model then uses the existing command-line tool, discovers flags on demand, and only pays for the surface area it actually touches.</p>
+<p>The implications are significant:</p>
+<ul>
+<li><strong>Tokens scale with the task, not with the catalogue.</strong> If the work needs three <code>gh</code> subcommands, you pay for three subcommands. The other 197 stay invisible.</li>
+<li><strong>The CLI already exists.</strong> No server to deploy, no schema to maintain, no transport to debug. You are reusing decades of Unix engineering.</li>
+<li><strong>Composition is free.</strong> Pipes, redirects, <code>xargs</code>, <code>jq</code> — the model inherits all of it. With MCP, every composition has to be modeled as a new tool or chained call.</li>
+</ul>
+<h2>The security angle nobody talks about</h2>
+<p>There is a second, quieter advantage of skills over MCP that I think deserves more attention: <strong>security</strong>.</p>
+<p>When a skill drives a CLI, it inherits the security model of the host operating system. The command runs as the local user, with that user's permissions, against that user's keychain, SSH agent, <code>~/.aws/credentials</code>, <code>gcloud</code> session, <code>kubectl</code> context — whatever credential machinery is already in place and already audited by your IT and your habits. There is no extra surface to attack, no new long-lived token to rotate, no new daemon to keep patched.</p>
+<p>MCP servers, by their nature, want their own configuration. They often need their own copies of credentials, their own auth flows, their own way of holding state between calls. That is not inherently insecure — many MCP servers are written carefully — but it is <em>additional</em> surface area. Every new MCP server is a new place where a secret can leak, a permission can be misconfigured, or a vulnerability can hide. A skill that wraps <code>aws</code> or <code>kubectl</code> adds zero new credentials to your laptop. An MCP server for AWS adds at least one.</p>
+<p>For teams that already have a mature CLI-based security story — and most engineering teams do, even if they don't think of it that way — skills give you tool access for free, on top of a model the security team has already reviewed.</p>
+<h2>A controversial case: connecting to MySQL</h2>
+<p>I want to be honest about where this argument breaks down, because it taught me something.</p>
+<p>Recently I needed an assistant to work against a MySQL database. The "skill" route was obvious: just let it use the <code>mysql</code> CLI. It is well-known, secure, and uses the system's own credential files. Clean, ergonomic, almost no setup. I expected it to be the clear winner.</p>
+<p>It wasn't. Or at least, not unambiguously.</p>
+<p>The CLI approach turned out to be <em>slow</em> and <em>token-hungry</em> in a way I had not anticipated. Every query opened a new client session — connecting, authenticating, executing, tearing down. The result came back as raw text, which the model then had to re-parse on every step, often re-issuing similar queries just to confirm the shape of what it had already seen. For analytical work involving many sequential queries, this was painful.</p>
+<p>The MySQL MCP server, on the other hand, kept a <strong>connection pool</strong> open. It pre-processed the result set into a structured form the model could consume without re-tokenising whole tables. It dramatically reduced the per-query overhead, both in latency and in tokens. For that specific workload — many small queries against the same database, in the same session — MCP was genuinely the better tool.</p>
+<p>The lesson is not "MCP wins after all." The lesson is more interesting: <strong>MCP is worth its overhead when it provides something the CLI fundamentally cannot — persistent state, structured pre-processing, server-side intelligence</strong>. A <code>mysql</code> CLI invocation is stateless by design; it cannot pool connections or cache schema metadata across calls. The MCP server can. That capability gap, not the schema cleanliness, is what justifies the cost.</p>
+<p>So the honest rule is: prefer skills by default, but reach for MCP when the integration <em>needs</em> state, pooling, binary assets, OAuth dances, or any other capability that a single CLI invocation genuinely cannot offer. Not because MCP is more modern, not because the schema is prettier — because the workload demands persistence the shell cannot give you.</p>
+<h2>Where MCP is the obvious answer: complex, non-textual systems</h2>
+<p>The MySQL story is the <em>subtle</em> case. There is also a much more obvious one, and it is worth naming explicitly: systems that simply do not live in text.</p>
+<p>Think of <strong>Excalidraw</strong>, <strong>Canva</strong>, <strong>Figma</strong>, a 3D scene editor, a video timeline, a BI dashboard builder. These platforms are not just "an API with some commands" — they are spatial, visual, stateful environments. A shape on a canvas has coordinates, layers, z-order, parent groups, bindings to other shapes; a Canva design has templates, brand kits, asset libraries, page hierarchies. None of that maps cleanly to a stream of bytes flowing through a pipe.</p>
+<p>For these systems, the CLI story falls apart for reasons no amount of cleverness can fix:</p>
+<ul>
+<li><strong>There is no good text representation.</strong> You cannot meaningfully describe "the element 40 pixels to the right of the title, snapped to the grid, grouped with the icon" in shell flags.</li>
+<li><strong>State is essential.</strong> The user (or the model) is working <em>inside</em> an open document, not invoking one-shot commands. Selection, focus, undo history, currently active tool — all of this is context that needs to live somewhere.</li>
+<li><strong>Binary and structured assets dominate.</strong> Images, fonts, embedded media, vector primitives. A CLI can shuffle files around; it cannot reason about a layout.</li>
+<li><strong>Round-trips need to be cheap.</strong> Adding a node, moving it, re-styling it, and reading back the result needs to feel like a conversation with the canvas, not a series of full re-renders.</li>
+</ul>
+<p>An MCP server for Excalidraw or Canva is in its element precisely here. It can hold the document open, expose primitives that match the <em>concepts</em> of the tool (create node, connect nodes, set fill, group selection), and let the model think in the vocabulary of the platform instead of in the vocabulary of <code>bash</code>. The token cost of the schema, which felt extravagant for a database CLI, suddenly looks like a bargain when the alternative is "describe a whiteboard over stdout."</p>
+<p>In other words: the more a system departs from the Unix philosophy of "everything is text," the more MCP earns its keep. For canvases, design tools, creative software, and rich SaaS environments with their own native object models, MCP is not a luxury — it is the only honest way to bridge model and tool.</p>
+<h2>The epic conclusion</h2>
+<p>There is a beautiful symmetry in all this. We spent decades building Unix into one of the most quietly powerful platforms in computing: composable, scriptable, securable, observable, and — crucially — <em>cheap</em>. Every command-line tool is a small, hard-won monument to clarity. Every credential file, every SSH key, every IAM role represents years of organisational learning about how to keep secrets in the right hands.</p>
+<p>Skills let language models stand on that mountain.</p>
+<p>They let the model behave like a thoughtful new hire who reads the help text, asks the system what it can do, and uses the credentials already sitting on the laptop — no new servers, no new secrets, no new schemas, no new tax on every token of context. They scale down to nothing when unused and up to everything when needed. They are, in the deepest sense, <em>aligned with the grain of the system they run on</em>.</p>
+<p>MCP, in turn, becomes what it should always have been: not the default front door for every integration, but the specialist tool for the cases where text and shell are genuinely insufficient — when you need to render a slide, drive a design canvas, hold an OAuth session, pool a database connection, stream binary assets through a protocol the terminal was never meant to carry.</p>
+<p>The choice is no longer "which protocol is more elegant." It is the older, harder, more interesting question that good engineering has always asked: <em>what is the smallest, cheapest, safest thing that will actually do the job?</em></p>
+<p>For most of what we ask language models to do every day, the answer was sitting in <code>/usr/local/bin</code> the whole time.</p>
+		</div> <!--/#entry-content-->
+    		<span class="tag-links"><strong>Tagged</strong>
+ <a href="/tag/claude.html" rel="tag">claude</a>,  <a href="/tag/llm.html" rel="tag">llm</a>,  <a href="/tag/mcp.html" rel="tag">mcp</a>,  <a href="/tag/security.html" rel="tag">security</a>,  <a href="/tag/skills.html" rel="tag">skills</a>,  <a href="/tag/tokens.html" rel="tag">tokens</a>    		</span>
+	</div> <!--/#main-->
+</div>  <!--/#post-->
+
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
+		</div><!-- /#footer -->
+	</div><!-- /#container -->
+	<div style="display:none"></div>
+</body>
+</html>
