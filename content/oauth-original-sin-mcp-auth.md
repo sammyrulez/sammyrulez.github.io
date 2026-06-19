@@ -1,5 +1,5 @@
-dove hai salvato i file del postTitle: OAuth's Original Sin: Why MCP Inherited a Problem Designed for Humans
-Date: 2026-06-19
+Title: OAuth's Original Sin: Why MCP Inherited a Problem Designed for Humans
+Date: 2026-06-19 22:48
 Category: AI
 Tags: llm, mcp, oauth, security, claude, authentication
 Slug: oauth-original-sin-mcp-auth
