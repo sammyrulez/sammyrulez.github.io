@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>Sam Reghenzi Homepage &mdash; OAuth's Original Sin: Why MCP Inherited a Problem Designed for Humans</title>
+		<meta charset="utf-8" />
+		<link rel="profile" href="http://gmpg.org/xfn/11" />
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+		<link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=3.3.2' type='text/css' media='all' />
+		<style type="text/css">
+			body.custom-background { background-color: #f5f5f5; }
+		</style>
+		<link rel="alternate" type="application/atom+xml"
+			title="Sam Reghenzi Homepage — Atom Feed"
+			href="/feeds/all.atom.xml" />
+		<link rel="alternate" type="application/rss+xml"
+			title="Sam Reghenzi Homepage — RSS Feed"
+			href="/feeds/all.rss.xml" />
+		<!--[if lte IE 8]><script src="/theme/js/html5shiv.js"></script><![endif]-->
+</head>
+
+<body class="home blog custom-background " >
+	<div id="container">
+		<div id="header">
+				<h1 id="site-title"><a href="">Sam Reghenzi Homepage</a></h1>
+		</div><!-- /#banner -->
+		
+		<div id="menu">
+			<div class="menu-navigation-container">
+				<ul id="menu-navigation" class="menu">
+						<li class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/ai.html">AI</a></li>
+						<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/category/blog.html">blog</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://github.com/sammyrulez">Github</a></li>
+						<li  class="active" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.linkedin.com/in/sammyrulez/">LinkedIn</a></li>
+
+				</ul>
+			</div> <!--/#menu-navigation-container-->
+		</div><!-- /#menu -->
+		
+		<div class="page-title">
+		</div>
+	
+		<div id="contents">
+
+<div class="post type-post status-publish format-standard hentry category-general" id="post">
+	<div class="entry-meta">
+		<div class="date"><a href="/oauth-original-sin-mcp-auth.html">Fri 19 June 2026</a></div>
+		<span class="byline">By <a href="/author/sam-reghenzi.html">Sam Reghenzi</a></span>
+			<span class="cat-links"><a href="/category/ai.html" title="View all posts in AI" rel="category tag">AI</a></span>
+	</div> <!-- /#entry-meta -->
+	<div class="main">
+		<h2 class="entry-title">
+			<a href="/oauth-original-sin-mcp-auth.html" title="Permalink to OAuth's Original Sin: Why MCP Inherited a Problem Designed for Humans" rel="bookmark">OAuth's Original Sin: Why MCP Inherited a Problem Designed for Humans</a>
+		</h2>
+		<div class="entry-content">
+			<p>Two posts ago I drew what felt like a clean line: MCP earns its keep when text and shell are genuinely insufficient — and one of the canonical examples I gave was "holding an OAuth session." It still is. But it is also the case I most undersold. Because OAuth, the protocol now standing under every serious MCP integration, was not designed for what we are about to do to it.</p>
+<p>OAuth was designed for a human, sitting at a keyboard, reading a consent screen, clicking <em>Allow</em>. Every layer of the protocol — the browser redirect, the authorization code that crosses domains, the refresh token that lives on a device the user controls — presumes that human in the loop. MCP quietly removes them. What remains is the protocol, the tokens, and a language model holding both.</p>
+<p>This post is about what happens when you take a security architecture designed for a conscious human and run it under software that has neither eyes nor hesitation.</p>
+<h2>The protocol that assumed a human</h2>
+<p>It is worth saying out loud, because the assumption is so deep we no longer notice it: OAuth is a protocol whose defensive mechanisms only work because a person is paying attention.</p>
+<p>The standard story names three actors — resource owner, client, resource server — but the protocol's whole defensive posture is built around a fourth, implicit actor: a conscious human in front of the client. The redirect URI matching only matters because someone might notice the URL bar is wrong. The consent screen only works because someone reads "this app would like to access your calendar" and decides whether that is acceptable. The scope display only protects you if you scan the list. Even refresh tokens were designed with the unstated assumption that long-lived background activity would be rare, deliberate, and visible to the user whose token it was.</p>
+<p>Take that human out, and OAuth still <em>runs</em> — but most of what made it safe stops working.</p>
+<p>Now name what removed them. Not malware, not a clever new attack class. An interface change. We replaced "person, browser, consent screen" with "agent, MCP client, system prompt." The protocol below didn't change. The contract above did.</p>
+<h2>What MCP inherited</h2>
+<p>To MCP's credit, it inherited the best version of the contract available. The current authorization spec — building on the November 2025 revision — rests on <strong>OAuth 2.1</strong> with mandatory PKCE, <strong>RFC 9728</strong> for Protected Resource Metadata, and <strong>RFC 8414</strong> for Authorization Server Metadata. Implicit grant is banned. Plain PKCE is banned. Bearer tokens in URLs are banned. Refresh tokens must be rotated or sender-constrained. Redirect URIs require exact-string matching. The June 2025 revision pulled token issuance out of MCP servers entirely and re-modelled them as OAuth <em>resource servers</em>, deferring identity to external providers where it belongs.</p>
+<p>These are good choices. None of them, however, addresses the new asymmetry. They address the <em>old</em> failures of OAuth — the ones discovered when humans were still at the controls. The MCP spec doesn't yet have a vocabulary for the failures introduced by removing the human, because the protocol underneath doesn't either. What it has is patches, applied as those failures surface.</p>
+<h2>The cracks: four assumptions that break</h2>
+<p>If you look at the MCP-OAuth interface as a system of assumptions, four of them stop being true the moment an LLM agent sits where the human used to. None of these is theoretical; each maps to incidents already in the wild.</p>
+<p><strong>Consent comprehension.</strong> The user signs a consent screen listing scopes. They never see the <em>superset</em> of tools the agent might invoke during the session — and they couldn't, because the superset is constructed dynamically by the agent's reasoning, not by the consent UI. The consent screen was designed to summarise a <em>page</em>. It was never designed to summarise an <em>agent's reasoning surface</em>. The user clicks <em>Allow</em> on a list of capabilities; the agent treats <em>Allow</em> as permission to <em>compose</em> those capabilities in arbitrary ways the user never anticipated. The same scopes the user understood on the consent screen mean something different by the time the agent uses them.</p>
+<p><strong>Token custody.</strong> In the browser model, the access token lives in cookie storage, a keychain, a secure enclave — somewhere the user controls and can wipe. In the agent model, the access token lives, at least during use, <em>inside the model's context window</em>. Which is to say: in the same channel that can be prompt-injected. The token is co-resident with untrusted input. This is not a hypothetical: Supabase's Cursor integration was demonstrated in 2025 to be exfiltratable via prompt-injected support tickets that instructed the agent to surface its own credentials. The token wasn't stolen by a network attacker; it was <em>asked for</em> by the data the agent was processing.</p>
+<p><strong>Scope locality.</strong> A human uses a token on the site they authorised it for. They opened the tab; they will close the tab; the token's relevance is bounded by the user's attention. An agent uses tokens wherever they help solve the task. Cross-tool reasoning means an MCP server's token may be referenced, summarised, or — most worryingly — <em>paraphrased into other tool calls</em> without anyone explicitly composing those flows. OAuth's mental model assumes a token stays where it was granted. Agents do not respect that geometry.</p>
+<p><strong>Session presence.</strong> Humans close tabs. Agents do not. Refresh tokens were designed with the assumption that long-lived background activity is rare and visible. With agents, long-lived background activity is the default, and visibility depends entirely on logging the user may or may not have set up. The implicit dead-man's switch of "the user got bored and walked away" is gone.</p>
+<p>These four cracks are the post's load-bearing argument. Everything that follows — the spec's evolution, the real attacks, the open questions — is illustration.</p>
+<h2>Zoom-in 1: anatomy of a real one-click takeover</h2>
+<p>The cleanest illustration of how these assumptions fail in production is the work disclosed by Obsidian Security between July and August 2025, with patches landing through September.</p>
+<p><img alt="One-click account takeover: broken vs. fixed OAuth flow" src="images/oauth-mcp-takeover.png"></p>
+<p>The pattern was depressingly common. Several well-known remote MCP servers had been implemented as <strong>OAuth proxies</strong>: the MCP server stood between the user's client and an upstream SaaS authorisation server (a productivity tool, a developer platform, a comms app), forwarding the OAuth dance and brokering tokens. To talk upstream, the MCP proxy used a single static <code>client_id</code> — <em>shared across all users of that MCP server</em>.</p>
+<p>Three additional design choices, each defensible in isolation, combined into a one-click takeover:</p>
+<ol>
+<li>The shared <code>client_id</code> meant the upstream auth server, once any user had ever consented, treated subsequent authorisation requests as already-approved. No fresh consent prompt; just a returned code.</li>
+<li>The MCP proxy's <code>redirect_uri</code> matching was loose — substring or prefix, not exact — and accepted callback URLs the attacker could control.</li>
+<li>The OAuth <code>state</code> parameter, whose entire purpose is to bind a callback to the user session that initiated it, was not strictly bound to that session.</li>
+</ol>
+<p>The attack was a single crafted link. The victim clicks. The MCP proxy initiates the upstream OAuth dance. The upstream server, recognising the shared <code>client_id</code> as already-consented, returns an authorisation code without a prompt. The MCP proxy redirects to a URL that <em>looks</em> like one of its own but actually routes to the attacker. The attacker exchanges the code. One click. One account.</p>
+<p>Read carefully, this is not a story about sloppy vendors. Each of those design choices made sense in a world where consent screens, redirect URI matching, and <code>state</code> were doing the <em>human-supervised</em> work they had always done. It is a story about a protocol whose safety mechanisms degrade in silence when the human is removed.</p>
+<p>The November 2025 spec update introduced <strong>CIMD</strong> (Client Instance Metadata Document) precisely so each client instance can be uniquely identified at the protocol level, ending the shared-<code>client_id</code> failure mode at the source. It also tightened guidance on redirect URI matching and session-bound <code>state</code>. The patch is good. What it patches is not a bug; it is a category of assumption.</p>
+<h2>Zoom-in 2: the DCR dilemma</h2>
+<p>If the takeover story is the <em>sharp</em> edge of MCP-OAuth, the second zoom-in is the <em>blunt</em> one — a tension that has no resolution, only positions on a spectrum.</p>
+<p><img alt="The DCR spectrum: convenience vs. control" src="images/dcr-spectrum.png"></p>
+<p><strong>Dynamic Client Registration</strong> (RFC 7591) lets a client register itself with an authorisation server at runtime, receiving a <code>client_id</code> and credentials without human paperwork. For agents, this is almost a necessity: agents spawn ephemerally — in dev environments, in CI, in user sessions, in transient containers — and pre-registering each instance does not scale. The MCP spec permits DCR for exactly this reason.</p>
+<p>Most enterprises <strong>block DCR</strong>. Also for good reason: anyone who can reach a registration endpoint can mint a client and start requesting tokens. In a world of registration flooding and client impersonation, the simplest defensive posture is "no one registers a client we did not approve in advance."</p>
+<p>Both positions are correct. They are correct about <em>different things</em>. The agent-friendly position is correct about how the world actually wants to compose ephemeral software. The enterprise position is correct about how identity surface area becomes attack surface. The spec cannot tell either of them they are wrong.</p>
+<p>What the spec <em>did</em>, in November 2025, was step back. DCR moved from "SHOULD-implement" toward "optional, with explicit guidance for gated deployments" — software statements, redirect domain allowlists, IP-restricted registration endpoints. This is not the protocol picking a winner. It is the protocol acknowledging that no answer is right for every deployment, and codifying the seam where the trade-off lives.</p>
+<p>I find this the most honest moment in the MCP auth spec's short life. Specifications normally pretend the world has one answer. This one admits the world has a dial, and tells you where the dial is. That is a sign of a community learning in public.</p>
+<h2>What's still open</h2>
+<p>The November 2025 spec closed the worst-known leaks. The deeper question is unsolved, and it is older than MCP: <strong>what is an agent's identity?</strong></p>
+<p>Not the client software — one client may serve many sessions, many users, many models. Not the user — the user is the resource owner; the agent acts on their behalf but is not them. Not the model — models change between turns; multiple models may chain on a single task. None of OAuth's existing slots fit. Work like the Agent Identity Protocol (arXiv 2603.24775) is starting to take the shape of the question seriously, and the field broadly recognises that something between "machine identity" and "delegated user identity" is missing from the standard kit.</p>
+<p>Until that work matures, MCP auth is doing what every protocol does when the world outruns it: bolting on constraints where the missing concept used to live. CIMD is one such bolt. The DCR downgrade is another. So is the resource-server reframing of June 2025. Each fix is a sentence that ends with "…because there is no human here anymore."</p>
+<h2>Closing</h2>
+<p>OAuth worked for twenty years because there was always a human providing the <em>final semantic check</em> — the last layer of consent that the protocol could not formalise. The redirect URI was right because the user noticed. The scope was right because the user read. The token didn't leak because the user closed the tab. None of this was in the RFCs. All of it was load-bearing.</p>
+<p><em>That</em> is what MCP removed. Not the cryptography, not the flows, not the schemas — the silent human substrate the protocol had been running on.</p>
+<p>Everything the November 2025 spec added — CIMD, mandatory PKCE, the resource-server reframing, the DCR downgrade — is the protocol trying to install mechanical constraints where human judgment used to live. Some of those constraints will hold. Some will turn out to have replaced one assumption with another, and the next round of disclosures will tell us which. The work is not finished; it cannot be, until we agree on what an agent <em>is</em>.</p>
+<p>In the meantime, MCP authentication is what every load-bearing experiment is: usable, increasingly serious, and worth watching closely. The posture for engineers building on it is the posture every good engineer has for protocols still finding their shape — use them, but keep an eye on where the cracks are most likely to reappear. They will reappear, every time, in the same place: wherever the spec is still quietly assuming a human who is no longer there.</p>
+<hr>
+<p><em>This is the third in a series on the engineering reality of MCP. The first two (<a href="/mcp-vs-skills-when-to-use-which-in-professional-llm-assisted-coding.html">MCP vs Skills</a>, <a href="/skills-vs-mcp-tokens-security.html">Skills vs MCP Servers</a>) argued about cost and security in tool choice. This one was always going to be the harder one — comments, corrections, and disclosure stories welcome.</em></p>
+		</div> <!--/#entry-content-->
+    		<span class="tag-links"><strong>Tagged</strong>
+ <a href="/tag/authentication.html" rel="tag">authentication</a>,  <a href="/tag/claude.html" rel="tag">claude</a>,  <a href="/tag/llm.html" rel="tag">llm</a>,  <a href="/tag/mcp.html" rel="tag">mcp</a>,  <a href="/tag/oauth.html" rel="tag">oauth</a>,  <a href="/tag/security.html" rel="tag">security</a>    		</span>
+	</div> <!--/#main-->
+</div>  <!--/#post-->
+
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
+		</div><!-- /#footer -->
+	</div><!-- /#container -->
+	<div style="display:none"></div>
+</body>
+</html>
