@@ -46,7 +46,7 @@ These four cracks are the post's load-bearing argument. Everything that follows 
 
 The cleanest illustration of how these assumptions fail in production is the work disclosed by Obsidian Security between July and August 2025, with patches landing through September.
 
-![One-click account takeover: broken vs. fixed OAuth flow](images/oauth-mcp-takeover.png)
+<a href="images/oauth-mcp-takeover.png" title="Click to enlarge"><img src="images/oauth-mcp-takeover.png" alt="One-click account takeover: broken vs. fixed OAuth flow" width="520"></a>
 
 The pattern was depressingly common. Several well-known remote MCP servers had been implemented as **OAuth proxies**: the MCP server stood between the user's client and an upstream SaaS authorisation server (a productivity tool, a developer platform, a comms app), forwarding the OAuth dance and brokering tokens. To talk upstream, the MCP proxy used a single static `client_id` — *shared across all users of that MCP server*.
 
@@ -66,7 +66,7 @@ The November 2025 spec update introduced **CIMD** (Client Instance Metadata Docu
 
 If the takeover story is the *sharp* edge of MCP-OAuth, the second zoom-in is the *blunt* one — a tension that has no resolution, only positions on a spectrum.
 
-![The DCR spectrum: convenience vs. control](images/dcr-spectrum.png)
+<a href="images/dcr-spectrum.png" title="Click to enlarge"><img src="images/dcr-spectrum.png" alt="The DCR spectrum: convenience vs. control" width="520"></a>
 
 **Dynamic Client Registration** (RFC 7591) lets a client register itself with an authorisation server at runtime, receiving a `client_id` and credentials without human paperwork. For agents, this is almost a necessity: agents spawn ephemerally — in dev environments, in CI, in user sessions, in transient containers — and pre-registering each instance does not scale. The MCP spec permits DCR for exactly this reason.
 
