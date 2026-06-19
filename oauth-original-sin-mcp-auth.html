@@ -72,7 +72,7 @@
 <p>These four cracks are the post's load-bearing argument. Everything that follows — the spec's evolution, the real attacks, the open questions — is illustration.</p>
 <h2>Zoom-in 1: anatomy of a real one-click takeover</h2>
 <p>The cleanest illustration of how these assumptions fail in production is the work disclosed by Obsidian Security between July and August 2025, with patches landing through September.</p>
-<p><img alt="One-click account takeover: broken vs. fixed OAuth flow" src="images/oauth-mcp-takeover.png"></p>
+<p><a href="images/oauth-mcp-takeover.png" title="Click to enlarge"><img src="images/oauth-mcp-takeover.png" alt="One-click account takeover: broken vs. fixed OAuth flow" width="520"></a></p>
 <p>The pattern was depressingly common. Several well-known remote MCP servers had been implemented as <strong>OAuth proxies</strong>: the MCP server stood between the user's client and an upstream SaaS authorisation server (a productivity tool, a developer platform, a comms app), forwarding the OAuth dance and brokering tokens. To talk upstream, the MCP proxy used a single static <code>client_id</code> — <em>shared across all users of that MCP server</em>.</p>
 <p>Three additional design choices, each defensible in isolation, combined into a one-click takeover:</p>
 <ol>
@@ -85,7 +85,7 @@
 <p>The November 2025 spec update introduced <strong>CIMD</strong> (Client Instance Metadata Document) precisely so each client instance can be uniquely identified at the protocol level, ending the shared-<code>client_id</code> failure mode at the source. It also tightened guidance on redirect URI matching and session-bound <code>state</code>. The patch is good. What it patches is not a bug; it is a category of assumption.</p>
 <h2>Zoom-in 2: the DCR dilemma</h2>
 <p>If the takeover story is the <em>sharp</em> edge of MCP-OAuth, the second zoom-in is the <em>blunt</em> one — a tension that has no resolution, only positions on a spectrum.</p>
-<p><img alt="The DCR spectrum: convenience vs. control" src="images/dcr-spectrum.png"></p>
+<p><a href="images/dcr-spectrum.png" title="Click to enlarge"><img src="images/dcr-spectrum.png" alt="The DCR spectrum: convenience vs. control" width="520"></a></p>
 <p><strong>Dynamic Client Registration</strong> (RFC 7591) lets a client register itself with an authorisation server at runtime, receiving a <code>client_id</code> and credentials without human paperwork. For agents, this is almost a necessity: agents spawn ephemerally — in dev environments, in CI, in user sessions, in transient containers — and pre-registering each instance does not scale. The MCP spec permits DCR for exactly this reason.</p>
 <p>Most enterprises <strong>block DCR</strong>. Also for good reason: anyone who can reach a registration endpoint can mint a client and start requesting tokens. In a world of registration flooding and client impersonation, the simplest defensive posture is "no one registers a client we did not approve in advance."</p>
 <p>Both positions are correct. They are correct about <em>different things</em>. The agent-friendly position is correct about how the world actually wants to compose ephemeral software. The enterprise position is correct about how identity surface area becomes attack surface. The spec cannot tell either of them they are wrong.</p>
