@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block title %}{{ SITENAME }} &mdash; {{ article.title|striptags }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title|striptags|forceescape }}{% endblock %}
+{% block og_description %}{{ article.summary|default(article.description, true)|striptags|truncate(200)|forceescape }}{% endblock %}
+{% block og_url %}{{ SITEURL }}/{{ article.url }}{% endblock %}
+{% block meta_description %}<meta name="description" content="{{ self.og_description() }}" />{% endblock %}
 {% block content %}
 
 {% include 'post.html' %}

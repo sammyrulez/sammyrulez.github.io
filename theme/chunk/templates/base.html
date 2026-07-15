@@ -4,6 +4,24 @@
 		{% block head %}
 		<title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
 		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		{% block meta_description %}{% if SITESUBTITLE %}<meta name="description" content="{{ SITESUBTITLE }}" />{% endif %}{% endblock %}
+
+		{# --- Social preview: Open Graph + Twitter Card --- #}
+		{% block opengraph %}
+		<meta property="og:site_name" content="{{ SITENAME }}" />
+		<meta property="og:locale" content="{{ DEFAULT_LANG|replace('-', '_') }}" />
+		<meta property="og:type" content="{% block og_type %}website{% endblock %}" />
+		<meta property="og:title" content="{% block og_title %}{{ SITENAME }}{% endblock %}" />
+		<meta property="og:description" content="{% block og_description %}{{ SITESUBTITLE|default('', true) }}{% endblock %}" />
+		<meta property="og:url" content="{% block og_url %}{{ SITEURL }}/{% endblock %}" />
+		<meta property="og:image" content="{{ SITEURL }}/images/social-default.png" />
+		<meta property="og:image:alt" content="{{ SITENAME }}" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="{{ self.og_title() }}" />
+		<meta name="twitter:description" content="{{ self.og_description() }}" />
+		<meta name="twitter:image" content="{{ SITEURL }}/images/social-default.png" />
+		{% endblock opengraph %}
 		<link rel="profile" href="http://gmpg.org/xfn/11" />
 		<link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/style.css" />
 		<link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=3.3.2' type='text/css' media='all' />

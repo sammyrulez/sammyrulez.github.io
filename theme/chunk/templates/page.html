@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ SITENAME }} &mdash; {{ page.title|striptags }}{% endblock %}
+{% block og_title %}{{ page.title|striptags|forceescape }}{% endblock %}
+{% block og_description %}{{ page.summary|default(page.description, true)|striptags|truncate(200)|forceescape }}{% endblock %}
+{% block og_url %}{{ SITEURL }}/{{ page.url }}{% endblock %}
+{% block meta_description %}<meta name="description" content="{{ self.og_description() }}" />{% endblock %}
 {% block content %}
 <div class="page type-page status-publish hentry" id="post">
 	<div class="entry-meta">
