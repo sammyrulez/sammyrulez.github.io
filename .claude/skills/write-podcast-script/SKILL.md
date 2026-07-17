@@ -40,6 +40,7 @@ edit the source post.
 - Expand acronyms on first use: "MCP, il Model Context Protocol".
 - Write numbers, symbols and percentages the way they are spoken.
 - Optional `[pausa]` sparingly, for beats. No Markdown inside spoken lines.
+- Write in the **same language as the source post** (do not translate).
 - Match the author's voice from the source post — same stance and tone, just spoken.
 
 ## Handling code, tables, links, images
@@ -107,8 +108,8 @@ Script excerpt:
 
 ```
 [CORPO]
-Allora, partiamo da dove l'articolo ha ragione. Il valore si sta davvero
-spostando. E il punto è brutale: se il tuo prodotto è solo un guscio sottile
-intorno a una chiamata a un modello, il tuo margine è un errore di
-arrotondamento sulla spesa in infrastruttura di qualcun altro.
+So let's start with where the article is right. Value really is migrating. And
+here's the blunt version: if your product is just a thin shell around a single
+model call, your margin is a rounding error on somebody else's infrastructure
+bill.
 ```
