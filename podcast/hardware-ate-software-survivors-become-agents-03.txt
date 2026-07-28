@@ -1,0 +1,23 @@
+This is not a slide deck abstraction for me. It's most of what I've been writing about. The reason I keep picking at MCP — the Model Context Protocol — versus skills, or at the way OAuth cracks when you hand it to a model with no eyes and no hesitation, is that this is the scaffolding of the agent layer. How a model reaches the outside world, what it's allowed to touch, how it holds a session — those aren't plumbing details below the value. In an agent-shaped world, they are the value. Links to those posts are in the show notes.
+
+<break time="1.0s"/>
+
+So if the bottom of the stack is commoditizing — and it is — where does the gravity actually go?
+
+Not the GPUs. You can rent those by the hour, and the whole thrust of open models and local inference is to make the raw intelligence a fungible input. Owning silicon is owning the railroad.
+
+[serious] The new control points are further up. Three of them, specifically.
+
+First: orchestration. The logic that decides which capability to invoke, in what order, and how to recover when a step fails. This is genuinely hard and genuinely defensible — and it lives nowhere in the five-layer map.
+
+Second: proprietary data loops. The article actually gets this half-right under "data gravity," but frames it as a moat for platforms rather than the fuel that makes an agent good at your specific problem.
+
+Third: agent reliability and safety. The boring, unglamorous work of making an autonomous thing trustworthy enough to hand real permissions. Whoever solves this owns a lock-in that no amount of capex buys.
+
+[pause] None of these are cheap in capital. They're expensive in judgment, in data, and in the accumulated scar tissue of making agents behave. That's a different kind of moat than a fab, and it accrues to a different kind of builder.
+
+<break time="1.0s"/>
+
+The article is written for an investor: it's a map of where to allocate capital across a stack. Read it as an engineer and the question changes — not "where do I put my money" but "where do I put my effort." And once you flip that lens, almost every conclusion inverts with it.
+
+If you believe — as I do — that every app worth keeping is going to become an agent, then the commoditization of hardware and inference isn't the headline. It's the precondition. Cheap, abundant, ownable intelligence is the raw material. The investor sees a low-margin commodity and walks away. The engineer sees a free input and asks what can finally be built now that it costs nothing. Those are opposite reactions to the same fact, and only one of them ships anything.

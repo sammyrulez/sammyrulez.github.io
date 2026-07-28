@@ -1,0 +1,23 @@
+[thoughtful] There's a piece going around called "Software Ate the World. Now Hardware Is Eating Software." And it's good enough that I want to argue with it.
+
+The thesis is that the center of economic gravity in tech is sliding down the stack — toward the layers with the deepest physical constraints and the strongest control points: semiconductors, data platforms, and the inference engines that run open models. NVIDIA at around seventy-five percent gross margins. Hyperscaler capex heading toward five point three trillion dollars by 2030. Application margins compressing from the seventy-five to ninety percent of the SaaS era down to fifty to sixty percent. The conclusion: stop betting on apps, start betting on silicon and data gravity.
+
+<break time="1.0s"/>
+
+Part of what makes the argument land is that the kind of hardware underneath us has changed. For twenty years the substrate was commodity: RAM, CPU, disk — parts that were cheap, interchangeable, and evolving slowly enough that nobody thought about them. You provisioned them and forgot them.
+
+The AI stack runs on GPUs, and GPUs are a different animal entirely: faster-moving on the evolutionary curve, far more expensive, and carrying a margin the commodity components never did. When the foundation stops being fungible and starts being a scarce, high-margin, fast-obsolescing asset, it's natural to conclude that this is where the money now lives. That shift is real, and it's the strongest part of the article.
+
+[pause] I agree with almost every number. I disagree with where the arrow points.
+
+<break time="1.0s"/>
+
+So let me start with where the article is right — and I want to be fair here, not build a strawman.
+
+[serious] The diagnosis is correct in two important ways.
+
+First, value really is migrating. The comfortable two-decade assumption that the application layer is where money accretes is genuinely breaking. If your product is a thin wrapper over a model call, your margin is a rounding error on someone else's capex.
+
+Second — and this is the part people flinch at — point software is condemned. The single-purpose tool, the app that does one thing behind a form and a database, is being squeezed exactly as the article says. That compression from ninety percent to fifty percent margins is real, and it isn't a blip.
+
+So far, so aligned. Where I get off the train is the prognosis.
