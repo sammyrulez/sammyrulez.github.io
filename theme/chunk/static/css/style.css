@@ -27,12 +27,14 @@ body {
 #container {
 	height: auto;
 	margin: 0 auto;
-	width: 800px;
+	width: 100%;
+	max-width: 800px;
 }
 #header {
 	min-height: 180px;
 	padding-top: 70px;
-	width: 800px;
+	width: 100%;
+	max-width: 800px;
 }
 #contents {
 	border-left: 1px solid #ccc;
@@ -87,7 +89,8 @@ body {
 	margin-bottom: 25px;
 	padding: 10px;
 	text-align: right;
-	width: 800px;
+	width: 100%;
+	max-width: 800px;
 }
 #menu img {
 	margin-bottom: 10px;
@@ -805,7 +808,8 @@ article.comment {
 	margin: 50px 0 30px;
 	padding-top: 25px;
 	text-align: center;
-	width: 800px;
+	width: 100%;
+	max-width: 800px;
 }
 #footer a {
 	color: #36bcab;
@@ -817,4 +821,93 @@ article.comment {
 ----------------------------------------------- */
 .sharedaddy {
 	clear: both;
+}
+
+
+/* =Responsive
+   Aggiunto per rendere il tema utilizzabile su mobile/tablet.
+   Il layout desktop (>820px) resta invariato.
+----------------------------------------------- */
+
+/* Le immagini del contenuto non devono mai sforare la colonna */
+.entry-content img,
+.hentry .main img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Il blocco di codice non deve rompere il layout su schermi stretti */
+.entry-content pre {
+	overflow-x: auto;
+}
+
+@media only screen and (max-width: 820px) {
+	body {
+		font-size: 15px;
+	}
+
+	#header {
+		padding-top: 30px;
+		min-height: 0;
+		text-align: center;
+	}
+	#site-title {
+		font-size: 46px;
+	}
+	#site-description {
+		margin-bottom: 25px;
+	}
+
+	/* Il menu diventa una barra centrata e non allineata a destra */
+	#menu {
+		padding: 10px 15px;
+		text-align: center;
+	}
+	#menu li {
+		float: none;
+		display: inline-block;
+	}
+	#menu a {
+		font-size: 16px;
+		margin: 0 6px;
+	}
+
+	/* La colonna dei contenuti perde il bordo/gutter e va a piena larghezza */
+	#contents {
+		border-left: none;
+		margin-left: 0;
+		padding: 0 15px;
+	}
+
+	/* I metadati (data/autore) tornano sopra il testo invece di stare nel gutter */
+	.hentry .main {
+		float: none;
+		width: auto;
+		padding: 10px 0 15px;
+	}
+	.hentry .entry-meta {
+		float: none;
+		width: auto;
+		margin: 20px 0 0;
+		text-align: left;
+		font-size: 20px;
+	}
+	.hentry .entry-meta div,
+	.hentry .entry-meta .date {
+		margin: 0 0 6px;
+	}
+
+	#footer {
+		padding: 25px 15px 0;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	#site-title {
+		font-size: 34px;
+	}
+	.entry-title {
+		font-size: 21px;
+		line-height: 28px;
+	}
 }

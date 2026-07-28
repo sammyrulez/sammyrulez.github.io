@@ -4,6 +4,7 @@
 {% block og_title %}{{ article.title|striptags|forceescape }}{% endblock %}
 {% block og_description %}{{ article.summary|default(article.description, true)|striptags|truncate(200)|forceescape }}{% endblock %}
 {% block og_url %}{{ SITEURL }}/{{ article.url }}{% endblock %}
+{% block canonical_url %}{{ SITEURL }}/{{ article.url }}{% endblock %}
 {% block meta_description %}<meta name="description" content="{{ self.og_description() }}" />{% endblock %}
 {% block content %}
 
@@ -19,12 +20,12 @@
 	            /* * * DON'T EDIT BELOW THIS LINE * * */
 	            (function() {
 	                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-	                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+	                dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
 	                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 	            })();
 	        </script>
-	        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-	        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+	        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	        <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 		</div><!-- #respond -->					
 </div><!-- #comments -->
 {% endif %}
