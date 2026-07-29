@@ -1,6 +1,6 @@
 The article measures where the capital is going and assumes that's where the value will be captured. Those are not the same thing.
 
-[thoughtful] The whole argument rests on a slide from "this layer is expensive and physically constrained" to "this layer captures the value." But capital intensity and value capture are different axes. Railroads were brutally capital-intensive; most of the durable value ended up with the businesses that ran on top of the rails, not the ones that laid them. Being hard to build is not the same as being where the margin lives.
+The whole argument rests on a slide from "this layer is expensive and physically constrained" to "this layer captures the value." But capital intensity and value capture are different axes. Railroads were brutally capital-intensive; most of the durable value ended up with the businesses that ran on top of the rails, not the ones that laid them. Being hard to build is not the same as being where the margin lives.
 
 Here's the move the article misses: commoditization at the bottom doesn't destroy value — it relocates it. When a layer gets cheap and abundant, the barrier drops and value floods into whatever sits on top and can now do something new.
 
@@ -12,7 +12,7 @@ The open-versus-closed gap closing from eight percent to one point seven percent
 
 <break time="1.0s"/>
 
-[curious] Now here's the omission that is, for me, the whole disagreement in one gap.
+Now here's the omission that is, for me, the whole disagreement in one gap.
 
 The article has five layers: semiconductors, open models and inference, premium models, data platforms, applications. Notice what's missing. There is no layer for the thing that turns a commodity model into something that does work in the world. No orchestration. No integration. No agent.
 

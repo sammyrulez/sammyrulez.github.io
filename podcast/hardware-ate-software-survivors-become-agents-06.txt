@@ -1,6 +1,6 @@
 The pattern is already shipping, and the tell is that these products don't describe themselves as software at all — they describe themselves as a role.
 
-[curious] Slang AI sells an AI super host for restaurants. It answers the phone, manages reservations, routes VIPs to a human, and pings staff when something needs attention. Nobody at the restaurant logs into a dashboard to "use the reservation feature" — the phone just gets answered, all of it, every time. The product is the host.
+Slang AI sells an AI super host for restaurants. It answers the phone, manages reservations, routes VIPs to a human, and pings staff when something needs attention. Nobody at the restaurant logs into a dashboard to "use the reservation feature" — the phone just gets answered, all of it, every time. The product is the host.
 
 Same Day does the equivalent for home services: AI dispatchers and receptionists that answer calls, book jobs, and reschedule without a human touching them. Again, the sale isn't a tool — it's the front desk.
 
@@ -8,8 +8,8 @@ What makes both work is the bar they clear: handle one genuinely annoying job be
 
 <break time="1.0s"/>
 
-[thoughtful] So yes: software ate the world, and now hardware is eating software. But something always crawls out of the thing that got eaten. This time it's the agent — and it's standing on all that cheap silicon, using it, not being replaced by it.
+So yes: software ate the world, and now hardware is eating software. But something always crawls out of the thing that got eaten. This time it's the agent — and it's standing on all that cheap silicon, using it, not being replaced by it.
 
 The article looked down the stack and saw where the capital sinks. Look up the stack and you see where the work goes, and the work is where builders have always eventually captured the value.
 
-[serious] The point software is dying. Long live the agent.
+The point software is dying. Long live the agent.

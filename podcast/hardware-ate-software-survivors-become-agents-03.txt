@@ -6,7 +6,7 @@ So if the bottom of the stack is commoditizing — and it is — where does the 
 
 Not the GPUs. You can rent those by the hour, and the whole thrust of open models and local inference is to make the raw intelligence a fungible input. Owning silicon is owning the railroad.
 
-[serious] The new control points are further up. Three of them, specifically.
+The new control points are further up. Three of them, specifically.
 
 First: orchestration. The logic that decides which capability to invoke, in what order, and how to recover when a step fails. This is genuinely hard and genuinely defensible — and it lives nowhere in the five-layer map.
 
@@ -14,7 +14,7 @@ Second: proprietary data loops. The article actually gets this half-right under 
 
 Third: agent reliability and safety. The boring, unglamorous work of making an autonomous thing trustworthy enough to hand real permissions. Whoever solves this owns a lock-in that no amount of capex buys.
 
-[pause] None of these are cheap in capital. They're expensive in judgment, in data, and in the accumulated scar tissue of making agents behave. That's a different kind of moat than a fab, and it accrues to a different kind of builder.
+<break time="0.5s"/> None of these are cheap in capital. They're expensive in judgment, in data, and in the accumulated scar tissue of making agents behave. That's a different kind of moat than a fab, and it accrues to a different kind of builder.
 
 <break time="1.0s"/>
 
