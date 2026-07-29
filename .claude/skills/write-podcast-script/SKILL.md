@@ -13,7 +13,8 @@ file di testo puro pronti per ElevenLabs**, salvati in `podcast/<slug>-NN.txt`.
 I file contengono solo testo parlato + tag `<break>` per le pause, senza Markdown né header.
 
 Scope: one post at a time, full adaptation, script text only (no audio). Do NOT
-edit the source post.
+edit the source post. Per generare l'audio dai file .txt prodotti, vedi la sezione
+"Generazione audio (ElevenLabs)" più avanti — è un passo separato e opzionale.
 
 ## When to Use
 
@@ -88,6 +89,26 @@ L'episodio segue comunque l'arco cold open → intro → corpo → outro, ma:
 - Ogni file < ~3.000 caratteri, tagliato su confini naturali, mai dentro un tag,
   niente code sotto ~250 caratteri.
 - Output in `podcast/<slug>-NN.txt`; cartella creata; file esistenti confermati.
+
+## Generazione audio (ElevenLabs)
+
+Passo SEPARATO e SOLO su richiesta esplicita ("genera anche l'audio"). La normale
+generazione dei .txt NON chiama mai l'API e non consuma crediti.
+
+Prerequisiti:
+- I file `podcast/<slug>-NN.txt` devono esistere già (generali prima con questa skill).
+- Variabili d'ambiente impostate: `ELEVENLABS_API_KEY` e `ELEVENLABS_VOICE_ID`.
+  Se mancano, chiedile all'utente; non stamparle né scriverle su file.
+- Dipendenza installata nel venv:
+  `venv/bin/pip install -r .claude/skills/write-podcast-script/requirements-audio.txt`
+
+Comando:
+  `venv/bin/python .claude/skills/write-podcast-script/generate_audio.py <slug>`
+  Opzioni: `--podcast-dir DIR` (default `podcast`), `--force` (sovrascrive i .mp3).
+
+Output: un file `podcast/<slug>-NN.mp3` per ogni chunk (`eleven_multilingual_v2`,
+`mp3_44100_128`). Chiamare l'API consuma crediti: di default i .mp3 già presenti
+vengono saltati (usa `--force` per rigenerarli).
 
 ## Common Mistakes
 
