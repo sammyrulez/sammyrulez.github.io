@@ -911,3 +911,122 @@ article.comment {
 		line-height: 28px;
 	}
 }
+
+/* =Typography refresh (solo tipografia: font, scala, ritmo)
+   Layout e colori del tema invariati. Accento teal mantenuto.
+----------------------------------------------- */
+:root {
+	--font-display: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+body {
+	font-family: var(--font-body);
+	font-size: 17px;
+	line-height: 1.65;
+	color: #3a3a3a;
+	-webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--font-display);
+	font-optical-sizing: auto;
+}
+
+/* Masthead: intestazione più compatta (meno spazio bianco) */
+#header {
+	min-height: 0;
+	padding: 46px 0 18px;
+}
+#site-title {
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: clamp(2.5rem, 5.5vw, 3.5rem);
+	letter-spacing: -0.035em;
+	line-height: 1.02;
+	text-transform: none;
+}
+#site-title a { letter-spacing: inherit; }
+#site-description {
+	font-family: var(--font-body);
+	font-size: 15px;
+	font-weight: 400;
+}
+
+/* Nav: etichette sans in maiuscoletto spaziato */
+#menu a {
+	font-family: var(--font-body);
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+}
+
+/* Metadati del gutter: da Oswald 25px a mono discreto */
+.hentry .entry-meta {
+	font-family: var(--font-mono);
+	font-size: 0.8rem;
+	line-height: 1.5;
+	text-transform: none;
+}
+.hentry .entry-meta .date {
+	font-size: 0.82rem;
+	font-weight: 600;
+}
+.hentry .entry-meta .byline,
+.hentry .entry-meta .cat-links { font-size: 0.72rem; }
+
+/* Titoli dei post */
+.entry-title {
+	font-family: var(--font-display);
+	font-size: 1.65rem;
+	font-weight: 600;
+	line-height: 1.22;
+	letter-spacing: -0.025em;
+	text-transform: none;
+}
+
+/* Corpo dell'articolo */
+.entry-content {
+	font-family: var(--font-body);
+	font-size: 1.0625rem;
+	line-height: 1.75;
+}
+.entry-content h2 {
+	font-family: var(--font-display);
+	font-size: 1.55rem;
+	font-weight: 600;
+	line-height: 1.25;
+	margin: 1.8em 0 0.5em;
+	text-transform: none;
+}
+.entry-content h3 {
+	font-family: var(--font-display);
+	font-size: 1.25rem;
+	font-weight: 600;
+	margin: 1.5em 0 0.4em;
+}
+.entry-content code,
+.entry-content pre,
+.entry-content tt {
+	font-family: var(--font-mono);
+}
+blockquote {
+	font-family: var(--font-body);
+	font-style: normal;
+}
+.tag-links,
+.navigation { font-family: var(--font-mono); }
+
+
+/* =Larghezza desktop: usa più spazio orizzontale (meno fasce vuote ai lati)
+   Solo >820px per non interferire col layout mobile impilato.
+----------------------------------------------- */
+@media only screen and (min-width: 821px) {
+	#container,
+	#header,
+	#menu,
+	#footer { max-width: 1000px; }
+	.hentry .main { width: 730px; }
+}
