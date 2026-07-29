@@ -1,4 +1,4 @@
-"""Genera un file audio .mp3 per ogni chunk .txt di un episodio podcast,
+"""Genera un file audio .mp3 per l'intro e per ogni chunk .txt di un episodio podcast,
 usando l'API ElevenLabs (modello eleven_multilingual_v2).
 
 Uso:
@@ -38,7 +38,7 @@ def discover_intro(podcast_dir: Path, slug: str) -> Path | None:
 
 
 def chunk_to_mp3_path(txt_path: Path) -> Path:
-    """Mappa <slug>-NN.txt -> <slug>-NN.mp3 nella stessa cartella."""
+    """Mappa un file <name>.txt nel corrispondente <name>.mp3 nella stessa cartella."""
     return txt_path.with_suffix(".mp3")
 
 
