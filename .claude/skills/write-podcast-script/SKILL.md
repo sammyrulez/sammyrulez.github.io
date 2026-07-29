@@ -9,8 +9,8 @@ description: Use when converting an existing blog post in content/ into a single
 
 Converts an existing Pelican blog post into a **single-voice podcast script** — a
 spoken-style monologue in the author's first-person voice, produced as **uno o più
-file di testo puro pronti per ElevenLabs v3**, salvati in `podcast/<slug>-NN.txt`.
-I file contengono solo testo parlato + audio tag v3, senza Markdown né header.
+file di testo puro pronti per ElevenLabs**, salvati in `podcast/<slug>-NN.txt`.
+I file contengono solo testo parlato + tag `<break>` per le pause, senza Markdown né header.
 
 Scope: one post at a time, full adaptation, script text only (no audio). Do NOT
 edit the source post.
@@ -41,7 +41,7 @@ edit the source post.
 - No visual references: never "as shown above", "in the table", "see the figure".
 - Expand acronyms on first use: "MCP, il Model Context Protocol".
 - Write numbers, symbols and percentages the way they are spoken.
-- Pause brevi con `[pause]`, pause fra momenti dell'episodio con `<break time="1.0s"/>`. No Markdown inside spoken lines.
+- Pause brevi con `<break time="0.5s"/>`, pause fra momenti dell'episodio con `<break time="1.0s"/>`. No Markdown inside spoken lines.
 - Write in the **same language as the source post** (do not translate).
 - Match the author's voice from the source post — same stance and tone, just spoken.
 
@@ -56,35 +56,23 @@ edit the source post.
 
 ## Struttura dell'output
 
-Ogni file contiene SOLO testo parlato + audio tag v3 + tag di pausa. Nessun header,
+Ogni file contiene SOLO testo parlato + tag `<break>` per le pause. Nessun header,
 nessun titolo, nessuna riga "Fonte:", nessun Markdown, nessun marker di sezione
 testuale. L'utente incolla il contenuto del file in ElevenLabs senza tagliare nulla.
 
-L'episodio segue comunque l'arco cold open → intro → corpo → outro, ma i confini fra
-questi momenti NON sono scritti come marker: sono resi con una pausa più marcata
-(`<break time="1.0s"/>`) e, dove serve, un cambio di tono via audio tag.
+L'episodio segue comunque l'arco cold open → intro → corpo → outro, ma:
 
-## Audio tag v3
-
-Le parentesi quadre in ElevenLabs v3 sono audio tag. Usali così:
-
-- Pause brevi: usa `[pause]` (mai `[pausa]`).
-- Pause fra i momenti dell'episodio: `<break time="1.0s"/>`.
-- Espressività: usa i tag con parsimonia, solo quando cambia genuinamente
-  l'intenzione di una frase — mai su ogni frase.
-- Palette CHIUSA consentita (non inventare altri tag: quelli fuori vocabolario
-  vengono ignorati o pronunciati):
-  [pause], [thoughtful], [curious], [serious], [excited], [laughs], [sighs],
-  [sarcastic], [whispers].
-- Gli audio tag sono in INGLESE anche se il parlato è in un'altra lingua: è così
-  che ElevenLabs li riconosce. Il testo parlato resta nella lingua del post.
+- I confini fra i momenti dell'episodio (cold open → intro → corpo → outro) NON sono
+  scritti come marker: si rendono con una pausa `<break time="1.0s"/>`.
+- Le pause brevi (un beat dentro il discorso) si rendono con `<break time="0.5s"/>`.
+- Nessun audio tag fra parentesi quadre: l'unico marker ammesso nel testo è `<break time="…"/>`.
 
 ## Regola di split
 
 - Ogni file resta sotto ~3.000 caratteri.
 - Taglia solo su confini naturali: fine frase o fine paragrafo, preferendo i
   confini fra i momenti dell'episodio (cold open → intro → corpo → outro).
-- Non tagliare MAI dentro un audio tag o un tag `<break>`.
+- Non tagliare MAI dentro un tag `<break>`.
 - Evita code minuscole: se l'ultimo pezzo risulterebbe sotto ~250 caratteri,
   accorpalo al precedente.
 - Numera i file `-01`, `-02`, … Se l'episodio sta sotto il limite, produci
@@ -96,7 +84,7 @@ Le parentesi quadre in ElevenLabs v3 sono audio tag. Usali così:
 - Nessun riferimento visivo e nessun codice/sintassi letto alla lettera.
 - Acronimi espansi al primo uso; numeri e simboli scritti come si pronunciano.
 - File 100% puliti: nessun header, nessun Markdown, nessun marker di sezione testuale.
-- Solo audio tag della palette consentita; pause come `[pause]` / `<break>`.
+- Nessun audio tag fra parentesi quadre; le pause sono solo `<break time="…"/>`.
 - Ogni file < ~3.000 caratteri, tagliato su confini naturali, mai dentro un tag,
   niente code sotto ~250 caratteri.
 - Output in `podcast/<slug>-NN.txt`; cartella creata; file esistenti confermati.
@@ -107,9 +95,8 @@ Le parentesi quadre in ElevenLabs v3 sono audio tag. Usali così:
 |---------|-----|
 | Reading code/commands verbatim | Explain their meaning only; never the syntax. |
 | Leaving "as shown above / in the table" | Rewrite for the ear; no visual references. |
-| Markdown o marker di sezione nel file .txt | Solo testo parlato + audio tag v3; niente header/Markdown. |
-| Usare `[pausa]` o marker `[CORPO]/[INTRO]` | Pause con `[pause]`/`<break>`; niente marker di sezione. |
-| Inventare audio tag fuori palette | Usa solo la palette v3 consentita. |
+| Usare audio tag fra parentesi quadre (es. `[thoughtful]`, `[pause]`) | Nessun audio tag; le pause sono solo `<break time="…"/>`. |
+| Markdown o marker di sezione nel file .txt | Solo testo parlato + `<break>`; niente header/Markdown/marker. |
 | Un unico file oltre ~3.000 caratteri | Spezza in `podcast/<slug>-NN.txt` su confini naturali. |
 | Writing into content/ | Scripts go to `podcast/<slug>-NN.txt`, outside content/. |
 
@@ -124,8 +111,7 @@ Source post excerpt:
 Script excerpt (file `podcast/<slug>-01.txt`):
 
 ```
-[thoughtful] So let's start with where the article is right. Value really is
-migrating. And here's the blunt version: if your product is just a thin shell
-around a single model call, your margin is a rounding error on somebody else's
-infrastructure bill. <break time="1.0s"/>
+So let's start with where the article is right. Value really is migrating. And here's
+the blunt version: if your product is just a thin shell around a single model call, your
+margin is a rounding error on somebody else's infrastructure bill. <break time="1.0s"/>
 ```
