@@ -40,3 +40,19 @@ def test_load_config_missing_api_key():
 def test_load_config_missing_voice_id():
     with pytest.raises(ValueError, match="ELEVENLABS_VOICE_ID"):
         ga.load_config({"ELEVENLABS_API_KEY": "k"})
+
+
+def test_discover_intro_found(tmp_path):
+    _write(tmp_path / "foo-intro.txt")
+    assert ga.discover_intro(tmp_path, "foo") == tmp_path / "foo-intro.txt"
+
+
+def test_discover_intro_absent(tmp_path):
+    _write(tmp_path / "foo-01.txt")
+    assert ga.discover_intro(tmp_path, "foo") is None
+
+
+def test_discover_chunks_excludes_intro(tmp_path):
+    _write(tmp_path / "foo-intro.txt")
+    _write(tmp_path / "foo-01.txt")
+    assert [p.name for p in ga.discover_chunks(tmp_path, "foo")] == ["foo-01.txt"]

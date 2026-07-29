@@ -31,6 +31,12 @@ def discover_chunks(podcast_dir: Path, slug: str) -> list[Path]:
     return [p for _, p in sorted(matches, key=lambda t: t[0])]
 
 
+def discover_intro(podcast_dir: Path, slug: str) -> Path | None:
+    """Ritorna <slug>-intro.txt in podcast_dir se esiste, altrimenti None."""
+    p = podcast_dir / f"{slug}-intro.txt"
+    return p if p.is_file() else None
+
+
 def chunk_to_mp3_path(txt_path: Path) -> Path:
     """Mappa <slug>-NN.txt -> <slug>-NN.mp3 nella stessa cartella."""
     return txt_path.with_suffix(".mp3")
@@ -80,10 +86,13 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     podcast_dir = Path(args.podcast_dir)
+    intro = discover_intro(podcast_dir, args.slug)
     chunks = discover_chunks(podcast_dir, args.slug)
-    if not chunks:
+    files_to_process = ([intro] if intro else []) + chunks
+    if not files_to_process:
         print(
-            f"Nessun file {args.slug}-NN.txt in {podcast_dir}. Genera prima gli script.",
+            f"Nessun file {args.slug}-intro.txt o {args.slug}-NN.txt in {podcast_dir}. "
+            f"Genera prima gli script.",
             file=sys.stderr,
         )
         return 1
@@ -93,7 +102,7 @@ def main(argv: list[str] | None = None) -> int:
     client = ElevenLabs(api_key=api_key)
 
     generated, skipped = [], []
-    for txt in chunks:
+    for txt in files_to_process:
         mp3 = chunk_to_mp3_path(txt)
         if mp3.exists() and not args.force:
             skipped.append(mp3.name)
