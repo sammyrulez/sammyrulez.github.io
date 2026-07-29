@@ -84,14 +84,11 @@ per la TTS.
 
 ## Regola di split
 
-- Ogni file resta sotto ~3.000 caratteri.
-- Taglia solo su confini naturali: fine frase o fine paragrafo, preferendo i
-  confini fra i momenti del corpo (es. corpo → outro).
-- Non tagliare MAI dentro un tag `<break>`.
-- Evita code minuscole: se l'ultimo pezzo risulterebbe sotto ~250 caratteri,
-  accorpalo al precedente.
-- Numera i file `-01`, `-02`, … Se l'episodio sta sotto il limite, produci
-  comunque un solo `podcast/<slug>-01.txt`.
+- Ogni file resta sotto 40000 caratteri (limite vincolante: 1 credito ElevenLabs ≈ 1 carattere).
+- Di norma l'episodio sta in UN solo `podcast/<slug>-01.txt`; si splitta in `-02`, `-03`, …
+  solo se il testo supererebbe 40000 caratteri.
+- Quando serve tagliare: solo su confini naturali (fine frase o paragrafo), mai dentro un
+  `<break>`. Evita code sotto ~250 caratteri.
 
 ## Self-check before writing the file
 
@@ -100,8 +97,7 @@ per la TTS.
 - Acronimi espansi al primo uso; numeri e simboli scritti come si pronunciano.
 - File 100% puliti: nessun header, nessun Markdown, nessun marker di sezione testuale.
 - Nessun audio tag fra parentesi quadre; le pause sono solo `<break time="…"/>`.
-- Ogni file < ~3.000 caratteri, tagliato su confini naturali, mai dentro un tag,
-  niente code sotto ~250 caratteri.
+- Vincolante: ogni file (intro e ogni chunk) è < 40000 caratteri.
 - Output in `podcast/<slug>-NN.txt`; cartella creata; file esistenti confermati.
 - Esiste `podcast/<slug>-intro.txt` (teaser 2–4 frasi: saluto + hook).
 - Il chunk `-01` NON ripete saluto/cold open/intro: inizia dal corpo.
@@ -128,6 +124,15 @@ Output: un file `podcast/<slug>-NN.mp3` per ogni chunk (`eleven_multilingual_v2`
 Chiamare l'API consuma crediti: di default i .mp3 già presenti
 vengono saltati (usa `--force` per rigenerarli).
 
+Retry automatico su crediti esauriti (opzionale):
+  `venv/bin/python .claude/skills/write-podcast-script/generate_audio.py <slug> --wait`
+  Con `--wait`, se la quota è esaurita lo script legge la data di reset e attende, poi
+  riprende (idempotente). Opzioni: `--max-cycles N` (default 4), `--max-wait-seconds S`
+  (default ~32 giorni). Interrompibile con Ctrl-C.
+  Nota: `--wait` richiede una chiave ElevenLabs con permesso `user_read` (per leggere la
+  data di reset); senza, lo script esce spiegando cosa manca.
+Lo script rifiuta file oltre 40000 caratteri senza chiamare l'API.
+
 ## Common Mistakes
 
 | Mistake | Fix |
@@ -136,7 +141,7 @@ vengono saltati (usa `--force` per rigenerarli).
 | Leaving "as shown above / in the table" | Rewrite for the ear; no visual references. |
 | Usare audio tag fra parentesi quadre (es. `[thoughtful]`, `[pause]`) | Nessun audio tag; le pause sono solo `<break time="…"/>`. |
 | Markdown o marker di sezione nel file .txt | Solo testo parlato + `<break>`; niente header/Markdown/marker. |
-| Un unico file oltre ~3.000 caratteri | Spezza in `podcast/<slug>-NN.txt` su confini naturali. |
+| Un file oltre 40000 caratteri | Spezza in `podcast/<slug>-NN.txt`; nessun file supera 40000. |
 | Writing into content/ | Scripts go to `podcast/<slug>-NN.txt`, outside content/. |
 
 ## Example
