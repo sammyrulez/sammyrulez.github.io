@@ -21,7 +21,7 @@ Struttura originale del tema mantenuta (masthead + lista + gutter meta).
 	--code-surface: #EEECE4;
 	--selection: #D6E2F1;
 
-	--font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+	--font-display: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
 	--font-body: 'Source Serif 4', Georgia, 'Times New Roman', serif;
 	--font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -69,8 +69,18 @@ hr {
 	margin: 2.5em 0;
 }
 
+/* =Icone (SVG inline, ereditano currentColor)
+----------------------------------------------- */
+.icon {
+	width: 1em;
+	height: 1em;
+	flex: none;
+	vertical-align: -0.13em;
+}
+
 h1, h2, h3, h4, h5, h6 {
 	font-family: var(--font-display);
+	font-optical-sizing: auto;
 	color: var(--ink);
 	line-height: 1.2;
 	letter-spacing: -0.01em;
@@ -93,10 +103,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 #site-title {
 	font-family: var(--font-display);
-	font-weight: 700;
-	font-size: clamp(2.4rem, 6vw, 3.4rem);
-	letter-spacing: -0.03em;
-	line-height: 1.05;
+	font-optical-sizing: auto;
+	font-weight: 800;
+	font-size: clamp(2.7rem, 7vw, 4rem);
+	letter-spacing: -0.035em;
+	line-height: 1.02;
 	margin: 0;
 	text-transform: none;
 }
@@ -144,16 +155,20 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 }
 #menu a {
+	align-items: center;
 	color: var(--muted);
+	display: inline-flex;
 	font-family: var(--font-mono);
 	font-size: 0.74rem;
 	font-weight: 500;
+	gap: 6px;
 	letter-spacing: 0.08em;
 	margin: 0 0 0 22px;
 	padding: 4px 0;
 	text-decoration: none;
 	text-transform: uppercase;
 }
+#menu a .icon { width: 1.15em; height: 1.15em; vertical-align: 0; }
 #menu a:hover { color: var(--ink); }
 #menu li.active a { color: var(--signal); }
 
@@ -224,6 +239,13 @@ h1, h2, h3, h4, h5, h6 {
 	text-transform: none;
 }
 .hentry .entry-meta div { margin: 0; }
+.hentry .entry-meta .icon {
+	width: 0.82em;
+	height: 0.82em;
+	color: var(--muted);
+	margin-right: 5px;
+	vertical-align: -0.04em;
+}
 .hentry .entry-meta .date {
 	color: var(--ink);
 	font-size: 0.82rem;
@@ -384,12 +406,10 @@ h1, h2, h3, h4, h5, h6 {
 	font-size: 0.76rem;
 	margin-top: 26px;
 }
-.tag-links strong {
+.tag-links .icon {
 	color: var(--muted);
-	font-weight: 500;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	margin-right: 6px;
+	margin-right: 7px;
+	vertical-align: -0.11em;
 }
 .tag-links a {
 	color: var(--signal);
