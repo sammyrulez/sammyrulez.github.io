@@ -115,12 +115,26 @@ def fetch_subscription(api_key: str) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     import os
+    import time
+    from datetime import datetime
 
     parser = argparse.ArgumentParser(description="Genera audio podcast via ElevenLabs.")
     parser.add_argument("slug", help="slug dell'episodio (file podcast/<slug>-NN.txt)")
     parser.add_argument("--podcast-dir", default="podcast", help="cartella dei file")
     parser.add_argument(
         "--force", action="store_true", help="sovrascrive i .mp3 esistenti"
+    )
+    parser.add_argument(
+        "--wait", action="store_true",
+        help="su quota esaurita, attende il reset e riprova",
+    )
+    parser.add_argument(
+        "--max-cycles", type=int, default=4,
+        help="numero massimo di cicli attesa+retry con --wait",
+    )
+    parser.add_argument(
+        "--max-wait-seconds", type=int, default=2764800,
+        help="attesa massima per singolo reset (default ~32 giorni)",
     )
     args = parser.parse_args(argv)
 
@@ -142,26 +156,83 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 1
 
+    too_big = oversize_files(files_to_process)
+    if too_big:
+        names = ", ".join(p.name for p in too_big)
+        print(
+            f"File oltre il limite di 40000 caratteri: {names}. "
+            f"Riduci il testo (ElevenLabs rifiuterebbe la richiesta).",
+            file=sys.stderr,
+        )
+        return 6
+
     from elevenlabs.client import ElevenLabs
 
     client = ElevenLabs(api_key=api_key)
 
-    generated, skipped = [], []
-    for txt in files_to_process:
-        mp3 = chunk_to_mp3_path(txt)
-        if mp3.exists() and not args.force:
-            skipped.append(mp3.name)
-            print(f"salto {mp3.name} (esiste già; usa --force per sovrascrivere)")
-            continue
-        text = txt.read_text(encoding="utf-8")
+    generated: list[str] = []
+    skipped: list[str] = []
+    cycles = 0
+    while True:
+        hit_quota = False
+        for txt in files_to_process:
+            mp3 = chunk_to_mp3_path(txt)
+            if mp3.exists() and not args.force:
+                if mp3.name not in skipped:
+                    skipped.append(mp3.name)
+                    print(f"salto {mp3.name} (esiste già; usa --force per sovrascrivere)")
+                continue
+            text = txt.read_text(encoding="utf-8")
+            try:
+                data = synthesize(client, text, voice_id)
+            except Exception as e:
+                if classify_error(e) == "quota_exceeded" and args.wait:
+                    hit_quota = True
+                    break
+                print(f"Errore ElevenLabs su {txt.name}: {e}", file=sys.stderr)
+                return 3
+            mp3.write_bytes(data)
+            generated.append(mp3.name)
+            print(f"scritto {mp3.name}")
+
+        if not hit_quota:
+            break
+
+        if cycles >= args.max_cycles:
+            print(
+                f"Quota esaurita e raggiunto il limite di {args.max_cycles} cicli: "
+                f"episodio incompleto.",
+                file=sys.stderr,
+            )
+            return 5
+
         try:
-            data = synthesize(client, text, voice_id)
-        except Exception as e:  # errore SDK/rete: riporta e ferma
-            print(f"Errore ElevenLabs su {txt.name}: {e}", file=sys.stderr)
-            return 3
-        mp3.write_bytes(data)
-        generated.append(mp3.name)
-        print(f"scritto {mp3.name}")
+            sub = fetch_subscription(api_key)
+        except Exception as e:
+            print(f"Impossibile leggere la subscription: {e}", file=sys.stderr)
+            return 4
+        reset = parse_reset_unix(sub)
+        if reset is None:
+            print(
+                "Data di reset non disponibile (serve una chiave con permesso user_read).",
+                file=sys.stderr,
+            )
+            return 4
+        wait_s = seconds_until(reset, time.time())
+        if wait_s > args.max_wait_seconds:
+            print(
+                f"Attesa richiesta ({wait_s}s) oltre il massimo consentito "
+                f"({args.max_wait_seconds}s): esco.",
+                file=sys.stderr,
+            )
+            return 4
+        cycles += 1
+        when = datetime.fromtimestamp(reset).isoformat(timespec="minutes")
+        print(
+            f"Quota esaurita. Reset previsto: {when} (~{wait_s // 3600} ore). "
+            f"Attendo… (ciclo {cycles}/{args.max_cycles}).",
+        )
+        time.sleep(wait_s + 60)
 
     print(f"Fatto. Generati: {len(generated)}; saltati: {len(skipped)}.")
     return 0
