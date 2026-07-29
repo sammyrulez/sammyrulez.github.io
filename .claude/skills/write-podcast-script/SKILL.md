@@ -12,9 +12,9 @@ spoken-style monologue in the author's first-person voice, produced as **uno o p
 file di testo puro pronti per ElevenLabs**, salvati in `podcast/<slug>-NN.txt`.
 I file contengono solo testo parlato + tag `<break>` per le pause, senza Markdown né header.
 
-Scope: one post at a time, full adaptation, script text only (no audio). Do NOT
-edit the source post. Per generare l'audio dai file .txt prodotti, vedi la sezione
-"Generazione audio (ElevenLabs)" più avanti — è un passo separato e opzionale.
+Scope: one post at a time, full adaptation. Il passo base produce solo i file .txt;
+la generazione audio è un passo separato e opzionale (vedi "Generazione audio
+(ElevenLabs)" più avanti). Do NOT edit the source post.
 
 ## When to Use
 
