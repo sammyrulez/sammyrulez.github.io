@@ -1,6 +1,6 @@
 ---
 name: write-podcast-script
-description: Use when converting an existing blog post in content/ into a single-voice podcast episode script (spoken-style monologue) ready for ElevenLabs v3, saved as one or more podcast/<slug>-NN.txt files.
+description: Use when converting an existing blog post in content/ into a single-voice podcast episode script (spoken-style monologue) ready for ElevenLabs, saved as one or more podcast/<slug>-NN.txt files, with optional on-demand audio generation via the ElevenLabs API.
 ---
 
 # Write Podcast Script
