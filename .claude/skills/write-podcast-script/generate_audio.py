@@ -2,7 +2,7 @@
 usando l'API ElevenLabs (modello eleven_multilingual_v2).
 
 Uso:
-    python generate_audio.py <slug> [--podcast-dir DIR] [--force]
+    python generate_audio.py <slug> [--podcast-dir DIR] [--force] [--wait] [--max-cycles N] [--max-wait-seconds S]
 
 Config da ambiente:
     ELEVENLABS_API_KEY   chiave API (obbligatoria)
