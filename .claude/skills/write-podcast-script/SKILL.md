@@ -65,10 +65,12 @@ Ogni file contiene SOLO testo parlato + tag `<break>` per le pause. Nessun heade
 nessun titolo, nessuna riga "Fonte:", nessun Markdown, nessun marker di sezione
 testuale. L'utente incolla il contenuto del file in ElevenLabs senza tagliare nulla.
 
-L'episodio segue comunque l'arco cold open → intro → corpo → outro, ma:
+Il cold open, il saluto e l'introduzione dell'argomento vivono esclusivamente in
+`podcast/<slug>-intro.txt` (vedi sezione "Intro (teaser)"). I chunk `-NN.txt` coprono
+corpo → outro: il `-01` inizia direttamente dal corpo, senza ripetere saluto o intro.
 
-- I confini fra i momenti dell'episodio (cold open → intro → corpo → outro) NON sono
-  scritti come marker: si rendono con una pausa `<break time="1.0s"/>`.
+- I confini fra i momenti del corpo (es. transizione verso l'outro) si rendono con una
+  pausa `<break time="1.0s"/>`.
 - Le pause brevi (un beat dentro il discorso) si rendono con `<break time="0.5s"/>`.
 - Nessun audio tag fra parentesi quadre: l'unico marker ammesso nel testo è `<break time="…"/>`.
 
@@ -84,7 +86,7 @@ per la TTS.
 
 - Ogni file resta sotto ~3.000 caratteri.
 - Taglia solo su confini naturali: fine frase o fine paragrafo, preferendo i
-  confini fra i momenti dell'episodio (cold open → intro → corpo → outro).
+  confini fra i momenti del corpo (es. corpo → outro).
 - Non tagliare MAI dentro un tag `<break>`.
 - Evita code minuscole: se l'ultimo pezzo risulterebbe sotto ~250 caratteri,
   accorpalo al precedente.
@@ -122,6 +124,7 @@ Comando:
 
 Output: un file `podcast/<slug>-NN.mp3` per ogni chunk (`eleven_multilingual_v2`,
 `mp3_44100_128`). Viene generato anche `podcast/<slug>-intro.mp3` (l'intro è sintetizzata per prima).
+
 Chiamare l'API consuma crediti: di default i .mp3 già presenti
 vengono saltati (usa `--force` per rigenerarli).
 
