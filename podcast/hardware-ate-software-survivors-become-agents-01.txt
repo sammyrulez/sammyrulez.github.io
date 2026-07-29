@@ -1,5 +1,3 @@
-There's a piece going around called "Software Ate the World. Now Hardware Is Eating Software." And it's good enough that I want to argue with it.
-
 The thesis is that the center of economic gravity in tech is sliding down the stack — toward the layers with the deepest physical constraints and the strongest control points: semiconductors, data platforms, and the inference engines that run open models. NVIDIA at around seventy-five percent gross margins. Hyperscaler capex heading toward five point three trillion dollars by 2030. Application margins compressing from the seventy-five to ninety percent of the SaaS era down to fifty to sixty percent. The conclusion: stop betting on apps, start betting on silicon and data gravity.
 
 <break time="1.0s"/>
