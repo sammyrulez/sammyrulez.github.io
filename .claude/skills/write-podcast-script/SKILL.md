@@ -35,6 +35,10 @@ la generazione audio è un passo separato e opzionale (vedi "Generazione audio
    da 01), creando la cartella `podcast/` se assente. Applica la regola di split
    descritta sotto. Se esistono già file `podcast/<slug>-*.txt`, chiedi conferma
    prima di rigenerarli/sovrascriverli.
+   - Genera inoltre `podcast/<slug>-intro.txt`: un teaser breve (2–4 frasi) con saluto +
+     hook accattivante sull'argomento dell'episodio. Il saluto e l'introduzione stanno SOLO
+     qui: i chunk `-NN.txt` NON aprono più con cold open/saluto/intro — il `-01` inizia
+     direttamente dal corpo.
 
 ## Spoken-style rules
 
@@ -68,6 +72,14 @@ L'episodio segue comunque l'arco cold open → intro → corpo → outro, ma:
 - Le pause brevi (un beat dentro il discorso) si rendono con `<break time="0.5s"/>`.
 - Nessun audio tag fra parentesi quadre: l'unico marker ammesso nel testo è `<break time="…"/>`.
 
+## Intro (teaser)
+
+`podcast/<slug>-intro.txt` è un teaser di 2–4 frasi: saluto + un hook che incuriosisce
+sull'argomento (tono da trailer). Stesse regole degli altri file: prima persona, stile
+parlato, nessun audio tag fra parentesi quadre, `<break time="…"/>` ammesso, nessun
+riferimento visivo, nessun Markdown/header, stessa lingua del post. È testo puro pronto
+per la TTS.
+
 ## Regola di split
 
 - Ogni file resta sotto ~3.000 caratteri.
@@ -89,6 +101,8 @@ L'episodio segue comunque l'arco cold open → intro → corpo → outro, ma:
 - Ogni file < ~3.000 caratteri, tagliato su confini naturali, mai dentro un tag,
   niente code sotto ~250 caratteri.
 - Output in `podcast/<slug>-NN.txt`; cartella creata; file esistenti confermati.
+- Esiste `podcast/<slug>-intro.txt` (teaser 2–4 frasi: saluto + hook).
+- Il chunk `-01` NON ripete saluto/cold open/intro: inizia dal corpo.
 
 ## Generazione audio (ElevenLabs)
 
@@ -107,7 +121,8 @@ Comando:
   Opzioni: `--podcast-dir DIR` (default `podcast`), `--force` (sovrascrive i .mp3).
 
 Output: un file `podcast/<slug>-NN.mp3` per ogni chunk (`eleven_multilingual_v2`,
-`mp3_44100_128`). Chiamare l'API consuma crediti: di default i .mp3 già presenti
+`mp3_44100_128`). Viene generato anche `podcast/<slug>-intro.mp3` (l'intro è sintetizzata per prima).
+Chiamare l'API consuma crediti: di default i .mp3 già presenti
 vengono saltati (usa `--force` per rigenerarli).
 
 ## Common Mistakes
