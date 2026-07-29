@@ -68,6 +68,51 @@ def synthesize(client, text: str, voice_id: str) -> bytes:
     return b"".join(audio)
 
 
+def oversize_files(paths: list[Path], limit: int = 40000) -> list[Path]:
+    """Ritorna i file il cui testo è >= limit caratteri."""
+    return [p for p in paths if len(p.read_text(encoding="utf-8")) >= limit]
+
+
+def parse_reset_unix(payload: dict) -> int | None:
+    """Estrae next_character_count_reset_unix dal payload subscription."""
+    if not isinstance(payload, dict):
+        return None
+    v = payload.get("next_character_count_reset_unix")
+    if isinstance(v, (int, float)):
+        return int(v)
+    return None
+
+
+def classify_error(exc) -> str:
+    """Estrae il codice d'errore ElevenLabs da un'eccezione dell'SDK."""
+    body = getattr(exc, "body", None)
+    if isinstance(body, dict):
+        detail = body.get("detail")
+        if isinstance(detail, dict):
+            code = detail.get("code")
+            if isinstance(code, str):
+                return code
+    return "unknown"
+
+
+def seconds_until(reset_unix: int, now: float) -> int:
+    """Secondi (non negativi) da now al reset."""
+    return max(0, int(reset_unix - now))
+
+
+def fetch_subscription(api_key: str) -> dict:
+    """GET /v1/user/subscription. Funzione di rete (non testata)."""
+    import json
+    import urllib.request
+
+    req = urllib.request.Request(
+        "https://api.elevenlabs.io/v1/user/subscription",
+        headers={"xi-api-key": api_key},
+    )
+    with urllib.request.urlopen(req) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
 def main(argv: list[str] | None = None) -> int:
     import os
 
