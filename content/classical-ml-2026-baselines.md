@@ -30,10 +30,6 @@ On that board, tabular foundation models — pretrained transformers that do in-
 
 Then on June 30, 2026, Google Research released TabFM, a zero-shot tabular foundation model that also beats heavily tuned trees on TabArena — reportedly by solving the pretraining-data problem with large-scale synthetic table generation.
 
-For calibration, a default random forest is pinned at 1000 Elo on that board, and a 400-point gap is roughly a 10:1 win rate. That is not a rounding error. Something real happened.
-
-Two caveats belong right next to those numbers, though, and neither is a nitpick. First, several of the headline results are reported by the labs that built the models, and TabArena itself is co-curated by researchers connected to the TabPFN line. Nothing suggests anything improper — but independent replication is not a formality, it is the thing that separates a benchmark result from a fact about your data. Second, TabFM's best number does not come from the single-pass model at all. It comes from a 32-way ensemble of it. The oldest lesson in tabular ML survived the paradigm shift intact: a diverse ensemble beats its best single member, even when that member is a frontier model.
-
 ---
 
 ## The comparison nobody runs
