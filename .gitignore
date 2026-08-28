@@ -10,3 +10,5 @@ temp
 .claude/worktrees/
 podcast/*.mp3
 .DS_Store
+.DS_Store
+.env
