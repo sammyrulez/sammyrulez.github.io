@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>Sam Reghenzi Homepage &mdash; The Guardrail Is Not in the Model</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Frank Coyle gave a twenty-minute talk at the AI Engineer World&#39;s Fair that has been circulating for a few weeks now, and the argument in it is simple enough to state in one sentence: agentic..." />
+		<meta property="og:site_name" content="Sam Reghenzi Homepage" />
+		<meta property="og:locale" content="en" />
+		<meta property="og:type" content="article" />
+		<meta property="og:title" content="The Guardrail Is Not in the Model" />
+		<meta property="og:description" content="Frank Coyle gave a twenty-minute talk at the AI Engineer World&#39;s Fair that has been circulating for a few weeks now, and the argument in it is simple enough to state in one sentence: agentic..." />
+		<meta property="og:url" content="https://sammyrulez.github.io/ontologies-agentic-guardrails.html" />
+		<meta property="og:image" content="https://sammyrulez.github.io/images/social-default.png" />
+		<meta property="og:image:alt" content="Sam Reghenzi Homepage" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="The Guardrail Is Not in the Model" />
+		<meta name="twitter:description" content="Frank Coyle gave a twenty-minute talk at the AI Engineer World&#39;s Fair that has been circulating for a few weeks now, and the argument in it is simple enough to state in one sentence: agentic..." />
+		<meta name="twitter:image" content="https://sammyrulez.github.io/images/social-default.png" />
+<meta property="article:published_time" content="2026-08-30T14:16:00+02:00" /><meta property="article:author" content="samreghenzi" />		<link rel="canonical" href="https://sammyrulez.github.io/ontologies-agentic-guardrails.html" />
+		<link rel="profile" href="https://gmpg.org/xfn/11" />
+		<link rel="stylesheet" type="text/css" href="https://sammyrulez.github.io/theme/css/style.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" />
+		<link rel="icon" href="https://sammyrulez.github.io/theme/images/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="https://sammyrulez.github.io/theme/images/favicon-32x32.png" />
+		<link rel="apple-touch-icon" href="https://sammyrulez.github.io/theme/images/apple-touch-icon.png" />
+		<style type="text/css">
+			body.custom-background { background-color: #f5f5f5; }
+		</style>
+		<link rel="alternate" type="application/atom+xml"
+			title="Sam Reghenzi Homepage — Atom Feed"
+			href="https://sammyrulez.github.io/feeds/all.atom.xml" />
+		<link rel="alternate" type="application/rss+xml"
+			title="Sam Reghenzi Homepage — RSS Feed"
+			href="https://sammyrulez.github.io/feeds/all.rss.xml" />
+</head>
+
+<body class="home blog custom-background " >
+	<div id="container">
+		<div id="header">
+				<h1 id="site-title"><a href="https://sammyrulez.github.io">Sam Reghenzi Homepage</a></h1>
+		</div><!-- /#banner -->
+		
+		<nav id="menu" aria-label="Main navigation">
+			<div class="menu-navigation-container">
+				<ul id="menu-navigation" class="menu">
+						<li class="menu-item"><a href="https://sammyrulez.github.io/category/ai.html">AI</a></li>
+						<li class="menu-item active"><a href="https://sammyrulez.github.io/category/blog.html">blog</a></li>
+						<li class="menu-item"><a href="https://github.com/sammyrulez" rel="noopener noreferrer">Github</a></li>
+						<li class="menu-item"><a href="https://www.linkedin.com/in/sammyrulez/" rel="noopener noreferrer">LinkedIn</a></li>
+
+				</ul>
+			</div> <!--/#menu-navigation-container-->
+		</nav><!-- /#menu -->
+		
+		<div class="page-title">
+		</div>
+	
+		<div id="contents">
+
+<div class="post type-post status-publish format-standard hentry category-general" id="post">
+	<div class="entry-meta">
+		<div class="date"><a href="https://sammyrulez.github.io/ontologies-agentic-guardrails.html">Sun 30 August 2026</a></div>
+		<span class="byline">By <a href="https://sammyrulez.github.io/author/samreghenzi.html">samreghenzi</a></span>
+			<span class="cat-links"><a href="https://sammyrulez.github.io/category/blog.html" title="View all posts in blog" rel="category tag">blog</a></span>
+	</div> <!-- /#entry-meta -->
+	<div class="main">
+		<h2 class="entry-title">
+			<a href="https://sammyrulez.github.io/ontologies-agentic-guardrails.html" title="Permalink to The Guardrail Is Not in the Model" rel="bookmark">The Guardrail Is Not in the Model</a>
+		</h2>
+		<div class="entry-content">
+			<p>Frank Coyle gave <a href="https://www.youtube.com/watch?v=Sir59K8ZDPU">a twenty-minute talk</a> at the AI Engineer World's Fair that has been circulating for a few weeks now, and the argument in it is simple enough to state in one sentence: agentic systems need ontologies, because LLMs are probabilistic and probabilistic systems need logical guardrails.</p>
+<p>I think he is right, but the interesting part is why, and that is easier to see if you start from the failures rather than from the ontologies.</p>
+<h2>The failure that isn't a hallucination</h2>
+<p>Take a support agent that handles refunds. A request comes in, the agent reads the order, calls the payments tool, and refunds €340 to the customer. The tool call is well-formed, the arguments validate, and the summary it writes afterwards is an accurate description of what it did. The problem is that the same order had already been refunded four days earlier.</p>
+<p>It is worth going through the layers that should have caught this, because none of them did. The model did not hallucinate, since it never stated anything false. Schema validation passed: the amount was a positive decimal, the order ID was a UUID, and the reason was one of the allowed values. The eval suite passed too, because it scores the agent's output for helpfulness and faithfulness, and as a piece of text the response was fine. The system prompt did say not to issue duplicate refunds, and the model would have confirmed that rule if you had asked it.</p>
+<p>The failure was not in the language. It was that "an order has at most one refund" is a rule of the business that existed only in the heads of a few engineers and in the implicit assumptions of some older database queries. It was never written down anywhere a machine could check it.</p>
+<p>Most agent incidents I have seen have this shape. They are not fabrications, they are illegal states that nobody had written down. A payout goes to a support rep instead of the buyer because the recipient field was typed as a string. An order ends up with the status <code>probably_shipped</code> because the tool accepted free text. A category becomes its own ancestor because nothing said the relation was acyclic.</p>
+<p>The usual responses to this all have something in common. Longer system prompts, more context, better retrieval, another round of fine-tuning: every one of them is a change inside the model, and every one asks a probability distribution to reliably avoid a state that was never defined. It is an attempt to solve a logical problem with more probability.</p>
+<h2>The loop is where the power and the risk both come from</h2>
+<p>There is a point in Coyle's talk that puts this in a useful frame.</p>
+<p>In 1966 Böhm and Jacopini proved that any language with three constructs — sequence, conditional, and iteration — can compute anything computable. The then-current argument about whether Fortran or COBOL was the better language was therefore beside the point, since both had all three.</p>
+<p>Until recently an LLM call gave you sequence and, with tool use, something like a conditional. Then we added the loop, in the form of <code>while stop_reason == "tool_use"</code>. That third construct is a large part of why agents can now do things that a 2023 chat interface could not.</p>
+<p>Along with the power we inherited the familiar problems of loops. They can fail to terminate. They can drift, with small errors compounding so that each turn is slightly further from the goal than the last and no single step looks wrong. They can consume an unbounded amount of money, which is why token budgets exist.</p>
+<p>So we have a Turing-complete system whose transition function is a neural network, operating over a state space that was never formally specified, and our main way of constraining it is a system prompt written in English.</p>
+<p>That is not a criticism of LLMs. It is the same reason we do not secure a web application by asking people in the documentation not to attempt SQL injection. A constraint that the system has to pass through is different in kind from a constraint the system is asked to remember.</p>
+<h2>What an ontology is, in practical terms</h2>
+<p>The word carries a lot of philosophical history, from Aristotle's categories through Quine to the Semantic Web work of the 2000s. Coyle sensibly reaches for Gruber's 1993 definition, <em>a formal specification of a shared conceptualization</em>. For engineering purposes it can be made more concrete than that.</p>
+<p>The first part is a <strong>graph</strong>: entities, the relations between them, and properties on both. Order, Customer, Refund, SupportRep, <code>refundOf</code>, <code>paidTo</code>, <code>status</code>. If you have ever drawn your domain on a whiteboard, you have already done most of this work.</p>
+<p>The second part is a <strong>set of constraints that sits beside the graph</strong> rather than inside it. This is the part that usually gets skipped, and it is where most of the value is. Graph technology lets you state things about the shape of the graph and then check them mechanically: that <code>status</code> takes one of exactly three values, that an Order has at most one Refund, that the recipient of a payout must be a Customer and that nothing is ever both a Customer and a SupportRep, that <code>parentCategoryOf</code> is transitive so a category cannot end up inside itself.</p>
+<p>Some of these statements let you <strong>derive</strong> facts that were never written down. If the source of <code>teaches</code> is always a Teacher, then the single assertion "Bob teaches Scooter" tells you that Bob is a teacher and Scooter a student without either being stated. Other statements let you <strong>reject</strong> a state. Both are useful, and they are not the same operation, which matters later.</p>
+<p>The structural point is that these rules live neither in the data nor in the weights. Not in the rows, because a relational schema can express a foreign key but not "at most one refund per order across these three tables." Not in the model, because fine-tuning adjusts a distribution rather than adding a decision procedure. They live in a third place, and that third place can be checked cheaply by ordinary code.</p>
+<p>That is the architectural argument. The rest is implementation.</p>
+<h2>This has been tried before</h2>
+<p>If this sounds familiar, it should. It was tried in the 1980s and it failed.</p>
+<p>Symbolic AI then meant expert systems: knowledge engineers sitting with domain experts, extracting rules and encoding them by hand. A lot of money went into it, Japan launched the Fifth Generation project, and then the field collapsed into the AI winter. The usual summary is that it did not scale.</p>
+<p>Coyle mentions this and moves on, but the reason it did not scale is worth pausing on, because it determines whether we are about to repeat the mistake.</p>
+<p>Expert systems did not fail because formal logic is useless. They failed at knowledge acquisition. The bottleneck was a person translating a domain expert's tacit knowledge into rules, one rule at a time, and then maintaining those rules as the domain changed underneath them. The reasoning was the cheap part. Getting the knowledge in was the hard part.</p>
+<p>That is precisely the part that has changed. An LLM is good at reading unstructured material — tickets, documentation, transcripts, code, schemas — and proposing structure from it. A validator is good at the thing LLMs are bad at, which is saying no reliably.</p>
+<p>So the division of labour has swapped. In 1985 humans did the acquisition and machines did the inference. Now the model does the acquisition and the machine does the verification, with humans reviewing a diff rather than authoring a corpus. That is a different bet from the one that failed.</p>
+<p>There is a cost that tends to go unmentioned, though: someone has to own the ontology. When the business introduces partial refunds, "at most one refund per order" stops being true, and if nobody updates the rule the guardrail starts blocking legitimate work. A stale ontology is worse than no ontology, because it fails on correct behaviour and the team learns to route around it. This is a schema, and schemas need owners and a migration process.</p>
+<h2>Where it goes in the loop</h2>
+<p>Here is the agentic loop, with the place for the check marked.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">anthropic</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">anthropic</span><span class="o">.</span><span class="n">Anthropic</span><span class="p">()</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">user_request</span><span class="p">}]</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;claude-opus-5&quot;</span><span class="p">,</span>
+        <span class="n">max_tokens</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span>
+        <span class="n">thinking</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;adaptive&quot;</span><span class="p">},</span>
+        <span class="n">tools</span><span class="o">=</span><span class="n">TOOLS</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">stop_reason</span> <span class="o">!=</span> <span class="s2">&quot;tool_use&quot;</span><span class="p">:</span>
+        <span class="k">break</span>
+
+    <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">})</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;tool_use&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># 1. Shape. Pydantic at the door: is this even the right type?</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">TOOL_MODELS</span><span class="p">[</span><span class="n">block</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error_result</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Invalid arguments: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># 2. Effect — computed, NOT committed. Pure function, no side effects.</span>
+        <span class="n">proposed</span> <span class="o">=</span> <span class="n">TOOL_IMPLS</span><span class="p">[</span><span class="n">block</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">propose</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># 3. Legality. The ontology at the ledger: is this state allowed?</span>
+        <span class="n">verdict</span> <span class="o">=</span> <span class="n">ontology</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">proposed</span><span class="o">.</span><span class="n">as_triples</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">verdict</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error_result</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">verdict</span><span class="o">.</span><span class="n">explain</span><span class="p">()))</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># 4. Only now does anything leave the process.</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ok_result</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">proposed</span><span class="o">.</span><span class="n">commit</span><span class="p">()))</span>
+
+    <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">})</span>
+</code></pre></div>
+
+<p>Coyle has a good way of summarising this: Pydantic at the door, the ontology at the ledger. The two answer different questions. Pydantic asks whether the arguments have the right shape, so that a decimal appears where a decimal belongs. The ontology asks whether the resulting state is legal, and that question can only be asked about the proposed effect rather than the arguments. This is why step 2 has to be a pure function. An agent that writes to the database and then validates has already lost the ability to refuse; the check has to happen while the action is still a hypothesis.</p>
+<p>The other thing worth noting is what happens on rejection. The verdict goes back to the model as a tool result together with an explanation, so the agent is told that its move was not allowed and why, and it takes another turn. Nothing crashes. If the same rejection repeats, escalate to a human.</p>
+<p>The validator itself is short:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span>
+<span class="kn">from</span> <span class="nn">pyshacl</span> <span class="kn">import</span> <span class="n">validate</span>
+
+<span class="n">DOMAIN</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;shop.ttl&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;turtle&quot;</span><span class="p">)</span>           <span class="c1"># the graph itself</span>
+<span class="n">SHAPES</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;shop-shapes.ttl&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;turtle&quot;</span><span class="p">)</span>    <span class="c1"># the constraints</span>
+
+<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">proposed_triples</span><span class="p">:</span> <span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Verdict</span><span class="p">:</span>
+    <span class="c1"># Merge the proposed effect into the domain graph and ask whether the</span>
+    <span class="c1"># result is a legal world. Nothing here touches the database.</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">DOMAIN</span> <span class="o">+</span> <span class="n">proposed_triples</span>
+    <span class="n">conforms</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">report</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">shacl_graph</span><span class="o">=</span><span class="n">SHAPES</span><span class="p">,</span> <span class="n">advanced</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Verdict</span><span class="p">(</span><span class="n">conforms</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c"># shop-shapes.ttl</span>
+<span class="p">:</span><span class="nt">OrderShape</span> <span class="kt">a</span> <span class="nn">sh</span><span class="p">:</span><span class="nt">NodeShape</span> <span class="p">;</span>
+    <span class="nn">sh</span><span class="p">:</span><span class="nt">targetClass</span> <span class="p">:</span><span class="nt">Order</span> <span class="p">;</span>
+    <span class="nn">sh</span><span class="p">:</span><span class="nt">property</span> <span class="p">[</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">path</span> <span class="p">:</span><span class="nt">status</span> <span class="p">;</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">in</span> <span class="p">(</span> <span class="s">&quot;paid&quot;</span> <span class="s">&quot;shipped&quot;</span> <span class="s">&quot;refunded&quot;</span> <span class="p">)</span> <span class="p">;</span>   <span class="c"># kills probably_shipped</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">maxCount</span> <span class="mi">1</span> <span class="p">;</span>
+    <span class="p">]</span> <span class="p">;</span>
+    <span class="nn">sh</span><span class="p">:</span><span class="nt">property</span> <span class="p">[</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">path</span> <span class="p">[</span> <span class="nn">sh</span><span class="p">:</span><span class="nt">inversePath</span> <span class="p">:</span><span class="nt">refundOf</span> <span class="p">]</span> <span class="p">;</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">maxCount</span> <span class="mi">1</span> <span class="p">;</span>                            <span class="c"># kills the second refund</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">message</span> <span class="s">&quot;Order already has a refund.&quot;</span> <span class="p">;</span>
+    <span class="p">]</span> <span class="p">.</span>
+
+<span class="p">:</span><span class="nt">PayoutShape</span> <span class="kt">a</span> <span class="nn">sh</span><span class="p">:</span><span class="nt">NodeShape</span> <span class="p">;</span>
+    <span class="nn">sh</span><span class="p">:</span><span class="nt">targetClass</span> <span class="p">:</span><span class="nt">Payout</span> <span class="p">;</span>
+    <span class="nn">sh</span><span class="p">:</span><span class="nt">property</span> <span class="p">[</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">path</span> <span class="p">:</span><span class="nt">paidTo</span> <span class="p">;</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">class</span> <span class="p">:</span><span class="nt">Customer</span> <span class="p">;</span>         <span class="c"># kills the payout sent to a support rep</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">minCount</span> <span class="mi">1</span> <span class="p">;</span>
+        <span class="nn">sh</span><span class="p">:</span><span class="nt">maxCount</span> <span class="mi">1</span> <span class="p">;</span>
+    <span class="p">]</span> <span class="p">.</span>
+</code></pre></div>
+
+<p>This is where the distinction between deriving and rejecting starts to matter, because most graph tooling was designed for the first of the two.</p>
+<p>Graph technology grew up on the open web, where a graph is partial by construction: you hold a fragment of something larger, and the absence of a fact means unknown rather than false. Reasoners built on that assumption are generous. Tell one that an order can have at most one refund and then assert two, and it will not complain. It will conclude that the two refunds must be the same refund. That is sound reasoning under the assumption it was given, and it is the wrong answer here.</p>
+<p>A refund ledger is the opposite kind of graph. It is closed and complete, and absence does mean false: if a second refund is not in it, there is no second refund. What you want for that is constraint validation rather than inference — cardinality, permitted values, required types — checked against a graph you have declared to be complete. That is what the shapes above do, and it is why the validator is short and contains no reasoner. Validation also produces a structured violation report, which is exactly what you want to hand back to the model as a tool result.</p>
+<p>Inference is still useful for other things: transitive closure over a hierarchy, deriving types you did not assert, surfacing a contradiction you would not have thought to query for. Treat it as a second layer, added deliberately. The check that stops the duplicate refund is the validator, so if you build only one of the two, build that.</p>
+<p>It is also worth not starting from scratch. <code>schema.org</code> has a substantial vocabulary for commerce, people and events, and reusing it means your ontology carries meaning outside your own codebase.</p>
+<h2>What this does not fix</h2>
+<p>An ontology does not make the agent smarter. It reduces the set of actions the agent can take without being stopped. Those are different properties, and the second one is the one you can verify.</p>
+<p>It catches illegal states, not mistakes of judgment. A refund of €340 that should have been €34 is entirely legal: right type, right recipient, no duplicate, valid status. The ontology has nothing to say about it, and the same is true of a decision to refund a customer who was not entitled to one. Every constraint you can write down is a constraint you already knew, so the guardrail covers exactly as much as your explicit knowledge and no more.</p>
+<p>That gives a reasonable scoping rule. If your domain has no constraints you can write down, this layer is not for you. A summarisation agent, a research assistant or a code explainer has no ledger and no illegal state, so validation only adds latency and maintenance. The technique is worth the effort where the agent moves money, changes records, sends things to people or drives a state machine — that is, where "wrong" has a definition that survives being written down.</p>
+<p>That is a smaller set than all agents, but it is close to the set of agents people are currently trying to put into production.</p>
+<p>The neuro-symbolic framing is fashionable, and I am generally wary of it because it usually arrives as an architecture diagram rather than as a claim you can test. The practical version is more modest: write down the rules of your domain in a form a machine can check, put the check between the agent's intent and its effect, and stop relying on the model to remember them.</p>
+		</div> <!--/#entry-content-->
+    		<span class="tag-links"><strong>Tagged</strong>
+ <a href="https://sammyrulez.github.io/tag/agents.html" rel="tag">agents</a>,  <a href="https://sammyrulez.github.io/tag/ai.html" rel="tag">AI</a>,  <a href="https://sammyrulez.github.io/tag/claude.html" rel="tag">claude</a>,  <a href="https://sammyrulez.github.io/tag/llm.html" rel="tag">LLM</a>,  <a href="https://sammyrulez.github.io/tag/ontology.html" rel="tag">ontology</a>,  <a href="https://sammyrulez.github.io/tag/python.html" rel="tag">python</a>    		</span>
+	</div> <!--/#main-->
+</div>  <!--/#post-->
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
+		</div><!-- /#footer -->
+	</div><!-- /#container -->
+	<div style="display:none"></div>
+</body>
+</html>
