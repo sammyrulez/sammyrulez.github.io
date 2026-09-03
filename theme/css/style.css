@@ -77,11 +77,23 @@ img { max-width: 100%; height: auto; }
 
 .site-logo {
 	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 16px;
 	font-family: var(--font-display);
-	font-size: 17px;
+	font-size: 34px;
 	font-weight: 700;
-	letter-spacing: -0.03em;
+	letter-spacing: -0.04em;
 	color: var(--ink);
+}
+
+.site-logo-dot {
+	width: 16px;
+	height: 16px;
+	background: var(--accent);
+	border-radius: 50%;
+	display: block;
+	flex: none;
 }
 
 .site-nav {
@@ -662,6 +674,8 @@ img { max-width: 100%; height: auto; }
 
 	.site-header-inner { padding-top: 18px; padding-bottom: 18px; }
 	.site-nav { gap: 18px; }
+	.site-logo { font-size: 22px; gap: 10px; }
+	.site-logo-dot { width: 12px; height: 12px; }
 
 	.hero { padding: 56px 0 48px; }
 
