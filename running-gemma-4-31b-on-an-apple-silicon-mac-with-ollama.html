@@ -10,40 +10,40 @@
 		<meta property="og:type" content="article" />
 		<meta property="og:title" content="Running Gemma 4 31B on an Apple Silicon Mac with Ollama" />
 		<meta property="og:description" content="A practical configuration for a 32 GB M5 Mac that still needs to remain usable Running large language models locally has become surprisingly practical on Apple Silicon. With a modern Mac, Ollama,..." />
-		<meta property="og:url" content="https://sammyrulez.github.io/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.html" />
-		<meta property="og:image" content="https://sammyrulez.github.io/images/social/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.png" />
+		<meta property="og:url" content="https://blog.r6i.it/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.html" />
+		<meta property="og:image" content="https://blog.r6i.it/images/social/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.png" />
 		<meta property="og:image:alt" content="Running Gemma 4 31B on an Apple Silicon Mac with Ollama" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="Running Gemma 4 31B on an Apple Silicon Mac with Ollama" />
 		<meta name="twitter:description" content="A practical configuration for a 32 GB M5 Mac that still needs to remain usable Running large language models locally has become surprisingly practical on Apple Silicon. With a modern Mac, Ollama,..." />
-		<meta name="twitter:image" content="https://sammyrulez.github.io/images/social/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.png" />
-<meta property="article:published_time" content="2026-04-26T22:48:00+02:00" /><meta property="article:author" content="samreghenzi" />		<link rel="canonical" href="https://sammyrulez.github.io/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.html" />
+		<meta name="twitter:image" content="https://blog.r6i.it/images/social/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.png" />
+<meta property="article:published_time" content="2026-04-26T22:48:00+02:00" /><meta property="article:author" content="samreghenzi" />		<link rel="canonical" href="https://blog.r6i.it/running-gemma-4-31b-on-an-apple-silicon-mac-with-ollama.html" />
 		<link rel="profile" href="https://gmpg.org/xfn/11" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" />
-		<link rel="stylesheet" type="text/css" href="https://sammyrulez.github.io/theme/css/style.css" />
-		<link rel="stylesheet" type="text/css" href="https://sammyrulez.github.io/theme/css/pygment.css" />
-		<link rel="icon" href="https://sammyrulez.github.io/theme/images/favicon.ico" sizes="any" />
-		<link rel="icon" type="image/png" sizes="32x32" href="https://sammyrulez.github.io/theme/images/favicon-32x32.png" />
-		<link rel="apple-touch-icon" href="https://sammyrulez.github.io/theme/images/apple-touch-icon.png" />
+		<link rel="stylesheet" type="text/css" href="https://blog.r6i.it/theme/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="https://blog.r6i.it/theme/css/pygment.css" />
+		<link rel="icon" href="https://blog.r6i.it/theme/images/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="https://blog.r6i.it/theme/images/favicon-32x32.png" />
+		<link rel="apple-touch-icon" href="https://blog.r6i.it/theme/images/apple-touch-icon.png" />
 		<link rel="alternate" type="application/atom+xml"
 			title="Sam Reghenzi Homepage — Atom Feed"
-			href="https://sammyrulez.github.io/feeds/all.atom.xml" />
+			href="https://blog.r6i.it/feeds/all.atom.xml" />
 		<link rel="alternate" type="application/rss+xml"
 			title="Sam Reghenzi Homepage — RSS Feed"
-			href="https://sammyrulez.github.io/feeds/all.rss.xml" />
+			href="https://blog.r6i.it/feeds/all.rss.xml" />
 </head>
 
 <body>
 	<header class="site-header">
 		<div class="site-header-inner">
-			<a class="site-logo" href="https://sammyrulez.github.io/"><span class="site-logo-dot"></span>Sam Reghenzi</a>
+			<a class="site-logo" href="https://blog.r6i.it/"><span class="site-logo-dot"></span>Sam Reghenzi</a>
 			<nav class="site-nav" aria-label="Main navigation">
-						<a href="https://sammyrulez.github.io/category/ai.html">AI</a>
-						<a href="https://sammyrulez.github.io/category/blog.html" class="active">blog</a>
+						<a href="https://blog.r6i.it/category/ai.html">AI</a>
+						<a href="https://blog.r6i.it/category/blog.html" class="active">blog</a>
 						<a href="https://github.com/sammyrulez" rel="noopener noreferrer">Github</a>
 						<a href="https://www.linkedin.com/in/sammyrulez/" rel="noopener noreferrer">LinkedIn</a>
 			</nav>
@@ -54,12 +54,12 @@
 
 <div class="article-hero">
 	<div class="article-hero-inner">
-		<a class="backlink" href="https://sammyrulez.github.io/">&larr; Archive</a>
+		<a class="backlink" href="https://blog.r6i.it/">&larr; Archive</a>
 		<div class="article-hero-head">
 			<div class="article-meta">
-				<a class="article-cat" href="https://sammyrulez.github.io/category/blog.html" title="View all posts in blog">blog</a>
+				<a class="article-cat" href="https://blog.r6i.it/category/blog.html" title="View all posts in blog">blog</a>
 				<span>Sun 26 April 2026</span>
-<span>By <a href="https://sammyrulez.github.io/author/samreghenzi.html">samreghenzi</a></span>			</div>
+<span>By <a href="https://blog.r6i.it/author/samreghenzi.html">samreghenzi</a></span>			</div>
 			<h1 class="article-title">Running Gemma 4 31B on an Apple Silicon Mac with Ollama</h1>
 			<p class="article-lede">Look ma no tokens</p>
 		</div>
@@ -407,7 +407,7 @@ PARAMETER top_k 64
 
 			<div class="article-tags">
 				<span class="label">Tagged</span>
-<a href="https://sammyrulez.github.io/tag/ai.html" rel="tag">#AI</a><a href="https://sammyrulez.github.io/tag/llm.html" rel="tag">#LLM</a><a href="https://sammyrulez.github.io/tag/mcp.html" rel="tag">#MCP</a><a href="https://sammyrulez.github.io/tag/python.html" rel="tag">#Python</a>			</div>
+<a href="https://blog.r6i.it/tag/ai.html" rel="tag">#AI</a><a href="https://blog.r6i.it/tag/llm.html" rel="tag">#LLM</a><a href="https://blog.r6i.it/tag/mcp.html" rel="tag">#MCP</a><a href="https://blog.r6i.it/tag/python.html" rel="tag">#Python</a>			</div>
 
 		</article>
 
