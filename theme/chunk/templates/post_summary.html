@@ -1,29 +1,17 @@
-<div class="post type-post status-publish format-standard hentry category-general" id="post">
-	<div class="entry-meta">
-		<div class="date"><a href="{{ SITEURL }}/{{ article.url }}">{{ article.locale_date }}</a></div>
-		{% if article.author and not SINGLE_AUTHOR %}
-		<span class="byline">By <a href="{{ SITEURL }}/{{ article.author.url }}">{{ article.author }}</a></span>
-		{% endif %}
-		{% if article.author_gravatar %}
-		<span><a href="{{ SITEURL }}/{{ article.author.url }}"><img src="{{ article.author_gravatar }}" alt="{{ article.author }}" loading="lazy" decoding="async" /></a></span>
-		{% endif %}
-		{% if DISPLAY_CATEGORIES_ON_MENU %}
-			<span class="cat-links"><a href="{{ SITEURL }}/{{ article.category.url }}" title="View all posts in {{ article.category }}" rel="category tag">{{ article.category }}</a></span>
-		{% endif %}
-	</div> <!-- /#entry-meta -->
-	<div class="main">
-		<h2 class="entry-title">
+<article class="post-row">
+	<div class="post-row-meta">
+		<span class="post-row-date">{{ article.date.strftime('%d %b %Y') }}</span>
+		<a class="post-row-cat" href="{{ SITEURL }}/{{ article.category.url }}" title="View all posts in {{ article.category }}">{{ article.category }}</a>
+	</div>
+	<div class="post-row-body">
+		<h2 class="post-row-title">
 			<a href="{{ SITEURL }}/{{ article.url }}" title="Permalink to {{ article.title|striptags }}" rel="bookmark">{{ article.title }}</a>
 		</h2>
-		<div class="entry-content">
-			{{ article.summary }}
-			<a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark">Read more &rarr;</a>
-		</div> <!--/#entry-content-->
+		<p class="post-row-excerpt">{{ article.summary|default(article.description, true)|striptags|truncate(300) }}</p>
 		{% if article.tags %}
-    		<span class="tag-links"><strong>Tagged</strong>
-    			{% set delimiter = joiner() %}
-    			{% for tag in article.tags|sort %}{{- delimiter() }} <a href="{{ SITEURL }}/{{ tag.url }}" rel="tag">{{ tag }}</a>{% endfor %}
-    		</span>
-    	{% endif %}
-	</div> <!--/#main-->
-</div>  <!--/#post-->
+		<div class="tag-row">
+			{% for tag in article.tags|sort %}<a href="{{ SITEURL }}/{{ tag.url }}" rel="tag">#{{ tag }}</a>{% endfor %}
+		</div>
+		{% endif %}
+	</div>
+</article>

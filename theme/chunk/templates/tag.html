@@ -1,7 +1,9 @@
 {% extends "index.html" %}
 {% block title %}{{ SITENAME }} &mdash; Articles tagged {{ tag }}{% endblock %}
-{% block content_title %}
-<div class="page-title">
-	<h2>Tagged with <span>{{ tag }}</span> &hellip;</h2>
-</div>
-{% endblock %}
+{% block listing_header %}
+<section class="listing-title">
+	<p class="hero-kicker">Tag</p>
+	<h1>#{{ tag }}</h1>
+</section>
+{% endblock listing_header %}
+{% block archive_label %}Tagged {{ tag }}{% endblock %}

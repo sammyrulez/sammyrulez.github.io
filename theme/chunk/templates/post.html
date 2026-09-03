@@ -1,28 +1,76 @@
-<div class="post type-post status-publish format-standard hentry category-general" id="post">
-	<div class="entry-meta">
-		<div class="date"><a href="{{ SITEURL }}/{{ article.url }}">{{ article.locale_date }}</a></div>
-		{% if article.author and not SINGLE_AUTHOR %}
-		<span class="byline">By <a href="{{ SITEURL }}/{{ article.author.url }}">{{ article.author }}</a></span>
-		{% endif %}
-		{% if article.author_gravatar %}
-		<span><a href="{{ SITEURL }}/{{ article.author.url }}"><img src="{{ article.author_gravatar }}" alt="{{ article.author }}" loading="lazy" decoding="async" /></a></span>
-		{% endif %}
-		{% if DISPLAY_CATEGORIES_ON_MENU %}
-			<span class="cat-links"><a href="{{ SITEURL }}/{{ article.category.url }}" title="View all posts in {{ article.category }}" rel="category tag">{{ article.category }}</a></span>
-		{% endif %}
-	</div> <!-- /#entry-meta -->
-	<div class="main">
-		<h2 class="entry-title">
-			<a href="{{ SITEURL }}/{{ article.url }}" title="Permalink to {{ article.title|striptags }}" rel="bookmark">{{ article.title }}</a>
-		</h2>
-		<div class="entry-content">
-			{{ article.content }}
-		</div> <!--/#entry-content-->
-		{% if article.tags %}
-    		<span class="tag-links"><strong>Tagged</strong>
-    			{% set delimiter = joiner() %}
-    			{% for tag in article.tags|sort %}{{- delimiter() }} <a href="{{ SITEURL }}/{{ tag.url }}" rel="tag">{{ tag }}</a>{% endfor %}
-    		</span>
-    	{% endif %}
-	</div> <!--/#main-->
-</div>  <!--/#post-->
+<div class="article-hero">
+	<div class="article-hero-inner">
+		<a class="backlink" href="{{ SITEURL }}/">&larr; Archive</a>
+		<div class="article-hero-head">
+			<div class="article-meta">
+				<a class="article-cat" href="{{ SITEURL }}/{{ article.category.url }}" title="View all posts in {{ article.category }}">{{ article.category }}</a>
+				<span>{{ article.locale_date }}</span>
+				{% if article.author %}<span>By <a href="{{ SITEURL }}/{{ article.author.url }}">{{ article.author }}</a></span>{% endif %}
+			</div>
+			<h1 class="article-title">{{ article.title }}</h1>
+			{% if article.description %}
+			<p class="article-lede">{{ article.description }}</p>
+			{% elif article.metadata.summary %}
+			<p class="article-lede">{{ article.summary|striptags|truncate(280) }}</p>
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+<div class="article-wrap">
+	<div class="article-grid">
+		<article>
+			<div class="entry-content">
+				{{ article.content }}
+			</div>
+
+			{% if article.tags %}
+			<div class="article-tags">
+				<span class="label">Tagged</span>
+				{% for tag in article.tags|sort %}<a href="{{ SITEURL }}/{{ tag.url }}" rel="tag">#{{ tag }}</a>{% endfor %}
+			</div>
+			{% endif %}
+
+			{% if article.prev_article or article.next_article %}
+			<div class="article-nav">
+				{% if article.prev_article %}
+				<a href="{{ SITEURL }}/{{ article.prev_article.url }}">
+					<span class="label">Older</span>
+					<span class="title">{{ article.prev_article.title }}</span>
+				</a>
+				{% endif %}
+				{% if article.next_article %}
+				<a href="{{ SITEURL }}/{{ article.next_article.url }}">
+					<span class="label">Newer</span>
+					<span class="title">{{ article.next_article.title }}</span>
+				</a>
+				{% endif %}
+			</div>
+			{% endif %}
+		</article>
+
+		<aside class="article-toc" id="article-toc" hidden>
+			<p class="label">Contents</p>
+			<nav id="article-toc-nav"></nav>
+		</aside>
+	</div>
+</div>
+
+<script>
+(function () {
+	var headings = document.querySelectorAll('.entry-content h2');
+	if (headings.length < 2) return;
+	var nav = document.getElementById('article-toc-nav');
+	headings.forEach(function (h, i) {
+		if (!h.id) {
+			h.id = h.textContent.trim().toLowerCase()
+				.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-') || 's' + (i + 1);
+		}
+		var a = document.createElement('a');
+		a.href = '#' + h.id;
+		a.textContent = h.textContent;
+		nav.appendChild(a);
+	});
+	document.getElementById('article-toc').hidden = false;
+})();
+</script>

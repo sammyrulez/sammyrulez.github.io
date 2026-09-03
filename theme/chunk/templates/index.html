@@ -1,9 +1,23 @@
 {% extends "base.html" %}
-{% block content_title %}
-{% endblock %}
 {% block content %}
+<div class="wrap">
+	{% block listing_header %}
+	<section class="hero">
+		<p class="hero-kicker">{{ HERO_KICKER or 'Data & AI architect' }}</p>
+		<h1 class="hero-title">{{ AUTHOR or SITENAME }}</h1>
+		<p class="hero-tagline">{{ HERO_TAGLINE or SITESUBTITLE or 'Field notes on LLMs, agents, and the architecture that has to hold them.' }}</p>
+	</section>
+	{% endblock listing_header %}
+
+	<div class="archive-bar">
+		<span>{% block archive_label %}Archive{% endblock %}</span>
+		<span>{% if articles_page %}{{ articles_page.paginator.count }}{% else %}{{ articles|length }}{% endif %} posts</span>
+	</div>
+
 	{% for article in articles_page.object_list %}
 		{% include 'post_summary.html' %}
 	{% endfor %}
+
 	{% include 'pagination.html' %}
+</div>
 {% endblock content %}

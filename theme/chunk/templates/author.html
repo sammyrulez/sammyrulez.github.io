@@ -1,6 +1,9 @@
 {% extends "index.html" %}
-
 {% block title %}{{ SITENAME }} &mdash; Articles by {{ author|striptags }}{% endblock %}
-{% block content_title %}
-	<h2>Posted by <span>{{ author }}</span> &hellip;</h2>
-{% endblock %}
+{% block listing_header %}
+<section class="listing-title">
+	<p class="hero-kicker">Author</p>
+	<h1>{{ author }}</h1>
+</section>
+{% endblock listing_header %}
+{% block archive_label %}Posted by {{ author }}{% endblock %}
