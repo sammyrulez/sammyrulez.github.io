@@ -53,7 +53,11 @@
 <body>
 	<header class="site-header">
 		<div class="site-header-inner">
+			{% if page_name == 'index' %}
+			<span></span>
+			{% else %}
 			<a class="site-logo" href="{{ SITEURL }}/"><span class="site-logo-dot"></span>{{ AUTHOR or SITENAME }}</a>
+			{% endif %}
 			<nav class="site-nav" aria-label="Main navigation">
 				{% for title, link in MENUITEMS %}
 					<a href="{{ link }}">{{ title }}</a>
