@@ -14,7 +14,8 @@ HERO_KICKER = 'Data & AI architect'
 HERO_TAGLINE = 'Field notes on LLMs, agents, and the architecture that has to hold them.'
 FOOTER_TEXT = 'blog.r6i.it — powered by <a href="http://getpelican.com">Pelican</a>'
 
-PLUGINS = ['pelican.plugins.yaml_metadata']
+PLUGIN_PATHS = ['plugins']
+PLUGINS = ['pelican.plugins.yaml_metadata', 'social_cards']
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = 'feeds/all.atom.xml'
 FEED_ALL_RSS = 'feeds/all.rss.xml'

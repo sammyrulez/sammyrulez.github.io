@@ -8,7 +8,7 @@ tags:
 - agents
 - python
 - claude
-category: blog
+category: AI
 author: samreghenzi
 description: "Agent failures are usually not hallucinations — they are illegal states nobody wrote down. Why the fix belongs outside the model, and how a formal ontology becomes a real guardrail."
 slug: ontologies-agentic-guardrails

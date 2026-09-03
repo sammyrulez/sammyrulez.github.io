@@ -11,6 +11,7 @@ mdurl==0.1.2
 ordered-set==4.1.0
 pelican==4.11.0.post0
 pelican-yaml-metadata==2.1.2
+pillow==12.3.0
 Pygments==2.18.0
 pymdown-extensions==10.21
 python-dateutil==2.9.0.post0
