@@ -39,3 +39,8 @@ DEFAULT_PAGINATION = False
 
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True
+
+# CNAME per il custom domain GitHub Pages: va copiato nella root di output/
+# a ogni build (DELETE_OUTPUT_DIRECTORY svuota output/ in publishconf.py)
+STATIC_PATHS = ['images', 'extra/CNAME']
+EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
