@@ -42,8 +42,8 @@
 		<div class="site-header-inner">
 			<a class="site-logo" href="https://sammyrulez.github.io/"><span class="site-logo-dot"></span>Sam Reghenzi</a>
 			<nav class="site-nav" aria-label="Main navigation">
-						<a href="https://sammyrulez.github.io/category/ai.html">AI</a>
-						<a href="https://sammyrulez.github.io/category/blog.html" class="active">blog</a>
+						<a href="https://sammyrulez.github.io/category/ai.html" class="active">AI</a>
+						<a href="https://sammyrulez.github.io/category/blog.html">blog</a>
 						<a href="https://github.com/sammyrulez" rel="noopener noreferrer">Github</a>
 						<a href="https://www.linkedin.com/in/sammyrulez/" rel="noopener noreferrer">LinkedIn</a>
 			</nav>
@@ -57,7 +57,7 @@
 		<a class="backlink" href="https://sammyrulez.github.io/">&larr; Archive</a>
 		<div class="article-hero-head">
 			<div class="article-meta">
-				<a class="article-cat" href="https://sammyrulez.github.io/category/blog.html" title="View all posts in blog">blog</a>
+				<a class="article-cat" href="https://sammyrulez.github.io/category/ai.html" title="View all posts in AI">AI</a>
 				<span>Tue 01 September 2026</span>
 <span>By <a href="https://sammyrulez.github.io/author/samreghenzi.html">samreghenzi</a></span>			</div>
 			<h1 class="article-title">The Ontology Was Always a Bounded Context</h1>
@@ -80,6 +80,7 @@
 <p>Nobody is wrong. Nobody is hallucinating.</p>
 <p>They are just using the same word to mean different things.</p>
 <p>And somewhere between them, an integration is about to break.</p>
+<p><img alt="Three agents in a park, each defining &quot;customer&quot; differently" src="/images/xkcd_style_agents_customer_en.png"></p>
 <p>This is the failure mode that is currently being rebranded as "agents need ontologies." The diagnosis is right. The fix being marketed alongside it is not. That fix is a single shared ontology sitting above the agents, arbitrating meaning for everyone — and it's the wrong prescription for a problem that already has a name and a twenty-year-old solution. The name is Domain-Driven Design. It isn't showing up in this conversation because most of the people having it came from data and knowledge graphs, not from software architecture.</p>
 <h2>The problem is real and it's measurable</h2>
 <p>Start with the evidence, because the failure isn't hypothetical. OG-RAG, presented at EMNLP 2025, anchors retrieval to an ontology-backed hypergraph instead of a flat vector index. It reports a 55% jump in fact recall and 40% in answer correctness over standard RAG on the same corpus. A 2026 biomedical study went further. Grounding agent outputs against a domain ontology in RDF/OWL brought hallucination rates on clinical queries down from 63% and 48%, depending on the baseline, to 1.7% — with accuracy around 98%.</p>
