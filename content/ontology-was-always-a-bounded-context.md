@@ -8,7 +8,7 @@ tags:
 - DDD
 - agents
 - MCP
-category: blog
+category: AI
 author: samreghenzi
 description: "Agentic AI is rediscovering ontologies as the fix for multi-agent chaos. Domain-Driven Design solved this exact problem twenty years ago, and it didn't need a global schema."
 slug: ontology-was-always-a-bounded-context
@@ -33,6 +33,8 @@ Nobody is wrong. Nobody is hallucinating.
 They are just using the same word to mean different things.
 
 And somewhere between them, an integration is about to break.
+
+![Three agents in a park, each defining "customer" differently](/images/xkcd_style_agents_customer_en.png)
 
 This is the failure mode that is currently being rebranded as "agents need ontologies." The diagnosis is right. The fix being marketed alongside it is not. That fix is a single shared ontology sitting above the agents, arbitrating meaning for everyone — and it's the wrong prescription for a problem that already has a name and a twenty-year-old solution. The name is Domain-Driven Design. It isn't showing up in this conversation because most of the people having it came from data and knowledge graphs, not from software architecture.
 
