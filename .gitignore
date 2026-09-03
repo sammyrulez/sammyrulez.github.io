@@ -12,3 +12,4 @@ podcast/*.mp3
 .DS_Store
 .DS_Store
 .env
+.playwright-mcp
