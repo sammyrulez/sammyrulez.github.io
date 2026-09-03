@@ -19,16 +19,14 @@
 		<meta name="twitter:image" content="https://sammyrulez.github.io/images/social-default.png" />
 <meta property="article:published_time" content="2020-04-17T22:48:00+02:00" /><meta property="article:author" content="samreghenzi" />		<link rel="canonical" href="https://sammyrulez.github.io/forecasting-time-series-from-a-covid-19-red-zone.html" />
 		<link rel="profile" href="https://gmpg.org/xfn/11" />
-		<link rel="stylesheet" type="text/css" href="https://sammyrulez.github.io/theme/css/style.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" />
+		<link rel="stylesheet" type="text/css" href="https://sammyrulez.github.io/theme/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="https://sammyrulez.github.io/theme/css/pygment.css" />
 		<link rel="icon" href="https://sammyrulez.github.io/theme/images/favicon.ico" sizes="any" />
 		<link rel="icon" type="image/png" sizes="32x32" href="https://sammyrulez.github.io/theme/images/favicon-32x32.png" />
 		<link rel="apple-touch-icon" href="https://sammyrulez.github.io/theme/images/apple-touch-icon.png" />
-		<style type="text/css">
-			body.custom-background { background-color: #f5f5f5; }
-		</style>
 		<link rel="alternate" type="application/atom+xml"
 			title="Sam Reghenzi Homepage — Atom Feed"
 			href="https://sammyrulez.github.io/feeds/all.atom.xml" />
@@ -37,41 +35,39 @@
 			href="https://sammyrulez.github.io/feeds/all.rss.xml" />
 </head>
 
-<body class="home blog custom-background " >
-	<div id="container">
-		<div id="header">
-				<h1 id="site-title"><a href="https://sammyrulez.github.io">Sam Reghenzi Homepage</a></h1>
-		</div><!-- /#banner -->
-		
-		<nav id="menu" aria-label="Main navigation">
-			<div class="menu-navigation-container">
-				<ul id="menu-navigation" class="menu">
-						<li class="menu-item"><a href="https://sammyrulez.github.io/category/ai.html">AI</a></li>
-						<li class="menu-item active"><a href="https://sammyrulez.github.io/category/blog.html">blog</a></li>
-						<li class="menu-item"><a href="https://github.com/sammyrulez" rel="noopener noreferrer">Github</a></li>
-						<li class="menu-item"><a href="https://www.linkedin.com/in/sammyrulez/" rel="noopener noreferrer">LinkedIn</a></li>
-
-				</ul>
-			</div> <!--/#menu-navigation-container-->
-		</nav><!-- /#menu -->
-		
-		<div class="page-title">
+<body>
+	<header class="site-header">
+		<div class="site-header-inner">
+			<a class="site-logo" href="https://sammyrulez.github.io/">Sam Reghenzi</a>
+			<nav class="site-nav" aria-label="Main navigation">
+						<a href="https://sammyrulez.github.io/category/ai.html">AI</a>
+						<a href="https://sammyrulez.github.io/category/blog.html" class="active">blog</a>
+						<a href="https://github.com/sammyrulez" rel="noopener noreferrer">Github</a>
+						<a href="https://www.linkedin.com/in/sammyrulez/" rel="noopener noreferrer">LinkedIn</a>
+			</nav>
 		</div>
-	
-		<div id="contents">
+	</header>
 
-<div class="post type-post status-publish format-standard hentry category-general" id="post">
-	<div class="entry-meta">
-		<div class="date"><a href="https://sammyrulez.github.io/forecasting-time-series-from-a-covid-19-red-zone.html">Fri 17 April 2020</a></div>
-		<span class="byline">By <a href="https://sammyrulez.github.io/author/samreghenzi.html">samreghenzi</a></span>
-			<span class="cat-links"><a href="https://sammyrulez.github.io/category/blog.html" title="View all posts in blog" rel="category tag">blog</a></span>
-	</div> <!-- /#entry-meta -->
-	<div class="main">
-		<h2 class="entry-title">
-			<a href="https://sammyrulez.github.io/forecasting-time-series-from-a-covid-19-red-zone.html" title="Permalink to Forecasting Time Series from a COVID-19 Red Zone" rel="bookmark">Forecasting Time Series from a COVID-19 Red Zone</a>
-		</h2>
-		<div class="entry-content">
-			<p>Hello, dear citizen of the free world. I’m writing while I’m in a restricted lifestyle. On Monday night Italy’s prime minister decided that the entire country would be covered by restrictions that can be summarised as follows:</p>
+	<main class="page-main">
+
+<div class="article-hero">
+	<div class="article-hero-inner">
+		<a class="backlink" href="https://sammyrulez.github.io/">&larr; Archive</a>
+		<div class="article-hero-head">
+			<div class="article-meta">
+				<a class="article-cat" href="https://sammyrulez.github.io/category/blog.html" title="View all posts in blog">blog</a>
+				<span>Fri 17 April 2020</span>
+<span>By <a href="https://sammyrulez.github.io/author/samreghenzi.html">samreghenzi</a></span>			</div>
+			<h1 class="article-title">Forecasting Time Series from a COVID-19 Red Zone</h1>
+		</div>
+	</div>
+</div>
+
+<div class="article-wrap">
+	<div class="article-grid">
+		<article>
+			<div class="entry-content">
+				<p>Hello, dear citizen of the free world. I’m writing while I’m in a restricted lifestyle. On Monday night Italy’s prime minister decided that the entire country would be covered by restrictions that can be summarised as follows:</p>
 <p>“I stay at home”</p>
 <p>All travel was banned unless justified on professional or health grounds. You can go out to buy food and medications and nothing else. You can’t visit your parents if they are in a different neighborhood. I’m working remotely 100% of the time and trying to survive with two kids with a lot of spare time 😰.</p>
 <p>The situation is serious just because the health care system is at its maximum capacity and lives of the elderly and other people with serious chronic afflictions are at stake. That said everything is fine: we have food and the sun shines as always in Italy.</p>
@@ -114,17 +110,46 @@
 
 <span class="n">The</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">probably</span><span class="w"> </span><span class="n">overfitting</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">burst</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">few</span><span class="w"> </span><span class="n">days</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">small</span><span class="p">.</span><span class="w"> </span><span class="n">So</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="mi">8</span><span class="n">K</span><span class="w"> </span><span class="n">infected</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="k">before</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">peak</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">exaggerated</span><span class="w"> </span><span class="n">estimation</span><span class="p">.</span><span class="w"> </span><span class="n">But</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dates</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">estimated</span><span class="w"> </span><span class="nc">time</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">peak</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">epidemiologist</span><span class="w"> </span><span class="n">model</span><span class="err">!</span><span class="w"> </span><span class="n">I</span><span class="err">’</span><span class="n">m</span><span class="w"> </span><span class="n">going</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="k">every</span><span class="w"> </span><span class="nf">day</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">enhance</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="n">estimations</span><span class="p">.</span><span class="w"> </span><span class="n">Worst</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="nl">scenario</span><span class="p">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">second</span><span class="w"> </span><span class="nf">day</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">prediction</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">higher</span><span class="w"> </span><span class="k">than</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">actual</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">peak</span><span class="w"> </span><span class="n">ha</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">reached</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">learned</span><span class="w"> </span><span class="n">something</span><span class="w"> </span><span class="n">about</span><span class="w"> </span><span class="n">Facebook</span><span class="w"> </span><span class="n">Prophet</span><span class="p">.</span><span class="w"> </span><span class="n">Best</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="nl">scenario</span><span class="p">:</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">predict</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">end</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lockdown</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">office</span><span class="p">.</span>
 </code></pre></div>
-		</div> <!--/#entry-content-->
-    		<span class="tag-links"><strong>Tagged</strong>
- <a href="https://sammyrulez.github.io/tag/ml.html" rel="tag">ML</a>    		</span>
-	</div> <!--/#main-->
-</div>  <!--/#post-->
+			</div>
+
+			<div class="article-tags">
+				<span class="label">Tagged</span>
+<a href="https://sammyrulez.github.io/tag/ml.html" rel="tag">#ML</a>			</div>
+
+		</article>
+
+		<aside class="article-toc" id="article-toc" hidden>
+			<p class="label">Contents</p>
+			<nav id="article-toc-nav"></nav>
+		</aside>
+	</div>
+</div>
+
+<script>
+(function () {
+	var headings = document.querySelectorAll('.entry-content h2');
+	if (headings.length < 2) return;
+	var nav = document.getElementById('article-toc-nav');
+	headings.forEach(function (h, i) {
+		if (!h.id) {
+			h.id = h.textContent.trim().toLowerCase()
+				.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-') || 's' + (i + 1);
+		}
+		var a = document.createElement('a');
+		a.href = '#' + h.id;
+		a.textContent = h.textContent;
+		nav.appendChild(a);
+	});
+	document.getElementById('article-toc').hidden = false;
+})();
+</script>
+	</main>
+
+	<footer class="site-footer">
+		<div class="site-footer-inner">
+			<span class="footer-name">Sam Reghenzi</span>
+			<span class="footer-note">blog.r6i.it — powered by <a href="http://getpelican.com">Pelican</a></span>
 		</div>
-		
-		<div id="footer">
-			<p>Powered by <a href="http://getpelican.com">Pelican</a>, theme by <a href="http://bunnyman.info">tBunnyMan</a>.</p>
-		</div><!-- /#footer -->
-	</div><!-- /#container -->
-	<div style="display:none"></div>
+	</footer>
 </body>
 </html>
