@@ -3,14 +3,14 @@ slidenumbers: true
 autoscale: true
 footer: blog.r6i.it
 
-# [fit] L'ontologia è sempre stata un Bounded Context
+# [fit] Ontologie per agenti: il problema che DDD ha già risolto
 
-### Ontologie e pipeline agentiche: un problema già risolto vent'anni fa
+### L'ontologia è sempre stata un Bounded Context
 
 **Sam Reghenzi** — blog.r6i.it
 
 ^ Presentazione veloce: chi sono, cosa faccio, e che questo talk nasce da un articolo sul blog (blog.r6i.it) — chi vuole i riferimenti e i link agli studi citati li trova lì.
-^ Anticipare la tesi in una frase, senza svilupparla: il mondo agentic sta riscoprendo le ontologie, e ha ragione a farlo — ma la soluzione che il mercato propone (un'ontologia globale condivisa) è la risposta sbagliata a un problema che il software engineering ha già risolto vent'anni fa. Il titolo è lo spoiler: la risposta si chiama bounded context.
+^ Anticipare la tesi in una frase, senza svilupparla: il mondo agentic sta riscoprendo le ontologie, e ha ragione a farlo — ma la soluzione che il mercato propone (un'ontologia globale condivisa) è la risposta sbagliata a un problema che il software engineering ha già risolto vent'anni fa. Il sottotitolo è lo spoiler: l'ontologia che funziona è quella scoped a un bounded context.
 ^ Impostare il patto col pubblico: non è un talk contro le ontologie né contro gli agenti. È un talk su dove mettere l'ontologia e chi la governa. Chi viene da DDD si sentirà a casa; chi viene dal mondo knowledge graph troverà un ponte, non un attacco.
 
 ---
