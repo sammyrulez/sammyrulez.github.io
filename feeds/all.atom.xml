@@ -306,7 +306,6 @@
 &lt;p&gt;Worth being explicit, since it's easy to over-read a single run:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The two runs didn't have the same concurrency conditions (5 threads vs sequential). The 7x is generous; the 3x per call is not.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Cost in euros is unknown.&lt;/strong&gt; Jev's pricing isn't published yet; the rates in &lt;code&gt;settings.py&lt;/code&gt; are still OpenAI's, kept as a placeholder. Until the first invoice, the real delta could be larger or smaller than 36%.&lt;/li&gt;
 &lt;li&gt;Quality was judged by one annotator with no ground truth. Twelve cases out of fifty is far too few for an error rate.&lt;/li&gt;
 &lt;li&gt;One run per configuration. No measurement of day-to-day variance, which on a remote API is not negligible.&lt;/li&gt;
 &lt;li&gt;No measurement under load. Everything sequential, one client at a time: behavior with concurrent requests and TypeSafe's rate limits are unknown.&lt;/li&gt;
