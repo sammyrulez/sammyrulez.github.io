@@ -1,7 +1,12 @@
 theme: Letters from Sweden, 4
 slidenumbers: true
+slidecount: true
 autoscale: true
 footer: blog.r6i.it
+footer-style: #D8D8D8, text-scale(1.2)
+slidenumber-style: #D8D8D8
+
+![](images/cover.jpg)
 
 # [fit] Ontologie per agenti: il problema che DDD ha già risolto
 
@@ -10,10 +15,14 @@ footer: blog.r6i.it
 **Sam Reghenzi** — blog.r6i.it
 
 ^ Presentazione veloce: chi sono, cosa faccio, e che questo talk nasce da un articolo sul blog (blog.r6i.it) — chi vuole i riferimenti e i link agli studi citati li trova lì.
+^ Se serve rompere il ghiaccio, la copertina si spiega da sola: è il centro della Scuola di Atene. Platone indica in alto — le Idee, il modello unico e universale valido ovunque — e Aristotele tende la mano in avanti, verso le sostanze concrete, il particolare, questo caso qui. Cinquecento anni di filosofia, e la tensione del talk è già tutta lì: modello globale contro modello locale. Spoiler: oggi tifiamo Aristotele.
+^ Seconda curiosità utile, se il pubblico è del mestiere: la parola "ontologia" compare per la prima volta nel 1606, nell'Ogdoas Scholastica di Jacob Lorhard — e il suo contributo era presentare la metafisica in forma di DIAGRAMMA. La prima ontologia della storia era già un grafo disegnato, quattro secoli prima di RDF. Non stiamo inventando niente: lo stiamo riscoprendo con nomi nuovi, che poi è la tesi del talk.
 ^ Anticipare la tesi in una frase, senza svilupparla: il mondo agentic sta riscoprendo le ontologie, e ha ragione a farlo — ma la soluzione che il mercato propone (un'ontologia globale condivisa) è la risposta sbagliata a un problema che il software engineering ha già risolto vent'anni fa. Il sottotitolo è lo spoiler: l'ontologia che funziona è quella scoped a un bounded context.
 ^ Impostare il patto col pubblico: non è un talk contro le ontologie né contro gli agenti. È un talk su dove mettere l'ontologia e chi la governa. Chi viene da DDD si sentirà a casa; chi viene dal mondo knowledge graph troverà un ponte, non un attacco.
 
 ---
+
+![](images/park-agents.jpg)
 
 ## Due agenti si incontrano al parco...
 
@@ -63,6 +72,44 @@ Un modello **esplicito e verificabile** del dominio rende l'agente misurabilment
 ^ Secondo dato — studio biomedico del 2026, dominio clinico, quindi il caso dove l'errore costa di più. Gli output dell'agente vengono validati contro un'ontologia di dominio formale espressa in RDF/OWL: se l'affermazione non è compatibile con il modello, viene bloccata o rigenerata. Le allucinazioni su query cliniche passano dal 63% (o 48%, a seconda della baseline di confronto) all'1,7%, con accuratezza intorno al 98%. Da "inutilizzabile in produzione" a "affidabile", con lo stesso modello sotto.
 ^ Il punto da fissare prima di andare avanti: in entrambi i casi la struttura è ESPLICITA (scritta, ispezionabile, verificabile da una macchina) e sta FUORI dal modello. Non è fine-tuning, non è prompt engineering: è un vincolo che l'output deve attraversare.
 ^ Transizione verso la slide dopo: quindi i vendor hanno ragione? Sul fatto che serva un'ontologia, sì. Ma attenzione: questi studi usano ontologie DI DOMINIO, piccole e scoped — non un modello globale dell'enterprise. La domanda che decide tutto non è architetturale, è organizzativa: ontologia di chi? che copre cosa? mantenuta da chi, quando il dominio cambia? È qui che la risposta dei vendor — "una sola, di tutti, per sempre" — comincia a non reggere. Ed è il resto del talk.
+^ Ma prima di arrivare ai vendor serve una tappa: che cosa fa un'ontologia che l'azienda non abbia già? Quasi tutti hanno data warehouse e modelli analitici, e la domanda legittima è "non è solo un modello semantico fatto meglio?". Vale la pena rispondere, perché la risposta è no — e spiega perché il problema si pone proprio adesso.
+
+---
+
+## Tre livelli, non due
+
+- **Tabelle** — dove il dato è *memorizzato*
+- **Modello analitico** — come è *strutturato* per essere interrogato
+- **Ontologia** — cosa *significa* per il business
+
+Il modello analitico è una **stella**.
+Il business è un **grafo**.
+
+^ Obiezione che arriva sempre a questo punto, e va presa sul serio: "ma l'ontologia non è solo un modello semantico fatto meglio?". No — sono correlati e risolvono problemi diversi. Dire che l'ontologia è un modello semantico migliore è come dire che internet era un fax migliore: stessa area, salto di categoria.
+^ Camminare sui tre livelli della slide. Le tabelle rispondono a "dove sta il dato e come è scritto su disco". Il modello analitico — fatti, dimensioni, misure, relazioni — risponde a "come lo interrogo": è un'ottima struttura per domande tipo revenue per cliente, per prodotto, per region. Ma è una struttura ottimizzata per il MOTORE DI QUERY, non per rappresentare il business: lo star schema esiste perché rende le aggregazioni veloci, non perché il mondo sia fatto a stelle.
+^ Il terzo livello risponde a un'altra domanda: cosa SIGNIFICA. Si parte dai concetti di business — customer, product, contract, SLA, incident, invoice — e dalle relazioni esplicite tra loro: un customer ha un contract, il contract copre un product ed è governato da uno SLA, un incident segnalato dal customer impatta quello SLA, il contract genera un invoice. Il risultato non è una stella: è una rete. E i business sono naturalmente più graph-like che star-shaped.
+^ Perché conta ADESSO — è il punto della slide, da scandire: nella BI tradizionale c'è un umano nel loop che quel grafo ce l'ha in testa. Sa che la tabella `dim_cust_v2` è il cliente, sa quale join è legittimo e quale no, sa che quella measure esclude i resi. L'agente non ha niente di tutto questo. Togli l'umano dal loop e ti accorgi di quanto contesto stava fornendo gratis.
+^ Esempio da fare a voce, lentamente: "quali clienti high-value sono a rischio per incident irrisolti e ripetute violazioni di SLA?". Nessuna fact table risponde a questa domanda, perché la domanda ATTRAVERSA concetti di business — valore del cliente, stato degli incident, storico delle violazioni contrattuali. Serve il grafo, non la stella. È esattamente il contesto relazionale che l'ontologia mette per iscritto.
+^ Fissare il punto prima di andare avanti: l'ontologia non SOSTITUISCE il modello analitico. Il modello analitico resta il motore che macina i numeri. L'ontologia è il layer di significato che ci sta sopra — e in un mondo pieno di motori non deterministici, è il livello che decide se le risposte hanno senso.
+
+---
+
+## In azienda non serve al reporting
+
+Lo stesso *customer* vive in CRM, ERP e ticketing
+con chiavi, schemi e terminologie diverse.
+
+L'ontologia codifica **significato e regole**, non grafici.
+
+Ma allora: unificare il **significato**,
+o unificare la **traduzione**?
+
+^ Sfatare l'equivoco più comune: quando si parla di ontologia in azienda, il pubblico pensa a BI e dashboard. Non è quello il lavoro. Il caso d'uso vero è che la stessa entità esiste in tre o quattro sistemi con chiavi diverse, schemi diversi e vocabolari diversi: il customer del CRM ha un lead score e un owner commerciale, quello dell'ERP ha condizioni di pagamento e un codice fiscale, quello del ticketing ha un livello di supporto e uno storico di incident. Tre record, tre significati, una parola.
+^ Cosa ci si mette dentro, concretamente — e conviene elencarlo perché rende tangibile l'artefatto: le entità del dominio e le loro relazioni, le regole di business (cosa rende un cliente "attivo", cosa fa scattare una violazione di SLA), i vincoli (un rimborso non supera l'importo della fattura) e le definizioni contese scritte nero su bianco. È un modello, non un glossario: è fatto per essere verificato da una macchina.
+^ La domanda della slide è il perno di tutto il talk, quindi va posta e lasciata in sospeso: unificare il significato, o unificare la traduzione? Sono due progetti completamente diversi, e vengono venduti come se fossero lo stesso.
+^ Unificare il SIGNIFICATO vuol dire chiedere a billing, support e sales di rinunciare alla propria definizione di "cliente" a favore di una definizione aziendale unica. Nessuno dei tre può farlo davvero, perché quelle definizioni non sono sciatteria: servono a scopi diversi. Il billing DEVE contare le subscription attive, il support DEVE poter aprire un ticket a chi ha un account e non paga ancora. Costringerli a un compromesso produce una definizione che non serve bene a nessuno dei tre — e a quel punto ognuno si ricostruisce la sua in locale, e sei tornato al punto di partenza con un layer in più da mantenere.
+^ Unificare la TRADUZIONE vuol dire lasciare a ciascuno la propria definizione e dichiarare esplicitamente come si passa dall'una all'altra al confine. Molto meno ambizioso, molto più sostenibile, e — anticipazione da non sviluppare qui — ha già un nome nel software engineering. Ci arriviamo tra qualche slide.
+^ Transizione: teniamo la domanda aperta, perché il mercato ha già scelto la sua risposta. Ed è la prima.
 
 ---
 
@@ -94,6 +141,12 @@ Non un catalogo: **il punto di passaggio obbligato di ogni azione.**
 ^ Spiegare i tre livelli. Il layer semantico mappa i dataset dell'azienda su oggetti di business tipizzati (Cliente, Ordine, Spedizione), con proprietà e link: gli utenti e gli agenti ragionano su oggetti, non su tabelle. Il layer cinetico è la parte distintiva: l'ontologia definisce anche le AZIONI possibili su quegli oggetti ("approva rimborso", "riassegna spedizione") con write-back verso i sistemi sorgente — l'ontologia non descrive soltanto, ESEGUE. Sopra, AIP (la piattaforma agentic di Palantir): gli agenti LLM leggono il mondo attraverso l'ontologia e agiscono solo attraverso le azioni che l'ontologia dichiara, con permessi e audit incorporati.
 ^ Riconoscere cosa c'è di giusto, perché è parecchio: azione validata prima del commit, stati illegali bloccati, tracciabilità di ogni operazione. È l'argomento del post "The Guardrail Is Not in the Model" implementato su scala industriale — e infatti dove le domande mappano su dati operativi strutturati (supply chain, fleet, inventory) funziona davvero.
 ^ Il "ma" che prepara la slide dopo: tutto questo presuppone UN ontologia dell'intera organizzazione, gestita centralmente sulla piattaforma. Ogni definizione contesa ("cliente", "ordine") deve essere risolta una volta per tutti, e ogni evoluzione del modello passa da lì. Vi ricorda qualcosa? Abbiamo già visto un progetto con questa esatta ambizione — e un decennio di budget.
+
+---
+
+![right fit](images/semantic-web-layer-cake.png)
+
+# Questo film l'abbiamo già visto
 
 ### Semantic Web, 2001–2010
 
@@ -133,6 +186,8 @@ solo *dentro un confine esplicito*.
 - *Support*: cliente = account ✓
 
 **Non dovevano mai condividere la definizione.**
+
+*Eric Evans, Domain-Driven Design, 2003*
 
 ^ Il cuore del talk. Eric Evans, "Domain-Driven Design", 2003. Il problema che il libro affronta è ESATTAMENTE quello della scenetta iniziale: parti diverse di un'organizzazione usano la stessa parola per cose diverse, e i sistemi costruiti su quelle parole si rompono quando si integrano.
 ^ E la risposta di Evans NON è stata "costruite un modello unico e mettetevi d'accordo". È stata il bounded context: rinunciare esplicitamente al modello globale, e chiedere a ogni modello di essere coerente solo dentro un confine dichiarato. Dentro il confine, ogni termine ha una e una sola definizione, e ogni regola vale senza eccezioni. Fuori dal confine, quella definizione semplicemente non si applica.
@@ -188,12 +243,11 @@ come tradurre al confine, quando co-evolvere.
 
 ## L'altra metà: gli eventi
 
-**Evento = fatto, non comando**
+**Evento = fatto, non comando**: `OrderPlaced`, non `PlaceOrder`
 
-`OrderPlaced`, non `PlaceOrder`
+![inline](images/events-as-facts.png)
 
 Ogni consumer interpreta il fatto **nel proprio contesto**.
-Nessuno schema globale condiviso in tempo reale.
 
 ^ Cambio di capitolo, da segnalare a voce: i bounded context risolvono metà del problema — come tenere coerente un modello locale. L'altra metà è come i contesti restano sincronizzati SENZA ricollassare in uno schema condiviso. Questa metà l'ha risolta l'architettura event-driven.
 ^ La distinzione centrale, con l'esempio sulla slide: un COMANDO ("PlaceOrder") è un'istruzione — presuppone che il ricevente condivida il tuo modello abbastanza da sapere cosa farne, e ti accoppia a lui. Un FATTO ("OrderPlaced") è un'asserzione: qualcosa è accaduto, punto, espresso nel vocabolario del contesto che lo ha emesso. Chi consuma il fatto lo interpreta nel PROPRIO modello: il billing ci vede una fattura da emettere, il warehouse una spedizione da preparare, l'analytics un data point. Nessuno dei tre deve condividere lo schema degli altri.
@@ -239,9 +293,7 @@ quando il comportamento va spiegato.
 
 ## Chi la mantiene? Il loop, non il curatore
 
-1. L'agente **nota il drift** (azioni rifiutate, eventi che non combaciano)
-2. **Propone una patch** — scoped al *suo* contesto, mai globale
-3. L'umano **rivede e mergia**
+![inline](images/ontology-refinement-loop.png)
 
 Sparisce solo la pagina bianca.
 **Funziona perché la cosa da mantenere è piccola.**
