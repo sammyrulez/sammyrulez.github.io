@@ -158,7 +158,6 @@ Both readings point the same way. The mistake isn't picking the wrong engine —
 Worth being explicit, since it's easy to over-read a single run:
 
 - The two runs didn't have the same concurrency conditions (5 threads vs sequential). The 7x is generous; the 3x per call is not.
-- **Cost in euros is unknown.** Jev's pricing isn't published yet; the rates in `settings.py` are still OpenAI's, kept as a placeholder. Until the first invoice, the real delta could be larger or smaller than 36%.
 - Quality was judged by one annotator with no ground truth. Twelve cases out of fifty is far too few for an error rate.
 - One run per configuration. No measurement of day-to-day variance, which on a remote API is not negligible.
 - No measurement under load. Everything sequential, one client at a time: behavior with concurrent requests and TypeSafe's rate limits are unknown.
