@@ -487,6 +487,28 @@ img { max-width: 100%; height: auto; }
 	margin: 8px 0 26px;
 }
 
+/* figures with caption (diagrams) */
+.entry-content figure {
+	margin: 40px 0;
+}
+.entry-content figure a { display: block; }
+.entry-content figure img {
+	display: block;
+	width: 100%;
+	margin: 0;
+	border: 1px solid var(--line);
+	background: #fff;
+}
+.entry-content figcaption {
+	margin-top: 12px;
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	line-height: 1.6;
+	color: var(--muted-2);
+	text-align: center;
+	text-wrap: pretty;
+}
+
 /* article footer: tags */
 .article-tags {
 	display: flex;
