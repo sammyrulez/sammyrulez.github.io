@@ -1,5 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Sam Reghenzi Homepage</title><link href="https://blog.r6i.it/" rel="alternate"/><link href="https://blog.r6i.it/feeds/all.atom.xml" rel="self"/><id>https://blog.r6i.it/</id><updated>2026-10-11T10:00:00+02:00</updated><entry><title>Dirigista: Stop Asking Your Agent to Judge, Start Asking It to Delegate</title><link href="https://blog.r6i.it/dirigista-letting-agents-delegate-judgment.html" rel="alternate"/><published>2026-10-11T10:00:00+02:00</published><updated>2026-10-11T10:00:00+02:00</updated><author><name>samreghenzi</name></author><id>tag:blog.r6i.it,2026-10-11:/dirigista-letting-agents-delegate-judgment.html</id><summary type="html">&lt;p&gt;Every agent I have built ends up doing the same thing, sooner or later: making small judgments about text. Is this support ticket about billing or about a bug? How angry is this customer? Does this paragraph actually answer the question? Is this claim true according to the document I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Every agent I have built ends up doing the same thing, sooner or later: making small judgments about text. Is this support ticket about billing or about a bug? How angry is this customer? Does this paragraph actually answer the question? Is this claim true according to the document I was given?&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Sam Reghenzi Homepage</title><link href="https://blog.r6i.it/" rel="alternate"/><link href="https://blog.r6i.it/feeds/all.atom.xml" rel="self"/><id>https://blog.r6i.it/</id><updated>2026-10-17T14:30:00+02:00</updated><entry><title>Driving Dungeondraft with an MCP server (and the bugs hiding in its save button)</title><link href="https://blog.r6i.it/dungeondraft-mcp-bridge-fixes.html" rel="alternate"/><published>2026-10-17T14:30:00+02:00</published><updated>2026-10-17T14:30:00+02:00</updated><author><name>samreghenzi</name></author><id>tag:blog.r6i.it,2026-10-17:/dungeondraft-mcp-bridge-fixes.html</id><summary type="html">&lt;p&gt;&lt;a href="https://dungeondraft.net/"&gt;Dungeondraft&lt;/a&gt; is a map editor for tabletop RPG battlemaps. &lt;a href="https://github.com/sammyrulez/dungeondraft-mcp"&gt;dungeondraft-mcp&lt;/a&gt; (my fork of &lt;a href="https://github.com/brann-dev/dungeondraft-mcp"&gt;brann-dev/dungeondraft-mcp&lt;/a&gt;) lets an LLM such as Claude drive a &lt;strong&gt;running&lt;/strong&gt; Dungeondraft: draw rooms, cut doors, paint terrain, place furniture, then take a screenshot and check its own work.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="A top-down Dungeondraft battlemap of a two-storey inn: common room with a long table and a fireplace, kitchen, bedrooms, a circular rug, and cobbled streets with neighbouring rooftops around it" src="/images/acero_primavera.png"&gt;&lt;/p&gt;
+&lt;h2&gt;How it works&lt;/h2&gt;
+&lt;p&gt;Dungeondraft has no API server …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://dungeondraft.net/"&gt;Dungeondraft&lt;/a&gt; is a map editor for tabletop RPG battlemaps. &lt;a href="https://github.com/sammyrulez/dungeondraft-mcp"&gt;dungeondraft-mcp&lt;/a&gt; (my fork of &lt;a href="https://github.com/brann-dev/dungeondraft-mcp"&gt;brann-dev/dungeondraft-mcp&lt;/a&gt;) lets an LLM such as Claude drive a &lt;strong&gt;running&lt;/strong&gt; Dungeondraft: draw rooms, cut doors, paint terrain, place furniture, then take a screenshot and check its own work.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="A top-down Dungeondraft battlemap of a two-storey inn: common room with a long table and a fireplace, kitchen, bedrooms, a circular rug, and cobbled streets with neighbouring rooftops around it" src="/images/acero_primavera.png"&gt;&lt;/p&gt;
+&lt;h2&gt;How it works&lt;/h2&gt;
+&lt;p&gt;Dungeondraft has no API server, so the project comes in two halves that talk over a localhost socket:&lt;/p&gt;
+&lt;p&gt;&lt;a href="/images/dungeondraft-mcp-architecture.png" title="Click to enlarge"&gt;&lt;img src="/images/dungeondraft-mcp-architecture.png" alt="Vertical flow: Claude / MCP client talks to the Python MCP server (FastMCP, one @mcp.tool() per capability) over MCP stdio; the server talks to the GDScript mod running inside Dungeondraft (Godot 3.4.2) with newline-delimited JSON over TCP 127.0.0.1:8787; the mod drives the open map through modding API calls" width="440"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;strong&gt;mod&lt;/strong&gt; opens a &lt;code&gt;TCP_Server&lt;/code&gt; inside Dungeondraft and polls it on every frame from the mod's &lt;code&gt;update(delta)&lt;/code&gt; hook. Each request is &lt;code&gt;{"cmd": ..., params}&lt;/code&gt;. It is dispatched to a handler that calls Dungeondraft's own classes (&lt;code&gt;Objects.CreateObject&lt;/code&gt;, &lt;code&gt;Walls.AddWall&lt;/code&gt;, &lt;code&gt;PatternShapes.DrawPolygon&lt;/code&gt;, …) and answers &lt;code&gt;{"ok": true, "result": ...}&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The &lt;strong&gt;Python server&lt;/strong&gt; (FastMCP) exposes about 40 tools: create, edit, terrain, caves, levels, camera, screenshot and export. Each tool is a thin &lt;code&gt;bridge.request("cmd", ...)&lt;/code&gt; call. Because the screenshot and export tools return images, the model can look at what it built and correct it.&lt;/li&gt;
+&lt;li&gt;Every element is referenced by Dungeondraft's integer node id, and the bridge keeps its &lt;strong&gt;own&lt;/strong&gt; undo/redo stacks, separate from Ctrl+Z.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;What I fixed&lt;/h2&gt;
+&lt;p&gt;None of the three bugs showed up while the map was being built. They only appeared once a human took over the map.&lt;/p&gt;
+&lt;h3&gt;1. "Port already in use" on every new map&lt;/h3&gt;
+&lt;p&gt;Dungeondraft calls the mod's &lt;code&gt;start()&lt;/code&gt; on a &lt;strong&gt;new script instance&lt;/strong&gt; each time a map is opened or created, and there is no teardown hook. The previous instance's &lt;code&gt;TCP_Server&lt;/code&gt; kept port 8787 bound, so &lt;code&gt;listen()&lt;/code&gt; failed. &lt;code&gt;lsof&lt;/code&gt; showed that Dungeondraft itself held the port, not the Python process.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fix:&lt;/strong&gt; the listener is now process-global. It is stored in &lt;code&gt;Engine&lt;/code&gt; metadata, and each new instance &lt;em&gt;adopts&lt;/em&gt; it instead of rebinding. Ownership moves to the newest instance, and older instances stop polling. As a side effect, reloading the mod no longer drops the connection.&lt;/p&gt;
+&lt;h3&gt;2. Saves that never finished, and objects you couldn't click&lt;/h3&gt;
+&lt;p&gt;The symptoms: after an MCP session, saving froze Dungeondraft, or the placed objects could not be selected, although walls and lights could. The modding docs say nothing on this, so I extracted &lt;code&gt;Dungeondraft.dll&lt;/code&gt; from the game's &lt;code&gt;.pck&lt;/code&gt;, decompiled it with ILSpy, and launched Dungeondraft from the terminal to capture its stdout. The log showed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;System.NullReferenceException
+  at Pathways.Save ()
+  at Level.Save ()
+  ...
+  at Save.Serialize ()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;When Dungeondraft creates an object, path or light through its own tools, it does more than the bare &lt;code&gt;Create*&lt;/code&gt; calls the mod was using:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;It sets a &lt;code&gt;"preview" = false&lt;/code&gt; meta on each node.&lt;/strong&gt; &lt;code&gt;Pathways.Save()&lt;/code&gt; and &lt;code&gt;Lights.Save()&lt;/code&gt; read it with a hard &lt;code&gt;(bool)&lt;/code&gt; cast. Without it the cast throws, the background save task dies before writing the file, and &lt;code&gt;Master.IsSaving&lt;/code&gt; stays &lt;code&gt;true&lt;/code&gt;. From then on every save is refused as "busy" until you restart. &lt;code&gt;Objects.Save()&lt;/code&gt; wraps the same cast in a &lt;code&gt;try/catch&lt;/code&gt;, which made it worse: maps with no paths or lights saved fine but &lt;strong&gt;silently dropped every MCP-placed object&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;It registers each object in &lt;code&gt;Objects.AddToSearchTable&lt;/code&gt;.&lt;/strong&gt; &lt;code&gt;SelectTool&lt;/code&gt; hit-tests objects only through that spatial index (&lt;code&gt;QuickSearchBuckets&lt;/code&gt;), so an object missing from it can never be clicked. Walls and lights are hit-tested another way, which is why they still worked.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Fix:&lt;/strong&gt; the bridge now registers the nodes it creates the same way Dungeondraft's tools do.&lt;/p&gt;
+&lt;h3&gt;3. Redo produced texture-less ghosts&lt;/h3&gt;
+&lt;p&gt;The bridge undid a create by detaching the node and redid it by re-attaching the same node. For objects this breaks: &lt;code&gt;Prop._EnterTree()&lt;/code&gt; builds a &lt;strong&gt;fresh, empty &lt;code&gt;Sprite&lt;/code&gt;&lt;/strong&gt; every time the node enters the tree. The re-attached object still showed on screen through its old sprite, but it could not be selected and it was saved without a texture, so Dungeondraft would discard it on the next load.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fix:&lt;/strong&gt; undo/redo for objects now works like Dungeondraft's own &lt;code&gt;ObjectRecord&lt;/code&gt;. Undo snapshots the object with &lt;code&gt;Prop.Save()&lt;/code&gt; and deletes it; redo rebuilds it with &lt;code&gt;Objects.LoadObject(data)&lt;/code&gt;, which gives it the same id, texture, tint and index entry.&lt;/p&gt;
+&lt;p&gt;I verified it end to end: I built a test map over MCP, ran undo/redo cycles and deletes, selected each object by hand, saved, and parsed the saved &lt;code&gt;.dungeondraft_map&lt;/code&gt; JSON. Every object, path and light was there, with its texture.&lt;/p&gt;
+&lt;h2&gt;Teaching the agent to make maps: a skill&lt;/h2&gt;
+&lt;p&gt;The MCP server gives Claude the tools, but not the craft. Given forty tools and "make me a dungeon", the model draws a few rectangles, scatters some props and calls it done. So on top of the server I wrote a &lt;a href="https://docs.claude.com/en/docs/claude-code/skills"&gt;Claude Code skill&lt;/a&gt;, &lt;code&gt;dungeondraft-mapmaking&lt;/code&gt;: a folder with a &lt;code&gt;SKILL.md&lt;/code&gt; and a few scripts. Claude loads it only when a task mentions Dungeondraft or a battlemap.&lt;/p&gt;
+&lt;h3&gt;The workflow, from a mapmaking tutorial&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;SKILL.md&lt;/code&gt; follows a beginner's &lt;a href="https://www.youtube.com/watch?v=-X31R4sJ3gA"&gt;Dungeondraft mapmaking tutorial&lt;/a&gt;, rewritten as tool calls:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pre-flight.&lt;/strong&gt; Run &lt;code&gt;ping&lt;/code&gt; and &lt;code&gt;get_status&lt;/code&gt; first. If Dungeondraft is closed, ask the user to open it instead of retrying. If no map is open, ask them to create one, because the bridge cannot create or resize a map.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Plan before drawing.&lt;/strong&gt; Start small (about 20×20 tiles) and keep a 2-tile margin. Write the floor plan as tile coordinates first. With a reference image (a page from a module, a screenshot), count the tiles on the image instead of guessing.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Build order.&lt;/strong&gt; Walls, doors, caves, terrain, floors, paths (cliffs, stairs, fences), outside fill, objects, lights. Each step builds on the one before. For example, a door mounted on a wall cuts its own opening only if the wall already exists.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Check your own work.&lt;/strong&gt; After each phase, call &lt;code&gt;fit_elements&lt;/code&gt; and take a &lt;code&gt;screenshot&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Gotchas, collected in one place.&lt;/strong&gt; 256 woxels per tile. The z-order values for caves, terrain, patterns, objects and roofs. Water is not supported by the bridge. Look assets up with &lt;code&gt;list_assets&lt;/code&gt;, because a given asset pack may not be installed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Inventing a map: &lt;code&gt;dd_layout.py&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Tracing a map from a book is mostly counting. Inventing one is a layout problem, and LLMs are bad at spatial layout over dozens of tool calls. So the skill comes with a small script (Python standard library only) that computes the layout. The model only reviews it and applies it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# 1. plan: doesn&amp;#39;t touch Dungeondraft; prints an ASCII preview and writes a JSON plan&lt;/span&gt;
+python3&lt;span class="w"&gt; &lt;/span&gt;dd_layout.py&lt;span class="w"&gt; &lt;/span&gt;plan&lt;span class="w"&gt; &lt;/span&gt;--style&lt;span class="w"&gt; &lt;/span&gt;dungeon&lt;span class="w"&gt; &lt;/span&gt;--width&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;30&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--height&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;30&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--seed&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;42&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--out&lt;span class="w"&gt; &lt;/span&gt;plan.json
+&lt;span class="c1"&gt;# 2. apply it one phase at a time, screenshotting in between&lt;/span&gt;
+python3&lt;span class="w"&gt; &lt;/span&gt;dd_layout.py&lt;span class="w"&gt; &lt;/span&gt;apply&lt;span class="w"&gt; &lt;/span&gt;plan.json&lt;span class="w"&gt; &lt;/span&gt;--phases&lt;span class="w"&gt; &lt;/span&gt;walls,doors
+python3&lt;span class="w"&gt; &lt;/span&gt;dd_layout.py&lt;span class="w"&gt; &lt;/span&gt;apply&lt;span class="w"&gt; &lt;/span&gt;plan.json&lt;span class="w"&gt; &lt;/span&gt;--phases&lt;span class="w"&gt; &lt;/span&gt;floors,outside,paths
+python3&lt;span class="w"&gt; &lt;/span&gt;dd_layout.py&lt;span class="w"&gt; &lt;/span&gt;apply&lt;span class="w"&gt; &lt;/span&gt;plan.json&lt;span class="w"&gt; &lt;/span&gt;--phases&lt;span class="w"&gt; &lt;/span&gt;objects,lights
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;It has three styles, &lt;code&gt;dungeon&lt;/code&gt;, &lt;code&gt;cave&lt;/code&gt; and &lt;code&gt;outdoor&lt;/code&gt;, and the algorithms are standard procedural-generation techniques:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Problem&lt;/th&gt;
+&lt;th&gt;Algorithm&lt;/th&gt;
+&lt;th&gt;Source&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Rooms&lt;/td&gt;
+&lt;td&gt;BSP partition, one room per leaf&lt;/td&gt;
+&lt;td&gt;RogueBasin&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Connections&lt;/td&gt;
+&lt;td&gt;Gabriel graph → minimum spanning tree → ~15% of the dropped edges added back as loops&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://www.gamedeveloper.com/programming/procedural-dungeon-generation-algorithm"&gt;TinyKeep&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Room roles&lt;/td&gt;
+&lt;td&gt;entrance near the edge, "boss" room farthest in graph hops, dead ends become storage, shrine or crypt&lt;/td&gt;
+&lt;td&gt;Dormans 2010&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Furniture&lt;/td&gt;
+&lt;td&gt;rules: against walls, keep a walking path between doors free, focal piece opposite the entrance, tables with chairs facing them&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://graphics.stanford.edu/projects/furniture/"&gt;Merrell et al. 2011&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Trees, bushes, rocks&lt;/td&gt;
+&lt;td&gt;Poisson disk sampling filtered by fractal noise, so you get groves and clearings&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf"&gt;Bridson 2007&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Roads&lt;/td&gt;
+&lt;td&gt;A* that avoids buildings and is cheaper on existing road, then Ramer-Douglas-Peucker&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Some design choices:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The plan is data, not calls.&lt;/strong&gt; &lt;code&gt;plan&lt;/code&gt; writes a JSON list of bridge commands, grouped by phase. The model shows the ASCII preview to the user and changes the seed or parameters until the user likes it, and none of that touches the map. The same seed always produces the same plan.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Furniture is configured, not coded.&lt;/strong&gt; Fourteen room types (library, barracks, crypt, tavern, smithy…) live in &lt;code&gt;recipes.json&lt;/code&gt; as lists of rules. To add a new type of room, you edit JSON.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Assets are resolved at apply time.&lt;/strong&gt; Each recipe lists search terms (&lt;code&gt;["bookshelf", "bookcase", "shelf"]&lt;/code&gt;), and &lt;code&gt;apply&lt;/code&gt; resolves each one once with &lt;code&gt;list_assets&lt;/code&gt;. It reports what it couldn't find and skips it, and an override file lets you pin exact assets. The created ids are saved next to the plan, so you can edit or delete them later.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The script handles the floor plan and a first pass of furnishing. The polish (overlapping props, extra lights, clutter) is left to the model's hand calls, following the rest of the skill. It's tested against a fake bridge that speaks the same TCP protocol. I haven't yet checked against a live Dungeondraft that object rotations and wall-mounted doors look right, so the skill tells the model to check both with a screenshot on first use.&lt;/p&gt;
+&lt;h2&gt;Takeaways&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;When you integrate with closed software through a plugin API, &lt;strong&gt;the API docs describe the calls but not what the native tools do as well&lt;/strong&gt;. Here the real contract was in the decompiled code.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Run the host app from a terminal and read its stdout.&lt;/strong&gt; One stack trace settled what hours of guessing could not.&lt;/li&gt;
+&lt;li&gt;Test the human hand-off, not just the agent's own loop. Every one of these bugs was invisible to the model, which could still create, list and screenshot everything. They only broke when a person clicked, saved or reopened the map.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tools aren't craft.&lt;/strong&gt; An MCP server tells the model what it &lt;em&gt;can&lt;/em&gt; do; a skill tells it what a good result looks like and in which order to get there. Spatial layout is better handled by a deterministic script that the model reviews and applies than by many tool calls the model improvises one at a time.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="blog"/><category term="AI"/><category term="LLM"/><category term="MCP"/><category term="Python"/><category term="Godot"/></entry><entry><title>Dirigista: Stop Asking Your Agent to Judge, Start Asking It to Delegate</title><link href="https://blog.r6i.it/dirigista-letting-agents-delegate-judgment.html" rel="alternate"/><published>2026-10-11T10:00:00+02:00</published><updated>2026-10-11T10:00:00+02:00</updated><author><name>samreghenzi</name></author><id>tag:blog.r6i.it,2026-10-11:/dirigista-letting-agents-delegate-judgment.html</id><summary type="html">&lt;p&gt;Every agent I have built ends up doing the same thing, sooner or later: making small judgments about text. Is this support ticket about billing or about a bug? How angry is this customer? Does this paragraph actually answer the question? Is this claim true according to the document I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Every agent I have built ends up doing the same thing, sooner or later: making small judgments about text. Is this support ticket about billing or about a bug? How angry is this customer? Does this paragraph actually answer the question? Is this claim true according to the document I was given?&lt;/p&gt;
 &lt;p&gt;We usually let the big model handle these inline. It is right there, it is smart, it costs nothing extra to ask. And it answers — always, fluently, with total confidence. That last part is the problem.&lt;/p&gt;
 &lt;p&gt;A large language model asked to classify something will give you a label. It will not tell you whether that label was a 95% call or a coin flip, because it doesn't really know. If you ask for a confidence, it will write a number, and that number is prose shaped like a probability. If you ask for an explanation, it will produce one — after the fact, rationalising a decision that was never made by reasoning in the first place.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;dirigista&lt;/code&gt; is my attempt to take those judgments away from the generalist and hand them to something built for them.&lt;/p&gt;

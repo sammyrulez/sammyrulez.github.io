@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<title>Sam Reghenzi Homepage &mdash; Driving Dungeondraft with an MCP server (and the bugs hiding in its save button)</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Dungeondraft is a map editor for tabletop RPG battlemaps. dungeondraft-mcp (my fork of brann-dev/dungeondraft-mcp) lets an LLM such as Claude drive a running Dungeondraft: draw rooms, cut doors,..." />
+		<meta property="og:site_name" content="Sam Reghenzi Homepage" />
+		<meta property="og:locale" content="en" />
+		<meta property="og:type" content="article" />
+		<meta property="og:title" content="Driving Dungeondraft with an MCP server (and the bugs hiding in its save button)" />
+		<meta property="og:description" content="Dungeondraft is a map editor for tabletop RPG battlemaps. dungeondraft-mcp (my fork of brann-dev/dungeondraft-mcp) lets an LLM such as Claude drive a running Dungeondraft: draw rooms, cut doors,..." />
+		<meta property="og:url" content="https://blog.r6i.it/dungeondraft-mcp-bridge-fixes.html" />
+		<meta property="og:image" content="https://blog.r6i.it/images/social/dungeondraft-mcp-bridge-fixes.png" />
+		<meta property="og:image:alt" content="Driving Dungeondraft with an MCP server (and the bugs hiding in its save button)" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Driving Dungeondraft with an MCP server (and the bugs hiding in its save button)" />
+		<meta name="twitter:description" content="Dungeondraft is a map editor for tabletop RPG battlemaps. dungeondraft-mcp (my fork of brann-dev/dungeondraft-mcp) lets an LLM such as Claude drive a running Dungeondraft: draw rooms, cut doors,..." />
+		<meta name="twitter:image" content="https://blog.r6i.it/images/social/dungeondraft-mcp-bridge-fixes.png" />
+<meta property="article:published_time" content="2026-10-17T14:30:00+02:00" /><meta property="article:author" content="samreghenzi" />		<link rel="canonical" href="https://blog.r6i.it/dungeondraft-mcp-bridge-fixes.html" />
+		<link rel="profile" href="https://gmpg.org/xfn/11" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" />
+		<link rel="stylesheet" type="text/css" href="https://blog.r6i.it/theme/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="https://blog.r6i.it/theme/css/pygment.css" />
+		<link rel="icon" href="https://blog.r6i.it/theme/images/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="https://blog.r6i.it/theme/images/favicon-32x32.png" />
+		<link rel="apple-touch-icon" href="https://blog.r6i.it/theme/images/apple-touch-icon.png" />
+		<link rel="alternate" type="application/atom+xml"
+			title="Sam Reghenzi Homepage — Atom Feed"
+			href="https://blog.r6i.it/feeds/all.atom.xml" />
+		<link rel="alternate" type="application/rss+xml"
+			title="Sam Reghenzi Homepage — RSS Feed"
+			href="https://blog.r6i.it/feeds/all.rss.xml" />
+</head>
+
+<body>
+	<header class="site-header">
+		<div class="site-header-inner">
+			<a class="site-logo" href="https://blog.r6i.it/"><span class="site-logo-dot"></span>Sam Reghenzi</a>
+			<nav class="site-nav" aria-label="Main navigation">
+						<a href="https://blog.r6i.it/category/ai.html">AI</a>
+						<a href="https://blog.r6i.it/category/blog.html" class="active">blog</a>
+						<a href="https://github.com/sammyrulez" rel="noopener noreferrer">Github</a>
+						<a href="https://www.linkedin.com/in/sammyrulez/" rel="noopener noreferrer">LinkedIn</a>
+			</nav>
+		</div>
+	</header>
+
+	<main class="page-main">
+
+<div class="article-hero">
+	<div class="article-hero-inner">
+		<a class="backlink" href="https://blog.r6i.it/">&larr; Archive</a>
+		<div class="article-hero-head">
+			<div class="article-meta">
+				<a class="article-cat" href="https://blog.r6i.it/category/blog.html" title="View all posts in blog">blog</a>
+				<span>Sat 17 October 2026</span>
+<span>By <a href="https://blog.r6i.it/author/samreghenzi.html">samreghenzi</a></span>			</div>
+			<h1 class="article-title">Driving Dungeondraft with an MCP server (and the bugs hiding in its save button)</h1>
+			<p class="article-lede">How a small MCP server lets Claude build battlemaps in a live Dungeondraft, and three bugs that only showed up after the map was built</p>
+		</div>
+	</div>
+</div>
+
+<div class="article-wrap">
+	<div class="article-grid">
+		<article>
+			<div class="entry-content">
+				<p><a href="https://dungeondraft.net/">Dungeondraft</a> is a map editor for tabletop RPG battlemaps. <a href="https://github.com/sammyrulez/dungeondraft-mcp">dungeondraft-mcp</a> (my fork of <a href="https://github.com/brann-dev/dungeondraft-mcp">brann-dev/dungeondraft-mcp</a>) lets an LLM such as Claude drive a <strong>running</strong> Dungeondraft: draw rooms, cut doors, paint terrain, place furniture, then take a screenshot and check its own work.</p>
+<p><img alt="A top-down Dungeondraft battlemap of a two-storey inn: common room with a long table and a fireplace, kitchen, bedrooms, a circular rug, and cobbled streets with neighbouring rooftops around it" src="/images/acero_primavera.png"></p>
+<h2>How it works</h2>
+<p>Dungeondraft has no API server, so the project comes in two halves that talk over a localhost socket:</p>
+<p><a href="/images/dungeondraft-mcp-architecture.png" title="Click to enlarge"><img src="/images/dungeondraft-mcp-architecture.png" alt="Vertical flow: Claude / MCP client talks to the Python MCP server (FastMCP, one @mcp.tool() per capability) over MCP stdio; the server talks to the GDScript mod running inside Dungeondraft (Godot 3.4.2) with newline-delimited JSON over TCP 127.0.0.1:8787; the mod drives the open map through modding API calls" width="440"></a></p>
+<ul>
+<li>The <strong>mod</strong> opens a <code>TCP_Server</code> inside Dungeondraft and polls it on every frame from the mod's <code>update(delta)</code> hook. Each request is <code>{"cmd": ..., params}</code>. It is dispatched to a handler that calls Dungeondraft's own classes (<code>Objects.CreateObject</code>, <code>Walls.AddWall</code>, <code>PatternShapes.DrawPolygon</code>, …) and answers <code>{"ok": true, "result": ...}</code>.</li>
+<li>The <strong>Python server</strong> (FastMCP) exposes about 40 tools: create, edit, terrain, caves, levels, camera, screenshot and export. Each tool is a thin <code>bridge.request("cmd", ...)</code> call. Because the screenshot and export tools return images, the model can look at what it built and correct it.</li>
+<li>Every element is referenced by Dungeondraft's integer node id, and the bridge keeps its <strong>own</strong> undo/redo stacks, separate from Ctrl+Z.</li>
+</ul>
+<h2>What I fixed</h2>
+<p>None of the three bugs showed up while the map was being built. They only appeared once a human took over the map.</p>
+<h3>1. "Port already in use" on every new map</h3>
+<p>Dungeondraft calls the mod's <code>start()</code> on a <strong>new script instance</strong> each time a map is opened or created, and there is no teardown hook. The previous instance's <code>TCP_Server</code> kept port 8787 bound, so <code>listen()</code> failed. <code>lsof</code> showed that Dungeondraft itself held the port, not the Python process.</p>
+<p><strong>Fix:</strong> the listener is now process-global. It is stored in <code>Engine</code> metadata, and each new instance <em>adopts</em> it instead of rebinding. Ownership moves to the newest instance, and older instances stop polling. As a side effect, reloading the mod no longer drops the connection.</p>
+<h3>2. Saves that never finished, and objects you couldn't click</h3>
+<p>The symptoms: after an MCP session, saving froze Dungeondraft, or the placed objects could not be selected, although walls and lights could. The modding docs say nothing on this, so I extracted <code>Dungeondraft.dll</code> from the game's <code>.pck</code>, decompiled it with ILSpy, and launched Dungeondraft from the terminal to capture its stdout. The log showed:</p>
+<div class="highlight"><pre><span></span><code>System.NullReferenceException
+  at Pathways.Save ()
+  at Level.Save ()
+  ...
+  at Save.Serialize ()
+</code></pre></div>
+
+<p>When Dungeondraft creates an object, path or light through its own tools, it does more than the bare <code>Create*</code> calls the mod was using:</p>
+<ul>
+<li><strong>It sets a <code>"preview" = false</code> meta on each node.</strong> <code>Pathways.Save()</code> and <code>Lights.Save()</code> read it with a hard <code>(bool)</code> cast. Without it the cast throws, the background save task dies before writing the file, and <code>Master.IsSaving</code> stays <code>true</code>. From then on every save is refused as "busy" until you restart. <code>Objects.Save()</code> wraps the same cast in a <code>try/catch</code>, which made it worse: maps with no paths or lights saved fine but <strong>silently dropped every MCP-placed object</strong>.</li>
+<li><strong>It registers each object in <code>Objects.AddToSearchTable</code>.</strong> <code>SelectTool</code> hit-tests objects only through that spatial index (<code>QuickSearchBuckets</code>), so an object missing from it can never be clicked. Walls and lights are hit-tested another way, which is why they still worked.</li>
+</ul>
+<p><strong>Fix:</strong> the bridge now registers the nodes it creates the same way Dungeondraft's tools do.</p>
+<h3>3. Redo produced texture-less ghosts</h3>
+<p>The bridge undid a create by detaching the node and redid it by re-attaching the same node. For objects this breaks: <code>Prop._EnterTree()</code> builds a <strong>fresh, empty <code>Sprite</code></strong> every time the node enters the tree. The re-attached object still showed on screen through its old sprite, but it could not be selected and it was saved without a texture, so Dungeondraft would discard it on the next load.</p>
+<p><strong>Fix:</strong> undo/redo for objects now works like Dungeondraft's own <code>ObjectRecord</code>. Undo snapshots the object with <code>Prop.Save()</code> and deletes it; redo rebuilds it with <code>Objects.LoadObject(data)</code>, which gives it the same id, texture, tint and index entry.</p>
+<p>I verified it end to end: I built a test map over MCP, ran undo/redo cycles and deletes, selected each object by hand, saved, and parsed the saved <code>.dungeondraft_map</code> JSON. Every object, path and light was there, with its texture.</p>
+<h2>Teaching the agent to make maps: a skill</h2>
+<p>The MCP server gives Claude the tools, but not the craft. Given forty tools and "make me a dungeon", the model draws a few rectangles, scatters some props and calls it done. So on top of the server I wrote a <a href="https://docs.claude.com/en/docs/claude-code/skills">Claude Code skill</a>, <code>dungeondraft-mapmaking</code>: a folder with a <code>SKILL.md</code> and a few scripts. Claude loads it only when a task mentions Dungeondraft or a battlemap.</p>
+<h3>The workflow, from a mapmaking tutorial</h3>
+<p><code>SKILL.md</code> follows a beginner's <a href="https://www.youtube.com/watch?v=-X31R4sJ3gA">Dungeondraft mapmaking tutorial</a>, rewritten as tool calls:</p>
+<ul>
+<li><strong>Pre-flight.</strong> Run <code>ping</code> and <code>get_status</code> first. If Dungeondraft is closed, ask the user to open it instead of retrying. If no map is open, ask them to create one, because the bridge cannot create or resize a map.</li>
+<li><strong>Plan before drawing.</strong> Start small (about 20×20 tiles) and keep a 2-tile margin. Write the floor plan as tile coordinates first. With a reference image (a page from a module, a screenshot), count the tiles on the image instead of guessing.</li>
+<li><strong>Build order.</strong> Walls, doors, caves, terrain, floors, paths (cliffs, stairs, fences), outside fill, objects, lights. Each step builds on the one before. For example, a door mounted on a wall cuts its own opening only if the wall already exists.</li>
+<li><strong>Check your own work.</strong> After each phase, call <code>fit_elements</code> and take a <code>screenshot</code>.</li>
+<li><strong>Gotchas, collected in one place.</strong> 256 woxels per tile. The z-order values for caves, terrain, patterns, objects and roofs. Water is not supported by the bridge. Look assets up with <code>list_assets</code>, because a given asset pack may not be installed.</li>
+</ul>
+<h3>Inventing a map: <code>dd_layout.py</code></h3>
+<p>Tracing a map from a book is mostly counting. Inventing one is a layout problem, and LLMs are bad at spatial layout over dozens of tool calls. So the skill comes with a small script (Python standard library only) that computes the layout. The model only reviews it and applies it.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. plan: doesn&#39;t touch Dungeondraft; prints an ASCII preview and writes a JSON plan</span>
+python3<span class="w"> </span>dd_layout.py<span class="w"> </span>plan<span class="w"> </span>--style<span class="w"> </span>dungeon<span class="w"> </span>--width<span class="w"> </span><span class="m">30</span><span class="w"> </span>--height<span class="w"> </span><span class="m">30</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span>--out<span class="w"> </span>plan.json
+<span class="c1"># 2. apply it one phase at a time, screenshotting in between</span>
+python3<span class="w"> </span>dd_layout.py<span class="w"> </span>apply<span class="w"> </span>plan.json<span class="w"> </span>--phases<span class="w"> </span>walls,doors
+python3<span class="w"> </span>dd_layout.py<span class="w"> </span>apply<span class="w"> </span>plan.json<span class="w"> </span>--phases<span class="w"> </span>floors,outside,paths
+python3<span class="w"> </span>dd_layout.py<span class="w"> </span>apply<span class="w"> </span>plan.json<span class="w"> </span>--phases<span class="w"> </span>objects,lights
+</code></pre></div>
+
+<p>It has three styles, <code>dungeon</code>, <code>cave</code> and <code>outdoor</code>, and the algorithms are standard procedural-generation techniques:</p>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Algorithm</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rooms</td>
+<td>BSP partition, one room per leaf</td>
+<td>RogueBasin</td>
+</tr>
+<tr>
+<td>Connections</td>
+<td>Gabriel graph → minimum spanning tree → ~15% of the dropped edges added back as loops</td>
+<td><a href="https://www.gamedeveloper.com/programming/procedural-dungeon-generation-algorithm">TinyKeep</a></td>
+</tr>
+<tr>
+<td>Room roles</td>
+<td>entrance near the edge, "boss" room farthest in graph hops, dead ends become storage, shrine or crypt</td>
+<td>Dormans 2010</td>
+</tr>
+<tr>
+<td>Furniture</td>
+<td>rules: against walls, keep a walking path between doors free, focal piece opposite the entrance, tables with chairs facing them</td>
+<td><a href="https://graphics.stanford.edu/projects/furniture/">Merrell et al. 2011</a></td>
+</tr>
+<tr>
+<td>Trees, bushes, rocks</td>
+<td>Poisson disk sampling filtered by fractal noise, so you get groves and clearings</td>
+<td><a href="https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf">Bridson 2007</a></td>
+</tr>
+<tr>
+<td>Roads</td>
+<td>A* that avoids buildings and is cheaper on existing road, then Ramer-Douglas-Peucker</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Some design choices:</p>
+<ul>
+<li><strong>The plan is data, not calls.</strong> <code>plan</code> writes a JSON list of bridge commands, grouped by phase. The model shows the ASCII preview to the user and changes the seed or parameters until the user likes it, and none of that touches the map. The same seed always produces the same plan.</li>
+<li><strong>Furniture is configured, not coded.</strong> Fourteen room types (library, barracks, crypt, tavern, smithy…) live in <code>recipes.json</code> as lists of rules. To add a new type of room, you edit JSON.</li>
+<li><strong>Assets are resolved at apply time.</strong> Each recipe lists search terms (<code>["bookshelf", "bookcase", "shelf"]</code>), and <code>apply</code> resolves each one once with <code>list_assets</code>. It reports what it couldn't find and skips it, and an override file lets you pin exact assets. The created ids are saved next to the plan, so you can edit or delete them later.</li>
+</ul>
+<p>The script handles the floor plan and a first pass of furnishing. The polish (overlapping props, extra lights, clutter) is left to the model's hand calls, following the rest of the skill. It's tested against a fake bridge that speaks the same TCP protocol. I haven't yet checked against a live Dungeondraft that object rotations and wall-mounted doors look right, so the skill tells the model to check both with a screenshot on first use.</p>
+<h2>Takeaways</h2>
+<ul>
+<li>When you integrate with closed software through a plugin API, <strong>the API docs describe the calls but not what the native tools do as well</strong>. Here the real contract was in the decompiled code.</li>
+<li><strong>Run the host app from a terminal and read its stdout.</strong> One stack trace settled what hours of guessing could not.</li>
+<li>Test the human hand-off, not just the agent's own loop. Every one of these bugs was invisible to the model, which could still create, list and screenshot everything. They only broke when a person clicked, saved or reopened the map.</li>
+<li><strong>Tools aren't craft.</strong> An MCP server tells the model what it <em>can</em> do; a skill tells it what a good result looks like and in which order to get there. Spatial layout is better handled by a deterministic script that the model reviews and applies than by many tool calls the model improvises one at a time.</li>
+</ul>
+			</div>
+
+			<div class="article-tags">
+				<span class="label">Tagged</span>
+<a href="https://blog.r6i.it/tag/ai.html" rel="tag">#AI</a><a href="https://blog.r6i.it/tag/godot.html" rel="tag">#Godot</a><a href="https://blog.r6i.it/tag/llm.html" rel="tag">#LLM</a><a href="https://blog.r6i.it/tag/mcp.html" rel="tag">#MCP</a><a href="https://blog.r6i.it/tag/python.html" rel="tag">#Python</a>			</div>
+
+		</article>
+
+		<aside class="article-toc" id="article-toc" hidden>
+			<p class="label">Contents</p>
+			<nav id="article-toc-nav"></nav>
+		</aside>
+	</div>
+</div>
+
+<script>
+(function () {
+	var headings = document.querySelectorAll('.entry-content h2');
+	if (headings.length < 2) return;
+	var nav = document.getElementById('article-toc-nav');
+	headings.forEach(function (h, i) {
+		if (!h.id) {
+			h.id = h.textContent.trim().toLowerCase()
+				.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-') || 's' + (i + 1);
+		}
+		var a = document.createElement('a');
+		a.href = '#' + h.id;
+		a.textContent = h.textContent;
+		nav.appendChild(a);
+	});
+	document.getElementById('article-toc').hidden = false;
+})();
+</script>
+	</main>
+
+	<footer class="site-footer">
+		<div class="site-footer-inner">
+			<span class="footer-name">Sam Reghenzi</span>
+			<span class="footer-note">blog.r6i.it — powered by <a href="http://getpelican.com">Pelican</a></span>
+		</div>
+	</footer>
+</body>
+</html>
